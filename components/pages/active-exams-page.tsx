@@ -3,59 +3,15 @@
 import Link from "next/link"
 import { useState } from "react"
 import { ChevronLeft } from "lucide-react"
+import { activeExams } from "@/data/activeexam"
 
 export function ActiveExamsPage() {
   const [activeTab, setActiveTab] = useState("Active")
 
-  const exams = [
-    {
-      title: "Mid - Term: Network Security",
-      date: "05 Aug, 2025",
-      endTime: "Ends in 00:56",
-      violations: "10 Violations",
-      status: "Active",
-    },
-    {
-      title: "Mid - Term: Network Security",
-      date: "05 Aug, 2025",
-      endTime: "Ends in 00:56",
-      violations: "10 Violations",
-      status: "Active",
-    },
-    {
-      title: "Mid - Term: Network Security",
-      date: "05 Aug, 2025",
-      endTime: "Ends in 00:56",
-      violations: "10 Violations",
-      status: "Active",
-    },
-    {
-      title: "Mid - Term: Network Security",
-      date: "05 Aug, 2025",
-      endTime: "Ends in 00:56",
-      violations: "10 Violations",
-      status: "Active",
-    },
-    {
-      title: "Mid - Term: Network Security",
-      date: "05 Aug, 2025",
-      endTime: "Ends in 00:56",
-      violations: "10 Violations",
-      status: "Active",
-    },
-    {
-      title: "Mid - Term: Network Security",
-      date: "05 Aug, 2025",
-      endTime: "Ends in 00:56",
-      violations: "10 Violations",
-      status: "Active",
-    },
-  ]
-
   const tabs = ["Active", "Upcoming", "Completed"]
 
   return (
-    <div className=" mx-auto  sm:px-2 lg:px-2 ">
+    <div className="mx-auto sm:px-2 lg:px-2">
       <div className="bg-gray-900 rounded-xl p-4 sm:p-6 border border-gray-700">
         {/* Header with Back Button */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
@@ -85,14 +41,16 @@ export function ActiveExamsPage() {
 
         {/* Exams List */}
         <div className="space-y-4">
-          {exams.map((exam, index) => (
+          {activeExams.map((exam, index) => (
             <div
               key={index}
               className="bg-gray-900 rounded-lg p-4 sm:p-6 border border-gray-600 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0"
             >
               {/* Exam Info */}
               <div className="flex-1">
-                <h3 className="text-white font-semibold text-base sm:text-lg mb-1 sm:mb-2 break-words">{exam.title}</h3>
+                <h3 className="text-white font-semibold text-base sm:text-lg mb-1 sm:mb-2 break-words">
+                  {exam.title}
+                </h3>
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-gray-400 text-xs sm:text-sm">
                   <span>{exam.date}</span>
                   <span>•</span>
