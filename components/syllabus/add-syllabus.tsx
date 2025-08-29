@@ -99,7 +99,9 @@ export function AddSyllabus() {
               Cancel
             </Button>
           </Link>
-          <GradientButton className="w-full sm:w-auto">Add Syllabus</GradientButton>
+          <Link href="/syllabus/manual2">
+            <GradientButton className="w-full sm:w-auto">Add Syllabus</GradientButton>
+          </Link>
         </div>
       </div>
     </div>

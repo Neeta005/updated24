@@ -6,11 +6,17 @@ import { useRouter } from "next/navigation"
 import { DifficultyBadge } from "@/components/ui/difficulty-badge"
 import { Pagination } from "@/components/ui/reusable-pagination"
 import { DataTable } from "@/components/tables/data-table"
+import { TopicBadge } from "./topic-badge"
 import { mockQuestions } from "@/data/questions"
 
 interface QuestionSectionProps {
   topicName: string
   onBack: () => void
+}
+
+interface QuestionSectionState {
+  currentPage: number
+  selectedTopics: string[]
 }
 
 const StatusBadge = React.memo(({ status }: { status: string }) => {
@@ -28,8 +34,10 @@ const StatusBadge = React.memo(({ status }: { status: string }) => {
 StatusBadge.displayName = "StatusBadge"
 
 export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedTopics, setSelectedTopics] = useState(["Design", "Ui Design"])
+  const [state, setState] = useState<QuestionSectionState>({
+    currentPage: 1,
+    selectedTopics: ["Design", "Ui Design"],
+  })
   const router = useRouter()
 
   const itemsPerPage = 10
@@ -53,6 +61,13 @@ export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
 
   const handleEditTopic = () => {
     console.log("[v0] Edit topic")
+  }
+
+  const handleRemoveTopic = (index: number) => {
+    setState((prev) => ({
+      ...prev,
+      selectedTopics: prev.selectedTopics.filter((_, i) => i !== index),
+    }))
   }
 
   const columns = [
@@ -166,24 +181,8 @@ export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {selectedTopics.map((topic, index) => (
-              <div key={index} className="flex items-center">
-                <div className="relative inline-flex items-center px-3 py-1 bg-muted text-card-foreground rounded-full text-sm">
-                  {topic}
-                  <button
-                    className="ml-2 text-muted-foreground hover:text-card-foreground transition-colors"
-                    onClick={() => {
-                      setSelectedTopics((prev) => prev.filter((_, i) => i !== index))
-                    }}
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-                {index === 0 && <span className="text-green-400 text-sm ml-2">●</span>}
-                {index === 1 && <span className="text-green-400 text-sm ml-2">●</span>}
-              </div>
+            {state.selectedTopics.map((topic, index) => (
+              <TopicBadge key={index} topic={topic} index={index} onRemove={handleRemoveTopic} />
             ))}
           </div>
         </div>
@@ -197,9 +196,9 @@ export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
 
         <div className="mt-6">
           <Pagination
-            currentPage={currentPage}
+            currentPage={state.currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={(page) => setState((prev) => ({ ...prev, currentPage: page }))}
             itemsPerPage={itemsPerPage}
             totalItems={mockQuestions.length}
           />

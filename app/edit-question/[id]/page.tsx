@@ -1,15 +1,11 @@
 import EditQuestionForm from "@/components/edit-question/edit-question-form"
 
-interface EditQuestionPageProps {
-  params: { id: string }
-}
-
-export default function EditQuestionPage({ params }: EditQuestionPageProps) {
-  const questionId = params.id
+export default async function EditQuestionPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
 
   return (
     <div className="p-6">
-      <EditQuestionForm questionId={questionId} />
+      <EditQuestionForm questionId={id} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React, { useRef } from "react"
 import { Upload } from "lucide-react"
 import type { UploadedFile } from "@/data/syllabus"
 import { FileItem } from "@/components/ui/file-item"
@@ -12,6 +12,8 @@ interface FileUploadSectionProps {
 }
 
 export function FileUploadSection({ uploadedFiles, onFilesChange }: FileUploadSectionProps) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
@@ -25,7 +27,11 @@ export function FileUploadSection({ uploadedFiles, onFilesChange }: FileUploadSe
         size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
       })
     }
+
     onFilesChange([...uploadedFiles, ...newFiles])
+
+    // Reset input so same file can be uploaded again if needed
+    e.target.value = ""
   }
 
   const removeFile = (fileId: string) => {
@@ -42,7 +48,12 @@ export function FileUploadSection({ uploadedFiles, onFilesChange }: FileUploadSe
             <p className="text-muted-foreground text-sm">Files you want to add</p>
             <div className="space-y-2">
               {uploadedFiles.map((file) => (
-                <FileItem key={file.id} name={file.name} size={file.size} onRemove={() => removeFile(file.id)} />
+                <FileItem
+                  key={file.id}
+                  name={file.name}
+                  size={file.size}
+                  onRemove={() => removeFile(file.id)}
+                />
               ))}
             </div>
           </div>
@@ -54,12 +65,27 @@ export function FileUploadSection({ uploadedFiles, onFilesChange }: FileUploadSe
       <div className="border-2 border-dashed border-orange-600 rounded-lg p-8 text-center">
         <div className="flex flex-col items-center justify-center gap-4">
           <Upload className="w-12 h-12 text-muted-foreground" />
-          <p className="text-foreground font-medium">Drop your file or click here to upload the file</p>
-          <p className="text-muted-foreground text-sm">Supported formats: PDF, DOC, DOCX</p>
-          <label className="cursor-pointer">
-            <input type="file" className="hidden" multiple onChange={handleFileUpload} accept=".pdf,.doc,.docx" />
-            <GradientButton>Upload Files</GradientButton>
-          </label>
+          <p className="text-foreground font-medium">
+            Drop your file or click below to upload
+          </p>
+          <p className="text-muted-foreground text-sm">
+            Supported formats: PDF, DOC, DOCX
+          </p>
+
+          {/* Hidden input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            multiple
+            onChange={handleFileUpload}
+            accept=".pdf,.doc,.docx"
+          />
+
+          {/* Button opens file picker */}
+          <GradientButton onClick={() => fileInputRef.current?.click()}>
+            Upload Files
+          </GradientButton>
         </div>
       </div>
     </div>

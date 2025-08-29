@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { X } from "lucide-react"
+import { Text } from "@/components/atoms/text"
 
 type TemplateType = "xls" | "csv" | "google-sheet"
 
@@ -48,10 +49,14 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({ isOpen, onClose,
           <X size={24} />
         </button>
 
-        <h2 className="mb-6 text-2xl font-bold text-white">Import CSV</h2>
+        <Text variant="heading" size="2xl" weight="bold" color="primary" as="h2" className="mb-6">
+          Import CSV
+        </Text>
 
         <div className="mb-6">
-          <h3 className="mb-4 text-lg font-semibold text-white">Download Templates</h3>
+          <Text variant="heading" size="lg" weight="semibold" color="primary" as="h3" className="mb-4">
+            Download Templates
+          </Text>
           <div className="flex gap-3">
             {["xls", "csv", "google-sheet"].map((t) => (
               <button
@@ -78,16 +83,18 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({ isOpen, onClose,
           <input type="file" accept=".csv,.xls,.xlsx" className="hidden" onChange={handleChoose} />
 
           <div className="relative z-10 flex flex-col items-center">
-            <p className="mb-4 text-lg font-semibold text-white">Pick the CSV file you want to add</p>
+            <Text variant="body" size="lg" weight="semibold" color="primary" className="mb-4">
+              Pick the CSV file you want to add
+            </Text>
 
             <div className="mb-4 flex size-20 items-center justify-center rounded-full bg-green-600/10">
               <img src="\icons\uploadicon.png" alt="Upload file" className="size-12" />
             </div>
 
-            <p className="text-sm text-gray-400">
+            <Text variant="body" size="sm" color="muted">
               Drag your file or <span className="font-semibold text-orange-500 underline">click here</span> to upload
               the file
-            </p>
+            </Text>
           </div>
         </label>
 

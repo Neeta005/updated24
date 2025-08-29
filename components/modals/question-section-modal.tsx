@@ -5,6 +5,9 @@ import { Filter, Trash2, Eye, Edit } from "lucide-react"
 import { mockQuestions } from "@/data/questions"
 import { TableHeader } from "@/components/ui/table-header"
 import { TableRow } from "@/components/ui/table-row"
+import { Text } from "@/components/atoms/text"
+import type { Question, QuestionSectionModalProps } from "@/types/question"
+import { questionModalColumns } from "@/data/table-columns"
 
 // ✅ Import your reusable pagination components
 import {
@@ -15,36 +18,6 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination"
-
-interface QuestionSectionModalProps {
-  isOpen: boolean
-  onClose: () => void
-  topicName?: string
-}
-
-interface Question {
-  id: string | number
-  question: string
-  type: string
-  difficulty: "Easy" | "Medium" | "Hard"
-  marks: number
-  status: "Published" | "Draft"
-}
-
-interface TableColumn {
-  span: number
-  label: string
-}
-
-const tableColumns: TableColumn[] = [
-  { span: 1, label: "Sr." },
-  { span: 5, label: "Question" },
-  { span: 2, label: "Type" },
-  { span: 1, label: "Difficulty" },
-  { span: 1, label: "Marks" },
-  { span: 1, label: "Status" },
-  { span: 1, label: "Actions" },
-]
 
 export const QuestionSectionModal = React.memo<QuestionSectionModalProps>(
   ({ isOpen, onClose, topicName = "Design" }) => {
@@ -75,18 +48,16 @@ export const QuestionSectionModal = React.memo<QuestionSectionModalProps>(
 
     if (!isOpen) return null
 
-    // Paginate questions
-    const paginatedQuestions = typedQuestions.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
+    const paginatedQuestions = typedQuestions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
         <div className="bg-dark-card rounded-2xl p-6 w-[1200px] max-h-[90vh] overflow-y-auto relative animate-in fade-in-0 zoom-in-95 duration-200">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-white text-2xl font-bold">Question Bank</h1>
+            <Text variant="heading" className="text-white text-2xl font-bold">
+              Question Bank
+            </Text>
             <div className="flex items-center gap-3">
               <button
                 onClick={onClose}
@@ -125,7 +96,9 @@ export const QuestionSectionModal = React.memo<QuestionSectionModalProps>(
             />
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-white text-sm">Filter By</span>
+                <Text variant="caption" className="text-white">
+                  Filter By
+                </Text>
                 <Filter size={16} className="text-gray-400" />
               </div>
               <div className="flex items-center gap-2">
@@ -143,31 +116,21 @@ export const QuestionSectionModal = React.memo<QuestionSectionModalProps>(
 
           {/* Questions Table */}
           <div className="bg-secondary rounded-xl overflow-hidden border border-dark-border mb-6">
-            <TableHeader columns={tableColumns} variant="modal" />
+            <TableHeader columns={questionModalColumns} variant="modal" />
 
             {paginatedQuestions.map((question: Question, index: number) => (
               <TableRow key={question.id} variant="modal">
-                <div className="col-span-1 text-white text-sm">
-                  {(currentPage - 1) * itemsPerPage + index + 1}
-                </div>
+                <div className="col-span-1 text-white text-sm">{(currentPage - 1) * itemsPerPage + index + 1}</div>
                 <div className="col-span-5 text-white text-sm">{question.question}</div>
                 <div className="col-span-2 text-gray-text text-sm">{question.type}</div>
                 <div className="col-span-1">
-                  <span
-                    className={`px-2 py-1 rounded text-xs text-white ${getDifficultyColor(
-                      question.difficulty
-                    )}`}
-                  >
+                  <span className={`px-2 py-1 rounded text-xs text-white ${getDifficultyColor(question.difficulty)}`}>
                     {question.difficulty}
                   </span>
                 </div>
                 <div className="col-span-1 text-white text-sm">{question.marks}</div>
                 <div className="col-span-1">
-                  <span
-                    className={`px-2 py-1 rounded text-xs text-white ${getStatusColor(
-                      question.status
-                    )}`}
-                  >
+                  <span className={`px-2 py-1 rounded text-xs text-white ${getStatusColor(question.status)}`}>
                     {question.status}
                   </span>
                 </div>
@@ -178,16 +141,10 @@ export const QuestionSectionModal = React.memo<QuestionSectionModalProps>(
                   >
                     <Trash2 size={16} />
                   </button>
-                  <button
-                    className="p-1 text-white hover:bg-dark-border rounded transition-colors"
-                    type="button"
-                  >
+                  <button className="p-1 text-white hover:bg-dark-border rounded transition-colors" type="button">
                     <Eye size={16} />
                   </button>
-                  <button
-                    className="p-1 text-red-primary hover:bg-dark-border rounded transition-colors"
-                    type="button"
-                  >
+                  <button className="p-1 text-red-primary hover:bg-dark-border rounded transition-colors" type="button">
                     <Edit size={16} />
                   </button>
                 </div>
@@ -236,7 +193,7 @@ export const QuestionSectionModal = React.memo<QuestionSectionModalProps>(
         </div>
       </div>
     )
-  }
+  },
 )
 
 QuestionSectionModal.displayName = "QuestionSectionModal"

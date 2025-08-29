@@ -6,21 +6,13 @@ import Image from "next/image"
 import { mockQuestions } from "@/data/mock-questions"
 import { TableHeader } from "@/components/ui/table-header"
 import { TableRow } from "@/components/ui/table-row"
+import { mappedImportColumns } from "@/data/table-columns"
 
 interface MappedImportModalProps {
   isOpen: boolean
   onClose: () => void
   fileType: "xls" | "csv" | "google-sheet" | null
 }
-
-const tableColumns = [
-  { span: 5, label: "Question" },
-  { span: 2, label: "Type" },
-  { span: 2, label: "Difficulty" },
-  { span: 1, label: "Marks" },
-  { span: 1, label: "Status" },
-  { span: 1, label: "Actions", className: "text-center" },
-]
 
 export const MappedImportModal = React.memo(({ isOpen, onClose }: MappedImportModalProps) => {
   const [searchTerm, setSearchTerm] = useState("Design")
@@ -92,7 +84,7 @@ export const MappedImportModal = React.memo(({ isOpen, onClose }: MappedImportMo
         <div className="bg-[#111827] rounded-xl overflow-hidden border border-[#374151] mb-6">
           {/* Mapped Table Header */}
           <TableHeader
-            columns={tableColumns}
+            columns={mappedImportColumns}
             variant="modal"
             size="sm"
             className="bg-[#1F2937] border-[#374151] text-gray-300"
@@ -109,8 +101,8 @@ export const MappedImportModal = React.memo(({ isOpen, onClose }: MappedImportMo
                     question.difficulty === "Easy"
                       ? "bg-green-500/20 text-green-400"
                       : question.difficulty === "Medium"
-                      ? "bg-yellow-500/20 text-yellow-400"
-                      : "bg-red-500/20 text-red-400"
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : "bg-red-500/20 text-red-400"
                   }`}
               >
                 {question.difficulty}

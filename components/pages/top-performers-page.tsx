@@ -8,8 +8,8 @@ import { CircularProgress } from "@/components/ui/circular-progress"
 
 export function TopPerformersPage() {
   return (
-    <div className="mx-auto sm:px-2 lg:px-2">
-      <div className="bg-gray-900 rounded-xl p-3 sm:p-4 border border-gray-700">
+    <div className="bg-cardmx-auto sm:px-2 lg:px-2">
+      <div className="bg-card rounded-xl p-3 sm:p-4 border border-gray-700">
         {/* Header with Back Button */}
         <div className="flex items-center justify-between mb-6 sm:mb-8">
           <h1 className="text-white text-xl sm:text-2xl font-semibold">Top Performers</h1>
@@ -26,7 +26,7 @@ export function TopPerformersPage() {
           {topPerformers.map((performer, index) => (
             <div
               key={index}
-              className="bg-gray-900 rounded-lg p-3 border border-gray-600 flex items-center justify-between"
+              className="bg-card rounded-lg p-3 border border-gray-600 flex items-center justify-between"
             >
               {/* Rank + Avatar + Info */}
               <div className="flex items-center space-x-4">
