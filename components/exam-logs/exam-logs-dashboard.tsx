@@ -38,6 +38,11 @@ export function ExamLogsDashboard() {
             <div className="relative">
               <select className="appearance-none bg-secondary border border-border rounded-lg px-4 py-2 pr-10 text-white focus:outline-none focus:border-ring">
                 <option>Mid-Term: Network Security</option>
+                
+                    <option>Final-Term: Data Structures</option>
+                      <option>Quiz: Operating System</option>
+                         <option>Assignment: Cloud Computing</option>
+                          <option>Mid-Term: DataBase Management</option>
               </select>
               <ChevronDown
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"

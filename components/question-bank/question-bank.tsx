@@ -43,17 +43,17 @@ const SubtopicRow = React.memo(
     onEyeClick: (topicName: string) => void
     onEditClick: (topicName: string) => void
   }) => (
-    <div className="grid grid-cols-12 gap-6 items-center py-2 px-3 bg-gray-900 rounded-lg">
+    <div className="grid grid-cols-12 gap-12 items-center py-2 px-3 bg-gray-900 rounded-lg">
       <div className="col-span-3 flex items-center space-x-2">
         <div className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0 ml-1"></div>
         <span className="text-gray-300 font-medium text-sm">{subtopic.name}</span>
       </div>
-      <div className="col-span-2"></div>
-      <div className="col-span-2">
+      <div className="col-span-2 flex justify-center"></div>
+      <div className="col-span-2 flex justify-center">
         <UnifiedBadge value="01" variant="primary" />
       </div>
-      <div className="col-span-2"></div>
-      <div className="col-span-3 flex items-center space-x-2">
+      <div className="col-span-2 flex justify-center"></div>
+      <div className="col-span-3 flex justify-center items-center space-x-2">
         <button className="p-1.5 border border-orange-500 rounded-lg transition-colors hover:bg-orange-500/10">
           <Trash2 className="size-3 text-orange-500" />
         </button>
@@ -215,14 +215,33 @@ export default function QuestionBank() {
         </div>
 
         <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700">
-          <QuestionBankHeader />
+          {/* Updated header to match content row structure */}
+          <div className="bg-gray-900 px-6 py-4 bg-gray-750 border-b border-gray-700">
+            <div className="grid grid-cols-12 gap-12 items-center ">
+              <div className="col-span-3">
+                <span className="text-gray-400 font-medium text-sm">Subject</span>
+              </div>
+              <div className="col-span-2 flex justify-center">
+                <span className="text-gray-400 font-medium text-sm">Target Audience</span>
+              </div>
+              <div className="col-span-2 flex justify-center">
+                <span className="text-gray-400 font-medium text-sm">Topics</span>
+              </div>
+              <div className="col-span-2 flex justify-center">
+                <span className="text-gray-400 font-medium text-sm">Questions</span>
+              </div>
+              <div className="col-span-3 flex justify-center">
+                <span className="text-gray-400 font-medium text-sm">Actions</span>
+              </div>
+            </div>
+          </div>
 
           {Object.keys(state.expandedSections).map((sectionId, idx) => (
             <div
               key={sectionId}
               className="px-6 py-3 hover:bg-gray-700 transition-colors border-b border-gray-700 last:border-b-0"
             >
-              <div className="grid grid-cols-12 gap-6 items-center">
+              <div className="grid grid-cols-12 gap-12 items-center">
                 <div className="col-span-3 flex items-center space-x-3">
                   <button
                     onClick={() => toggleSection(sectionId)}
@@ -236,16 +255,16 @@ export default function QuestionBank() {
                   </button>
                   <span className="text-white font-medium text-sm">Design</span>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-2 flex justify-center">
                   <TargetBadge text="Graphic Designers" />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-2 flex justify-center">
                   <UnifiedBadge value="03" variant="primary" />
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-2 flex justify-center">
                   <UnifiedBadge value="18" variant="danger" />
                 </div>
-                <div className="col-span-3">
+                <div className="col-span-3 flex justify-center">
                   <button className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors font-semibold">
                     Add Question
                   </button>
