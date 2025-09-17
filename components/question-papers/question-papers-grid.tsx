@@ -54,16 +54,53 @@ export function QuestionPapersGrid() {
       </div>
 
       <div className="flex flex-col sm:flex-row sm:justify-between items-center w-full">
-        <div className="relative w-60">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
-          <input
-            type="text"
-            placeholder="search"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-secondary border border-white rounded-full text-white placeholder-slate-300 focus:outline-none focus:border-white"
-          />
-        </div>
+      <div className="flex flex-col sm:flex-row gap-4 w-full">
+              {/* Main Search */}
+              <div className="relative w-full sm:w-56">
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="bg-gray-900 border border-gray-700 rounded-full pl-10 pr-4 py-2 
+                           text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
+                           focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
+                />
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"
+                  />
+                </svg>
+              </div>
+
+              {/* Search Topic */}
+              <div className="relative w-full sm:w-56">
+                <input
+                  type="text"
+                  placeholder="Search Topic"
+                  className="bg-gray-900 border border-gray-700 rounded-full px-4 py-2 
+                           text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
+                           focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
+                />
+              </div>
+
+              {/* Search Target Audience */}
+              <div className="relative w-full sm:w-56">
+                <input
+                  type="text"
+                  placeholder="Search Target Audience"
+                  className="bg-gray-900 border border-gray-700 rounded-full px-4 py-2 
+                           text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
+                           focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
+                />
+              </div>
+            </div>
         <div className="flex items-center gap-2">
           <span className="text-slate-400 text-sm">Sort by</span>
           <div className="relative">

@@ -65,27 +65,28 @@ export function Sidebar({ activeIndex, isOpen, setIsOpen }: SidebarProps) {
           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
           lg:translate-x-0 lg:flex`}
       >
-        <div className="mt-16 flex flex-col items-center">
+        <div className="mt-18 flex flex-col items-center">
           {menuItems.map((item, index) => {
             const isActive = indexToUse === index
             return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={`w-16 h-11 flex items-center justify-center transition-all duration-200 
-                  ${isActive ? "bg-destructive shadow-lg" : "hover:bg-sidebar-accent"}`}
-                title={item.name}
-                onClick={() => setIsOpen(false)}
-              >
-                <Image
-                  src={item.icon || "/placeholder.svg?height=40&width=40&query=sidebar%20icon"}
-                  alt={item.name}
-                  width={40}
-                  height={40}
-                  className={`size-10 transition-all duration-200 
-                    ${isActive ? "brightness-0 invert" : "opacity-80 hover:opacity-100"}`}
-                />
-              </Link>
+            <Link
+  key={item.id}
+  href={item.href}
+  className={`w-12 h-11 flex items-center justify-center transition-all duration-200
+    ${isActive ? "bg-gradient-to-r from-orange-500 to-red-500 shadow-lg rounded-lg" : "hover:bg-sidebar-accent rounded-lg"}`}
+  title={item.name}
+  onClick={() => setIsOpen(false)}
+>
+  <Image
+    src={item.icon || "/placeholder.svg?height=40&width=40&query=sidebar%20icon"}
+    alt={item.name}
+    width={40}
+    height={40}
+    className={`size-10 transition-all duration-200 
+      ${isActive ? "brightness-0 invert" : "opacity-80 hover:opacity-100"}`}
+  />
+</Link>
+
             )
           })}
         </div>

@@ -10,6 +10,7 @@ import { UnifiedBadge } from "@/components/ui/unified-badge"
 import { EditTopicModal } from "@/components/modals/edit-topic-modal"
 import { QuestionBankHeader } from "./question-bank-header"
 import { gradientButtonStyle } from "@/data/syllabus"
+import { Pagination } from "@/components/ui/pagination" // Import the pagination component
 
 interface QuestionBankState {
   expandedSections: Record<string, boolean>
@@ -24,10 +25,11 @@ interface QuestionBankState {
     name: string
     description?: string
   } | null
+  currentPage: number // Add current page to state
 }
 
 const TargetBadge = React.memo(({ text }: { text: string }) => (
-  <span className="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-gray-500 rounded-full">
+  <span className="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-green-500/20 rounded-full">
     {text}
   </span>
 ))
@@ -93,6 +95,7 @@ export default function QuestionBank() {
     selectedTopic: "",
     isEditTopicModalOpen: false,
     selectedTopicForEdit: null,
+    currentPage: 1, // Initialize current page
   })
 
   const designSubtopics = useMemo(
@@ -176,6 +179,11 @@ export default function QuestionBank() {
     }))
   }
 
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setState((prev) => ({ ...prev, currentPage: page }))
+  }
+
   if (state.showQuestionSection) {
     return <QuestionSection topicName={state.selectedTopic} onBack={handleBackFromQuestionSection} />
   }
@@ -186,9 +194,6 @@ export default function QuestionBank() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-foreground">Question Bank</h1>
           <div className="flex items-center gap-3">
-            <button className="flex items-center justify-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-md text-white font-medium text-sm transition-colors">
-              Back
-            </button>
             <button
               onClick={handleImportCSV}
               className={`flex items-center justify-center px-4 py-2 gap-2 ${gradientButtonStyle} rounded-md text-white font-semibold text-sm shadow-md transition-all duration-200`}
@@ -199,18 +204,62 @@ export default function QuestionBank() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search"
-              className="bg-gray-800 border border-gray-700 rounded-full px-4 py-2 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-blue-500 w-96 text-sm transition-colors"
-            />
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+          {/* Search Inputs */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
+            {/* Main Search */}
+            <div className="relative w-full sm:w-56">
+              <input
+                type="text"
+                placeholder="Search"
+                className="bg-gray-900 border border-gray-700 rounded-full pl-10 pr-4 py-2 
+                         text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
+                         focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
+              />
+              {/* Search Icon */}
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"
+                />
+              </svg>
+            </div>
+
+            {/* Search Topic */}
+            <div className="relative w-full sm:w-56">
+              <input
+                type="text"
+                placeholder="Search Topic"
+                className="bg-gray-900 border border-gray-700 rounded-full px-4 py-2 
+                         text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
+                         focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
+              />
+            </div>
+
+            {/* Search Target Audience */}
+            <div className="relative w-full sm:w-56">
+              <input
+                type="text"
+                placeholder="Search Target Audience"
+                className="bg-gray-900 border border-gray-700 rounded-full px-4 py-2 
+                         text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
+                         focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
+              />
+            </div>
           </div>
-          <div className="flex items-center space-x-2 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 cursor-pointer hover:bg-gray-700 transition-colors">
-            <Filter className="size-4 text-gray-400" />
-            <span className="text-gray-300 text-sm font-medium">Filter By</span>
-            <ChevronDown className="size-4 text-gray-400" />
+
+          {/* Stats Display */}
+          <div className="text-gray-300 text-sm font-medium whitespace-nowrap">
+            Total subjects: <span>12</span> | 
+            Total topics: <span>32</span> | 
+            Total questions: <span >128</span>
           </div>
         </div>
 
@@ -265,7 +314,9 @@ export default function QuestionBank() {
                   <UnifiedBadge value="18" variant="danger" />
                 </div>
                 <div className="col-span-3 flex justify-center">
-                  <button className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-1.5 rounded-lg text-sm transition-colors font-semibold">
+                  <button
+                    className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200"
+                  >
                     Add Question
                   </button>
                 </div>
@@ -285,6 +336,16 @@ export default function QuestionBank() {
               )}
             </div>
           ))}
+        </div>
+        
+        {/* Add Pagination at the bottom */}
+        <div className="mt-6">
+          <Pagination
+            currentPage={state.currentPage}
+            totalPages={2} // Replace with actual total pages from your data
+            onPageChange={handlePageChange}
+            maxVisiblePages={2}
+          />
         </div>
       </div>
 

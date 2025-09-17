@@ -81,12 +81,12 @@ export function SectionForm({ sections, onSectionsChange }: SectionFormProps) {
         {sections.map((section) => {
           const isOpen = openSectionId === section.id
           return (
-            <div key={section.id} className="space-y-2 border border-border rounded-lg">
+            <div key={section.id} className="space-y-2 rounded-lg">
               {/* Section Header */}
               <div className="flex items-center gap-2 px-2 py-3 cursor-pointer hover:bg-accent rounded-t-lg">
                 {/* Collapse toggle (chevron) */}
-                <button type="button" onClick={() => toggleSection(section.id)} className="text-muted-foreground">
-                  {isOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                <button type="button" onClick={() => toggleSection(section.id)} className="text-muted-foreground mb-12">
+                  {isOpen ? <ChevronDown size={28} /> : <ChevronRight size={28} />}
                 </button>
 
                 {/* Section input fills width */}

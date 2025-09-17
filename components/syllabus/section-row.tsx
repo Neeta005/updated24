@@ -20,7 +20,7 @@ export function SectionRow({ title, onTitleChange, onAddSection }: SectionRowPro
             placeholder="Type here..."
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
-            className="flex-1 bg-muted border border-border text-foreground placeholder:text-muted-foreground h-10 px-4"
+            className="flex-1 bg-muted border border-white text-foreground placeholder:text-muted-foreground h-10 px-4"
           />
           <IconButton onClick={onAddSection} size="md">
             <Plus className="size-4" />

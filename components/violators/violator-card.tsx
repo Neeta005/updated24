@@ -1,35 +1,44 @@
+"use client"
+
+import { BaseCard } from "@/components/ui/base-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CircularProgress } from "@/components/ui/circular-progress"
 import { Text } from "@/components/atoms/text"
 
+interface Violator {
+  rank: number
+  name: string
+  subject: string
+  rate: string
+  violations: string
+  avatar?: string
+}
+
 interface ViolatorCardProps {
-  violator: {
-    rank: number
-    name: string
-    subject: string
-    rate: string
-    violations: string
-  }
+  violator: Violator
 }
 
 export function ViolatorCard({ violator }: ViolatorCardProps) {
   return (
-    <div className="bg-card rounded-lg p-3 border border-gray-600 flex items-center justify-between">
+    <BaseCard className="p-3 md:p-4 flex items-center justify-between border border-gray-600 rounded-lg bg-card">
       {/* Rank + Avatar + Info */}
-      <div className="flex items-center space-x-4">
-        <Text variant="body" className="text-white text-xl font-bold w-7">
+      <div className="flex items-center gap-3 md:gap-4">
+        <Text variant="body" className="text-white text-xl font-bold w-7 text-center">
           {violator.rank}
         </Text>
-        <Avatar className="size-9">
-          <AvatarImage src="/images/avtar.jpg" />
-          <AvatarFallback className="bg-orange-500 text-white text-xs font-semibold">
-            {violator.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase()}
-          </AvatarFallback>
+        <Avatar className="w-9 h-9">
+          {violator.avatar ? (
+            <AvatarImage src={violator.avatar} />
+          ) : (
+            <AvatarFallback className="bg-orange-500 text-white text-xs font-semibold">
+              {violator.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
+            </AvatarFallback>
+          )}
         </Avatar>
         <div>
           <Text variant="body" className="text-white font-semibold text-base">
@@ -54,6 +63,6 @@ export function ViolatorCard({ violator }: ViolatorCardProps) {
           {violator.violations}
         </Text>
       </div>
-    </div>
+    </BaseCard>
   )
 }

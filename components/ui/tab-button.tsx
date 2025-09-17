@@ -18,18 +18,19 @@ export function TabButton({ active, onClick, children, position = "middle", clas
       case "right":
         return "rounded-r-md"
       default:
-        return ""
+        return "rounded-none"
     }
   }
 
   return (
     <button
       onClick={onClick}
-      className={`px-6 py-2 text-sm font-medium transition-colors ${getPositionClasses()} ${
-        active
-          ? "text-white bg-gradient-to-r from-orange-500 to-pink-600"
-          : "bg-muted text-muted-foreground hover:bg-accent"
-      } ${className}`}
+      className={`flex items-center justify-center min-w-[100px] h-[32px] px-[12px] gap-[10px] text-[12px] leading-[18px] font-poppins whitespace-nowrap transition-all duration-200
+        ${getPositionClasses()} 
+        ${active
+          ? "bg-gradient-to-b from-[rgba(240,89,33,0.2)] to-[rgba(240,89,33,0)] text-[#F05921] font-semibold"
+          : "bg-transparent text-slate-400 font-semibold hover:text-slate-300"} 
+        ${className}`}
     >
       {children}
     </button>

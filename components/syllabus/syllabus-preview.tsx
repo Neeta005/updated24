@@ -1,7 +1,194 @@
-import { FileText } from "lucide-react"
-import type { Section, UploadedFile } from "@/data/syllabus"
-import { EmptyState } from "@/components/ui/empty-state"
-import { FileItem } from "@/components/ui/file-item"
+// "use client"
+
+// import { useState } from "react"
+// import { ChevronDown, ChevronRight } from "lucide-react"
+// import type { Section, UploadedFile } from "@/types/syllabus"
+
+// interface SyllabusPreviewProps {
+//   subject: string
+//   targetAudience: string
+//   sections: Section[]
+//   uploadedFiles: UploadedFile[]
+//   activeTab: "manual" | "upload"
+// }
+
+// export function SyllabusPreview({ 
+//   subject, 
+//   targetAudience, 
+//   sections, 
+//   uploadedFiles, 
+//   activeTab 
+// }: SyllabusPreviewProps) {
+//   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
+
+//   const toggleSection = (sectionId: string) => {
+//     setExpandedSections(prev => {
+//       const newSet = new Set(prev)
+//       if (newSet.has(sectionId)) {
+//         newSet.delete(sectionId)
+//       } else {
+//         newSet.add(sectionId)
+//       }
+//       return newSet
+//     })
+//   }
+
+//   const hasContent = activeTab === "manual" 
+//     ? sections.some(section => section.title.trim() || section.lessons.some(lesson => lesson.value.trim()))
+//     : uploadedFiles.length > 0
+
+//   if (!hasContent) {
+//     return (
+//       <div className="text-center py-12 space-y-4">
+//         <div className="w-16 h-16 mx-auto bg-muted/50 rounded-lg flex items-center justify-center">
+//           <svg
+//             className="w-8 h-8 text-muted-foreground"
+//             fill="none"
+//             stroke="currentColor"
+//             viewBox="0 0 24 24"
+//           >
+//             <path
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               strokeWidth={1.5}
+//               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+//             />
+//           </svg>
+//         </div>
+//         <div>
+//           <h3 className="text-foreground font-medium mb-2">No Course Content!</h3>
+//           <p className="text-muted-foreground text-sm">
+//             Enter Course Content to see the preview
+//           </p>
+//         </div>
+//       </div>
+//     )
+//   }
+
+//   return (
+//     <div className="space-y-4">
+//       {/* Subject and Audience Info */}
+//       {(subject || targetAudience) && (
+//         <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+//           {subject && (
+//             <div className="mb-2">
+//               <span className="text-sm font-medium text-muted-foreground">Subject:</span>
+//               <span className="ml-2 text-foreground">{subject}</span>
+//             </div>
+//           )}
+//           {targetAudience && (
+//             <div>
+//               <span className="text-sm font-medium text-muted-foreground">Target Audience:</span>
+//               <span className="ml-2 text-foreground">{targetAudience}</span>
+//             </div>
+//           )}
+//         </div>
+//       )}
+
+//       {/* Sections Preview */}
+//       {activeTab === "manual" && sections.length > 0 && (
+//         <div className="space-y-3">
+//           {sections.map((section) => {
+//             const isExpanded = expandedSections.has(section.id)
+//             const hasLessonsWithContent = section.lessons.some(lesson => lesson.value.trim())
+            
+//             // Only show sections that have a title or lessons with content
+//             if (!section.title.trim() && !hasLessonsWithContent) {
+//               return null
+//             }
+
+//             return (
+//               <div
+//                 key={section.id}
+//                 className="border border-border rounded-lg overflow-hidden"
+//               >
+//                 {/* Section Header - Lighter blue background */}
+//                 <button
+//                   onClick={() => toggleSection(section.id)}
+//                   className="w-full flex items-center gap-3 px-4 py-3 bg-slate-700/50 hover:bg-slate-700/70 transition-colors text-left"
+//                 >
+//                   {hasLessonsWithContent ? (
+//                     isExpanded ? (
+//                       <ChevronDown className="size-6 text-muted-foreground flex-shrink-0" />
+//                     ) : (
+//                       <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
+//                     )
+//                   ) : (
+//                     <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
+//                   )}
+//                   <span className="font-medium text-foreground">
+//                     {section.title || `Section ${sections.indexOf(section) + 1}`}
+//                   </span>
+//                 </button>
+
+//                 {/* Section Content - Darker blue background */}
+//                 {isExpanded && hasLessonsWithContent && (
+//                   <div className="bg-slate-800/60 px-4 pb-3">
+//                     <div className="pl-7 space-y-2 pt-3">
+//                       {section.lessons
+//                         .filter(lesson => lesson.value.trim())
+//                         .map((lesson) => (
+//                           <div
+//                             key={lesson.id}
+//                             className="text-slate-300 text-sm py-1"
+//                           >
+//                             {lesson.value}
+//                           </div>
+//                         ))}
+//                     </div>
+//                   </div>
+//                 )}
+//               </div>
+//             )
+//           })}
+//         </div>
+//       )}
+
+//       {/* File Upload Preview */}
+//       {activeTab === "upload" && uploadedFiles.length > 0 && (
+//         <div className="space-y-3">
+//           {uploadedFiles.map((file) => (
+//             <div
+//               key={file.id}
+//               className="bg-card border border-border rounded-lg p-4"
+//             >
+//               <div className="flex items-center gap-3">
+//                 <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+//                   <svg
+//                     className="w-4 h-4 text-primary"
+//                     fill="none"
+//                     stroke="currentColor"
+//                     viewBox="0 0 24 24"
+//                   >
+//                     <path
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       strokeWidth={2}
+//                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+//                     />
+//                   </svg>
+//                 </div>
+//                 <div className="flex-1">
+//                   <div className="font-medium text-foreground">{file.name}</div>
+//                   <div className="text-sm text-muted-foreground">
+//                     {file.size ? `${(file.size / 1024).toFixed(1)} KB` : 'File'}
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   )
+// }
+
+
+"use client"
+
+import { useState } from "react"
+import { ChevronDown, ChevronRight } from "lucide-react"
+import type { Section, UploadedFile } from "@/types/syllabus"
 
 interface SyllabusPreviewProps {
   subject: string
@@ -11,82 +198,182 @@ interface SyllabusPreviewProps {
   activeTab: "manual" | "upload"
 }
 
-export function SyllabusPreview({ subject, targetAudience, sections, uploadedFiles, activeTab }: SyllabusPreviewProps) {
-  const hasManualContent =
-    subject ||
-    targetAudience ||
-    sections.some((section) => section.title || section.lessons.some((lesson) => lesson.value))
-  const hasUploadedFiles = uploadedFiles.length > 0
+export function SyllabusPreview({ 
+  subject, 
+  targetAudience, 
+  sections, 
+  uploadedFiles, 
+  activeTab 
+}: SyllabusPreviewProps) {
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
 
-  if (activeTab === "manual" && !hasManualContent) {
-    return (
-      <EmptyState
-        icon={<FileText className="w-16 h-16 text-muted-foreground mx-auto" />}
-        title="No Course Content!"
-        description="Enter Course Content to see the preview"
-      />
-    )
+  const toggleSection = (sectionId: string) => {
+    setExpandedSections(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(sectionId)) {
+        newSet.delete(sectionId)
+      } else {
+        newSet.add(sectionId)
+      }
+      return newSet
+    })
   }
 
-  if (activeTab === "upload" && !hasUploadedFiles) {
+  const hasContent = activeTab === "manual" 
+    ? sections.some(section => section.title.trim() || section.lessons.some(lesson => lesson.value.trim()))
+    : uploadedFiles.length > 0
+
+  if (!hasContent) {
     return (
-      <EmptyState
-        icon={<FileText className="w-16 h-16 text-muted-foreground mx-auto" />}
-        title="No files Uploaded!"
-        description="Upload files to see the preview"
-      />
+      <div className="text-center py-12 space-y-4">
+        <div className="w-16 h-16 mx-auto bg-muted/50 rounded-lg flex items-center justify-center">
+          <svg
+            className="w-8 h-8 text-muted-foreground"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-foreground font-medium mb-2">No Course Content!</h3>
+          <p className="text-muted-foreground text-sm">
+            Enter Course Content to see the preview
+          </p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="w-full">
-      {activeTab === "manual" ? (
-        <>
+    <div className="space-y-4">
+      {/* Subject and Audience Info */}
+      {(subject || targetAudience) && (
+        <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
           {subject && (
-            <div className="mb-4">
-              <h4 className="text-foreground font-semibold">Subject:</h4>
-              <p className="text-muted-foreground">{subject}</p>
+            <div className="mb-2">
+              <span className="text-sm font-medium text-muted-foreground">Subject:</span>
+              <span className="ml-2 text-foreground">{subject}</span>
             </div>
           )}
           {targetAudience && (
-            <div className="mb-4">
-              <h4 className="text-foreground font-semibold">Target Audience:</h4>
-              <p className="text-muted-foreground">{targetAudience}</p>
+            <div>
+              <span className="text-sm font-medium text-muted-foreground">Target Audience:</span>
+              <span className="ml-2 text-foreground">{targetAudience}</span>
             </div>
           )}
-          <div className="space-y-3">
-            {sections.map((section) => (
-              <div key={section.id}>
-                {section.title && (
-                  <div className="mb-2">
-                    <h5 className="text-foreground font-medium">{section.title}</h5>
-                    <ul className="ml-4 space-y-1">
-                      {section.lessons.map(
-                        (lesson) =>
-                          lesson.value && (
-                            <li key={lesson.id} className="text-muted-foreground text-sm">
-                              • {lesson.value}
-                            </li>
-                          ),
-                      )}
-                    </ul>
+        </div>
+      )}
+
+      {/* Sections Preview (Manual Mode) */}
+      {activeTab === "manual" && sections.length > 0 && (
+        <div className="space-y-3">
+          {sections.map((section) => {
+            const isExpanded = expandedSections.has(section.id)
+            const hasLessonsWithContent = section.lessons.some(lesson => lesson.value.trim())
+            
+            if (!section.title.trim() && !hasLessonsWithContent) {
+              return null
+            }
+
+            return (
+              <div
+                key={section.id}
+                className="border border-border rounded-lg overflow-hidden"
+              >
+                {/* Section Header */}
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-slate-700/50 hover:bg-slate-700/70 transition-colors text-left"
+                >
+                  {hasLessonsWithContent ? (
+                    isExpanded ? (
+                      <ChevronDown className="size-6 text-muted-foreground flex-shrink-0" />
+                    ) : (
+                      <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
+                    )
+                  ) : (
+                    <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
+                  )}
+                  <span className="font-medium text-foreground">
+                    {section.title || `Section ${sections.indexOf(section) + 1}`}
+                  </span>
+                </button>
+
+                {/* Lessons */}
+                {isExpanded && hasLessonsWithContent && (
+                  <div className="bg-slate-800/60 px-4 pb-3">
+                    <div className="pl-7 space-y-2 pt-3">
+                      {section.lessons
+                        .filter(lesson => lesson.value.trim())
+                        .map((lesson) => (
+                          <div
+                            key={lesson.id}
+                            className="text-slate-300 text-sm py-1"
+                          >
+                            {lesson.value}
+                          </div>
+                        ))}
+                    </div>
                   </div>
                 )}
               </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <>
-          <h4 className="text-foreground font-semibold mb-3">Uploaded Files:</h4>
-          <ul className="space-y-2">
-            {uploadedFiles.map((file) => (
-              <li key={file.id}>
-                <FileItem name={file.name} size={file.size} />
-              </li>
-            ))}
-          </ul>
-        </>
+            )
+          })}
+        </div>
+      )}
+
+      {/* File Upload Preview */}
+      {activeTab === "upload" && uploadedFiles.length > 0 && (
+        <div className="space-y-3">
+          {uploadedFiles.map((file) => (
+            <div
+              key={file.id}
+              className="bg-card border border-border rounded-lg p-4"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary/10 rounded flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-foreground">{file.name}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {file.size || "Unknown size"}
+                  </div>
+                  {file.status && (
+                    <div
+                      className={`mt-1 text-xs px-2 py-0.5 rounded inline-block ${
+                        file.status === "error"
+                          ? "bg-red-500/20 text-red-600"
+                          : "bg-green-500/20 text-green-600"
+                      }`}
+                    >
+                      {file.status}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   )

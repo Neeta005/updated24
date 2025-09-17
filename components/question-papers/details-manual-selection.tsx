@@ -2,19 +2,11 @@
 
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Eye, Filter } from "lucide-react"
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Eye } from "lucide-react"
 import { QUESTION_PAPER_ROUTES } from "@/data/question-papers-pages"
 import type { SubjectSection, QuestionItem } from "@/data/question-paper-details"
 import { questionPaperDetails } from "@/data/question-paper-details"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "@/components/ui/pagination"
+import { Pagination } from "@/components/ui/pagination"
 
 function LevelBadge({ level }: { level: SubjectSection["level"] }) {
   const styles =
@@ -49,23 +41,23 @@ function TableHeader() {
   )
 }
 
-function SectionRow({ 
-  section, 
-  isExpanded, 
-  onToggle 
-}: { 
+function SectionRow({
+  section,
+  isExpanded,
+  onToggle,
+}: {
   section: SubjectSection
   isExpanded: boolean
   onToggle: () => void
 }) {
   return (
-    <div 
+    <div
       className="px-4 py-4 bg-slate-800/60 grid grid-cols-12 gap-2 items-center border-t border-slate-700 cursor-pointer hover:bg-slate-800/80"
       onClick={onToggle}
     >
       <div className="col-span-4 flex items-center gap-2">
         <button className="text-slate-400 hover:text-white">
-          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
         </button>
         <div>
           <div className="text-white font-medium">{section.name}</div>
@@ -81,14 +73,14 @@ function SectionRow({
         <MethodPill method={section.selection} />
       </div>
       <div className="col-span-2 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-       <button
-  type="button"
-  className="inline-flex items-center justify-center size-8 rounded-md border border-red-400 hover:bg-slate-700/50"
-  aria-label="Delete"
-  title="Delete"
->
-  <span className="size-5 text-red-400">🗑</span>
-</button>
+        <button
+          type="button"
+          className="inline-flex items-center justify-center size-8 rounded-md border border-red-400 hover:bg-slate-700/50"
+          aria-label="Delete"
+          title="Delete"
+        >
+          <span className="size-5 text-red-400">🗑</span>
+        </button>
 
         <button
           type="button"
@@ -113,13 +105,13 @@ function QuestionsHeader() {
     <div className="px-4 py-3 bg-slate-800/20 grid grid-cols-10 gap-4 items-center border-t border-slate-700">
       <div className="col-span-6 flex items-center gap-4">
         <div className="text-white text-sm font-medium">Questions</div>
-        
+
         {/* Wrapper to push both elements further from left */}
         <div className="flex items-center gap-4 ml-42">
           <select className="bg-slate-700 border border-slate-600 rounded px-3 py-1.5 text-slate-200 text-sm min-w-[100px]">
             <option>Topic</option>
           </select>
-          <button 
+          <button
             type="button"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-gradient-to-r from-orange-primary to-red-primary text-white text-sm font-medium"
           >
@@ -127,7 +119,7 @@ function QuestionsHeader() {
           </button>
         </div>
       </div>
-      
+
       <div className="col-span-2 text-white text-sm font-medium">Type</div>
       <div className="col-span-2 text-white text-sm font-medium text-center">Marks</div>
     </div>
@@ -159,100 +151,14 @@ function QuestionRow({
   )
 }
 
-function SectionPagination({ 
-  currentPage, 
-  totalPages, 
-  onPageChange 
-}: {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-}) {
-  const showEllipsis = totalPages > 5
-  const startPage = Math.max(1, currentPage - 2)
-  const endPage = Math.min(totalPages, currentPage + 2)
-
-  return (
-    <div className="px-4 py-3 bg-slate-800/60 border-t border-slate-700">
-      <Pagination className="text-slate-300">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious 
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              className={`${currentPage === 1 ? 'pointer-events-none opacity-50' : 'hover:bg-slate-700/50'} text-slate-300 border-slate-600`}
-            />
-          </PaginationItem>
-          
-          {showEllipsis && currentPage > 3 && (
-            <>
-              <PaginationItem>
-                <PaginationLink 
-                  onClick={() => onPageChange(1)}
-                  isActive={currentPage === 1}
-                  className="text-slate-300 hover:bg-slate-700/50 border-slate-600 data-[active=true]:bg-gradient-to-r data-[active=true]:from-orange-500 data-[active=true]:to-red-500 data-[active=true]:text-white"
-                >
-                  1
-                </PaginationLink>
-              </PaginationItem>
-              {currentPage > 4 && (
-                <PaginationItem>
-                  <PaginationEllipsis className="text-slate-400" />
-                </PaginationItem>
-              )}
-            </>
-          )}
-          
-          {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink 
-                onClick={() => onPageChange(page)}
-                isActive={currentPage === page}
-                className="text-slate-300 hover:bg-slate-700/50 border-slate-600 data-[active=true]:bg-gradient-to-r data-[active=true]:from-orange-500 data-[active=true]:to-red-500 data-[active=true]:text-white"
-              >
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          
-          {showEllipsis && currentPage < totalPages - 2 && (
-            <>
-              {currentPage < totalPages - 3 && (
-                <PaginationItem>
-                  <PaginationEllipsis className="text-slate-400" />
-                </PaginationItem>
-              )}
-              <PaginationItem>
-                <PaginationLink 
-                  onClick={() => onPageChange(totalPages)}
-                  isActive={currentPage === totalPages}
-                  className="text-slate-300 hover:bg-slate-700/50 border-slate-600 data-[active=true]:bg-gradient-to-r data-[active=true]:from-orange-500 data-[active=true]:to-red-500 data-[active=true]:text-white"
-                >
-                  {totalPages}
-                </PaginationLink>
-              </PaginationItem>
-            </>
-          )}
-          
-          <PaginationItem>
-            <PaginationNext 
-              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-              className={`${currentPage === totalPages ? 'pointer-events-none opacity-50' : 'hover:bg-slate-700/50'} text-slate-300 border-slate-600`}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </div>
-  )
-}
-
 export default function DetailsManualSelection() {
   const router = useRouter()
   const [sections, setSections] = useState<SubjectSection[]>(questionPaperDetails)
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set([sections[0]?.id]))
   const [sectionPages, setSectionPages] = useState<Record<string, number>>({})
-  
+
   const questionsPerPage = 5 // Reduced to 5 to make pagination more visible
-  
+
   const totalQuestions = useMemo(
     () => sections.reduce((acc, s) => acc + s.questions.filter((q) => q.checked).length, 0),
     [sections],
@@ -271,7 +177,7 @@ export default function DetailsManualSelection() {
   }
 
   const toggleSection = (sectionId: string) => {
-    setExpandedSections(prev => {
+    setExpandedSections((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(sectionId)) {
         newSet.delete(sectionId)
@@ -279,7 +185,7 @@ export default function DetailsManualSelection() {
         newSet.add(sectionId)
         // Initialize page to 1 if not already set
         if (!sectionPages[sectionId]) {
-          setSectionPages(prevPages => ({ ...prevPages, [sectionId]: 1 }))
+          setSectionPages((prevPages) => ({ ...prevPages, [sectionId]: 1 }))
         }
       }
       return newSet
@@ -287,7 +193,7 @@ export default function DetailsManualSelection() {
   }
 
   const handlePageChange = (sectionId: string, page: number) => {
-    setSectionPages(prev => ({ ...prev, [sectionId]: page }))
+    setSectionPages((prev) => ({ ...prev, [sectionId]: page }))
   }
 
   const getPaginatedQuestions = (section: SubjectSection) => {
@@ -297,7 +203,7 @@ export default function DetailsManualSelection() {
     return {
       questions: section.questions.slice(startIndex, endIndex),
       totalPages: Math.ceil(section.questions.length / questionsPerPage),
-      currentPage
+      currentPage,
     }
   }
 
@@ -308,9 +214,18 @@ export default function DetailsManualSelection() {
         <div className="flex items-center justify-between">
           <h1 className="text-white text-2xl font-semibold">Manual Question Selection</h1>
           <div className="flex items-center gap-2">
+            {/* Add Question button */}
             <button
               type="button"
-              // onClick={() => router.push(QUESTION_PAPER_ROUTES.preview)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 transition-colors"
+            >
+              <span>Add Question</span>
+            </button>
+
+            {/* Preview button */}
+            <button
+              type="button"
+              onClick={() => router.push(QUESTION_PAPER_ROUTES.preview)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-orange-primary to-red-primary text-white"
             >
               <Eye className="size-4" />
@@ -323,42 +238,44 @@ export default function DetailsManualSelection() {
         <div className="rounded-xl border border-slate-700 overflow-hidden">
           {/* Table Header */}
           <TableHeader />
-          
+
           {/* Sections with Expandable Questions */}
           {sections.map((section) => {
             const { questions: paginatedQuestions, totalPages, currentPage } = getPaginatedQuestions(section)
-            
+
             return (
               <div key={section.id}>
                 {/* Section Row */}
-                <SectionRow 
-                  section={section} 
+                <SectionRow
+                  section={section}
                   isExpanded={expandedSections.has(section.id)}
                   onToggle={() => toggleSection(section.id)}
                 />
-                
+
                 {/* Expanded Questions Section */}
                 {expandedSections.has(section.id) && (
                   <>
                     <QuestionsHeader />
-                    
+
                     {/* Questions for this section (paginated) */}
                     {paginatedQuestions.map((q) => (
-                      <QuestionRow 
-                        key={q.id} 
-                        q={q} 
-                        onToggle={(id, checked) => toggleQuestion(section.id, id, checked)} 
+                      <QuestionRow
+                        key={q.id}
+                        q={q}
+                        onToggle={(id, checked) => toggleQuestion(section.id, id, checked)}
                       />
                     ))}
-                    
-                    {/* Pagination for this section - Debug info */}
-                   
-                    
-                    {/* Always show pagination for testing, remove totalPages > 1 condition */}
-                    <SectionPagination
+
+                    {/* Custom Pagination Component */}
+                    {/* Debug: Always show pagination for testing - remove in production */}
+                    <div className="p-2 bg-slate-700/30 text-xs text-slate-400">
+                      Debug: Section {section.id} - Current Page: {currentPage}, Total Pages: {totalPages}, Questions: {section.questions.length}
+                    </div>
+                    <Pagination
                       currentPage={currentPage}
-                      totalPages={Math.max(totalPages, 3)} // Force at least 3 pages for testing
+                      totalPages={Math.max(totalPages, 2)} // Force at least 2 pages for testing
                       onPageChange={(page) => handlePageChange(section.id, page)}
+                      maxVisiblePages={5}
                     />
                   </>
                 )}
@@ -368,24 +285,25 @@ export default function DetailsManualSelection() {
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => router.push(QUESTION_PAPER_ROUTES.create)}
-            className="px-4 py-2 rounded-lg bg-transparent border border-slate-600 text-slate-200 hover:bg-slate-800 inline-flex items-center gap-2"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back
-          </button>
-          <button
-            type="button"
-            // onClick={() => router.push(QUESTION_PAPER_ROUTES.preview)}
-            className="px-5 py-2 rounded-lg bg-gradient-to-r from-orange-primary to-red-primary text-white inline-flex items-center gap-2"
-          >
-            Next
-            <ChevronRight className="size-4" />
-          </button>
-        </div>
+       <div className="flex items-center justify-end gap-3">
+  <button
+    type="button"
+    onClick={() => router.push(QUESTION_PAPER_ROUTES.create)}
+    className="px-4 py-2 rounded-lg bg-transparent border border-slate-600 text-slate-200 hover:bg-slate-800 inline-flex items-center gap-2"
+  >
+   
+    Back
+  </button>
+  <button
+    type="button"
+    onClick={() => router.push(QUESTION_PAPER_ROUTES.preview)}
+    className="px-5 py-2 rounded-lg bg-gradient-to-r from-orange-primary to-red-primary text-white inline-flex items-center gap-2"
+  >
+    Next
+    <ChevronRight className="size-4" />
+  </button>
+</div>
+
       </div>
     </main>
   )

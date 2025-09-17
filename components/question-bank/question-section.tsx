@@ -41,20 +41,21 @@ export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
     router.push(`/edit-question/${id}?topic=${encodeURIComponent(topicName)}`)
   }
 
-  const handleDelete = (id: string) => {
-  }
+  const handleDelete = (id: string) => {}
 
   const handlePreview = () => {
     try {
-      router.push("/question-bank/preview")
+      router.push("/question-papers/preview")
     } catch (error) {
+      // no-op
     }
   }
 
   const handleAddQuestion = () => {
     try {
-      router.push("/question-bank/add-question")
+      router.push("/question-papers/add")
     } catch (error) {
+      // no-op
     }
   }
 

@@ -51,21 +51,24 @@ export function ActiveExamsPage() {
           </Link>
         </div>
 
-        <div className="flex space-x-0 mb-6 sm:mb-8">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 font-medium transition-colors border-b-2 ${
-                activeTab === tab
-                  ? "text-orange-500 border-orange-500"
-                  : "text-gray-400 hover:text-white border-transparent"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
+   <div className="mb-6 sm:mb-8 w-full bg-slate-800 rounded-lg px-4 py-1">
+  <div className="flex space-x-0 justify-start">
+    {tabs.map((tab) => (
+      <button
+        key={tab}
+        onClick={() => setActiveTab(tab)}
+        className={`font-medium transition-colors rounded-md ${
+          activeTab === tab
+            ? "bg-gray-700 text-orange-500 px-5 py-2" // slightly smaller box
+            : "text-gray-400 hover:text-white px-6 py-3"
+        }`}
+      >
+        {tab}
+      </button>
+    ))}
+  </div>
+</div>
+
 
         <div className="space-y-4">
           {getCurrentExams().map((exam) => (

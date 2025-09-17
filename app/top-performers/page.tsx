@@ -1,9 +1,10 @@
-import { TopPerformersPage } from "@/components/pages/top-performers-page"
+// app/top-performers/page.tsx
+import { PerformanceTabsPage } from "@/components/pages/performance-tabs-page"
 
 export default function TopPerformers() {
   return (
     <div className="p-4">
-      <TopPerformersPage />
+      <PerformanceTabsPage initialTab="Performers" />
     </div>
   )
 }

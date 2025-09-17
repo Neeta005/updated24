@@ -72,7 +72,7 @@ export const syllabusData: SyllabusItem[] = [
 export const syllabusDetailData: Record<string, SyllabusDetailItem> = {
   "1": {
     id: "1",
-    subject: "Design",
+    subject: "Syllabus for Design",
     targetAudience: "Graphic Designers",
     totalTopics: 43,
     totalLessons: 57,

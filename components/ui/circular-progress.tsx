@@ -4,6 +4,7 @@ interface CircularProgressProps {
   strokeWidth?: number
   color?: string
   className?: string
+  showPercentage?: boolean // new prop
 }
 
 export function CircularProgress({
@@ -12,6 +13,7 @@ export function CircularProgress({
   strokeWidth = 3,
   color = "hsl(var(--blue-primary))",
   className = "",
+  showPercentage = true, // default true
 }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
@@ -42,7 +44,11 @@ export function CircularProgress({
           className="transition-all duration-300 ease-in-out"
         />
       </svg>
-      <span className="absolute text-xs font-medium text-white">{percentage}%</span>
+
+      {/* Only show percentage if showPercentage is true */}
+      {showPercentage && (
+        <span className="absolute text-xs font-medium text-white">{percentage}%</span>
+      )}
     </div>
   )
 }

@@ -13,25 +13,44 @@ interface LessonRowProps {
   canRemove?: boolean
 }
 
-export function LessonRow({ value, onValueChange, onAddLesson, onRemoveLesson, canRemove = true }: LessonRowProps) {
+export function LessonRow({
+  value,
+  onValueChange,
+  onAddLesson,
+  onRemoveLesson,
+  canRemove = true,
+}: LessonRowProps) {
   return (
     <div className="flex items-center gap-3">
+      {/* Input field */}
       <div className="flex-1">
-        <FormField label="Lesson / Unit">
+        <FormField label="Lesson / Unit" className="flex-1">
           <Input
             placeholder="Type here..."
             value={value}
             onChange={(e) => onValueChange(e.target.value)}
-            className="flex-1 bg-muted border border-border text-foreground placeholder:text-muted-foreground rounded-full h-10 px-4"
+            className="h-10  rounded-full bg-muted border border-white text-foreground placeholder:text-muted-foreground"
           />
         </FormField>
       </div>
-      <div className="flex gap-2">
-        <IconButton onClick={onAddLesson} size="md">
+
+      {/* Action buttons */}
+      <div className="flex items-center gap-2 mt-6 h-10">
+        <IconButton
+          onClick={onAddLesson}
+          size="icon"
+          className="h-10 w-10 flex items-center justify-center"
+        >
           <Plus className="size-4" />
         </IconButton>
+
         {canRemove && (
-          <IconButton onClick={onRemoveLesson} variant="secondary" size="md">
+          <IconButton
+            onClick={onRemoveLesson}
+            variant="secondary"
+            size="icon"
+            className="h-10 w-10 flex items-center justify-center"
+          >
             <Minus className="size-4" />
           </IconButton>
         )}
