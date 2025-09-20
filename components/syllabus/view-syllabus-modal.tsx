@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronRight, X } from "lucide-react"
+import { ChevronDown, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { syllabusDetailData } from "@/data/syllabus"
 
@@ -20,19 +20,28 @@ export function ViewSyllabusModal({ isOpen, onClose, syllabusId }: ViewSyllabusM
   const syllabusDetail = syllabusDetailData[syllabusId]
   if (!syllabusDetail) return null
 
+  // Toggle individual section
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
-      prev.includes(sectionId) ? prev.filter((id) => id !== sectionId) : [...prev, sectionId],
+      prev.includes(sectionId) ? prev.filter((id) => id !== sectionId) : [...prev, sectionId]
     )
   }
 
-  const collapseAll = () => {
-    setExpandedSections([])
+  // Check if all sections are expanded
+  const allExpanded = expandedSections.length === syllabusDetail.sections.length
+
+  // Toggle all sections
+  const toggleAllSections = () => {
+    if (allExpanded) {
+      setExpandedSections([]) // Collapse all
+    } else {
+      setExpandedSections(syllabusDetail.sections.map((section) => section.id)) // Expand all
+    }
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-<DialogContent className="bg-card border border-gray-600 text-white  overflow-hidden">
+      <DialogContent className="bg-card border border-gray-600 text-white overflow-hidden">
         {/* Header */}
         <DialogHeader className="flex flex-row items-center justify-between p-6 border-b border-gray-600">
           <div>
@@ -45,18 +54,17 @@ export function ViewSyllabusModal({ isOpen, onClose, syllabusId }: ViewSyllabusM
           </div>
 
           <div className="flex items-center gap-4">
-           <Button
-  onClick={collapseAll}
-  className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
->
-  <img
-    src="\icons\viewsyllabus.png"
-    alt="Collapse Icon"
-    className="size-4"
-  />
-  Collapse All
-</Button>
-
+            <Button
+              onClick={toggleAllSections}
+              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md flex items-center gap-2"
+            >
+              <img
+                src="\icons\viewsyllabus.png"
+                alt="Toggle Icon"
+                className="size-4"
+              />
+              {allExpanded ? "Collapse All" : "Expand All"}
+            </Button>
           </div>
         </DialogHeader>
 
@@ -103,7 +111,10 @@ export function ViewSyllabusModal({ isOpen, onClose, syllabusId }: ViewSyllabusM
 
         {/* Footer */}
         <div className="flex justify-end p-6 border-t border-gray-600">
-          <Button onClick={onClose} className="bg-gradient-to-r from-orange-600 to-rose-600 hover:bg-orange-600 text-white px-8 py-2 rounded-md">
+          <Button
+            onClick={onClose}
+            className="bg-gradient-to-r from-orange-600 to-rose-600 hover:bg-orange-600 text-white px-8 py-2 rounded-md"
+          >
             OK
           </Button>
         </div>

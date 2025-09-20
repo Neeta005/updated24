@@ -123,7 +123,7 @@ export function EditSyllabus({ syllabusId = "1" }: EditSyllabusProps) {
                 className="bg-slate-700 border-slate-600 text-white rounded-full pl-4 pr-10 h-12"
                 placeholder="Design"
               />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 size-5 text-gray-400" />
             </div>
           </div>
 
@@ -155,64 +155,68 @@ export function EditSyllabus({ syllabusId = "1" }: EditSyllabusProps) {
           <div className="flex-1 pr-8">
             <h3 className="text-lg font-semibold mb-6">Course content</h3>
 
-            <div className="space-y-1">
-              {sections.map((section) => (
-                <div key={section.id} className="space-y-1">
-                  <div className="text-sm text-gray-400 mb-1">Section/Module</div>
-                  <div className="flex items-center gap-3 mb-3">
-                    <button onClick={() => toggleSection(section.id)} className="text-gray-400 hover:text-white">
-                      {section.isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                    </button>
-                    <Input
-                      value={section.title}
-                      onChange={(e) => updateSectionTitle(section.id, e.target.value)}
-                      className="flex-1 bg-slate-700 border-slate-600 text-white rounded-full h-11"
-                      placeholder="Section Title"
-                    />
-                    <Button
-                      onClick={addSection}
-                      className={`${gradientButtonStyle} text-white rounded-full size-10 p-0 flex items-center justify-center shadow-md`}
-                    >
-                      <Plus className="size-4 text-white" />
-                    </Button>
+       {/* Scrollable container */}
+<div className="max-h-[500px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-800 hover:scrollbar-thumb-pink-500">
+  {sections.map((section) => (
+    <div key={section.id} className="space-y-2">
+      {/* Section */}
+      <div className="text-sm text-gray-400 mb-1">Section/Module</div>
+      <div className="flex items-center gap-3 mb-3">
+        <button onClick={() => toggleSection(section.id)} className="text-gray-400 hover:text-white">
+          {section.isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+        </button>
+        <Input
+          value={section.title}
+          onChange={(e) => updateSectionTitle(section.id, e.target.value)}
+          className="flex-1 bg-slate-700 border-slate-600 text-white rounded-full h-11"
+          placeholder="Section Title"
+        />
+        <Button
+          onClick={addSection}
+          className={`${gradientButtonStyle} text-white rounded-full p-0 flex items-center justify-center w-10 h-10`}
+        >
+          <Plus className="size-4 text-white" />
+        </Button>
+        <Button className="bg-white hover:bg-gray-500 text-black rounded-full w-10 h-10 p-0 flex items-center justify-center">
+          <Minus className="size-4" />
+        </Button>
+      </div>
 
-                    <Button className="bg-white hover:bg-gray-500 text-white rounded-full w-10 h-10 p-0 flex items-center justify-center">
-                      <Minus className="size-4 text-black" />
-                    </Button>
-                  </div>
-
-                  {section.isExpanded &&
-                    section.lessons.map((lesson) => (
-                      <div key={lesson.id} className="ml-7 space-y-1">
-                        <div className="text-sm text-gray-400">Lesson/Unit</div>
-                        <div className="flex items-center gap-3 mb-3">
-                          <Input
-                            value={lesson.title}
-                            onChange={(e) => updateLessonTitle(section.id, lesson.id, e.target.value)}
-                            className="flex-1 bg-slate-700 border-slate-600 text-white rounded-full h-11"
-                            placeholder="Lesson Title"
-                          />
-                          <Button
-                            onClick={() => addLesson(section.id)}
-                            className={`${gradientButtonStyle} text-white rounded-full size-10 p-0 flex items-center justify-center shadow-md`}
-                          >
-                            <Plus className="size-4 text-white" />
-                          </Button>
-
-                          {section.lessons.length > 1 && (
-                            <Button
-                              onClick={() => removeLesson(section.id, lesson.id)}
-                              className="bg-white hover:bg-gray-500 text-white rounded-full w-10 h-10 p-0 flex items-center justify-center"
-                            >
-                              <Minus className="size-4 text-black" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              ))}
+      {/* Lessons */}
+      {section.isExpanded &&
+        section.lessons.map((lesson) => (
+          <div key={lesson.id} className="pl-8">
+            <div className="text-sm text-gray-400">Lesson/Unit</div>
+            <div className="flex items-center gap-3 mb-3">
+              <Input
+                value={lesson.title}
+                onChange={(e) => updateLessonTitle(section.id, lesson.id, e.target.value)}
+                className="flex-[0.85] bg-slate-700 border-slate-600 text-white rounded-full h-11"
+                placeholder="Lesson Title"
+              />
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => addLesson(section.id)}
+                  className={`${gradientButtonStyle} text-white rounded-full p-0 flex items-center justify-center w-10 h-10`}
+                >
+                  <Plus className="size-4 text-white" />
+                </Button>
+                {section.lessons.length > 1 && (
+                  <Button
+                    onClick={() => removeLesson(section.id, lesson.id)}
+                    className="bg-white hover:bg-gray-500 text-black rounded-full w-10 h-10 p-0 flex items-center justify-center"
+                  >
+                    <Minus className="size-4" />
+                  </Button>
+                )}
+              </div>
             </div>
+          </div>
+        ))}
+    </div>
+  ))}
+</div>
+
           </div>
 
           {/* Preview */}

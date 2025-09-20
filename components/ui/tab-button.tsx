@@ -10,7 +10,13 @@ interface TabButtonProps {
   className?: string
 }
 
-export function TabButton({ active, onClick, children, position = "middle", className = "" }: TabButtonProps) {
+export function TabButton({
+  active,
+  onClick,
+  children,
+  position = "middle",
+  className = "",
+}: TabButtonProps) {
   const getPositionClasses = () => {
     switch (position) {
       case "left":
@@ -25,11 +31,16 @@ export function TabButton({ active, onClick, children, position = "middle", clas
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-center min-w-[100px] h-[32px] px-[12px] gap-[10px] text-[12px] leading-[18px] font-poppins whitespace-nowrap transition-all duration-200
+      className={`flex items-center justify-center 
+        h-9 min-w-[77px] px-4 gap-2
+        text-xs leading-[18px] font-poppins font-semibold 
+        transition-all duration-200
         ${getPositionClasses()} 
-        ${active
-          ? "bg-gradient-to-b from-[rgba(240,89,33,0.2)] to-[rgba(240,89,33,0)] text-[#F05921] font-semibold"
-          : "bg-transparent text-slate-400 font-semibold hover:text-slate-300"} 
+        ${
+          active
+            ? "relative bg-gradient-to-b from-orange-500/20 to-orange-500/0 text-orange-500 border-t border-orange-500"
+            : "bg-transparent text-slate-400 hover:text-slate-300"
+        } 
         ${className}`}
     >
       {children}

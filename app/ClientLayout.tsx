@@ -17,6 +17,11 @@ export default function ClientLayout({ children }: Readonly<ClientLayoutProps>) 
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
   const pathname = usePathname()
 
+  const isAuthPage = pathname === "/" || pathname === "/sign-up"
+  // ✅ Fixed: Changed from "/candidate" to "/candidate/" to only match individual candidate pages
+  // This way "/candidates" (plural) will still show header and sidebar
+  const isCandidatePage = pathname?.startsWith("/candidate/")
+
   const toggleSidebar = (): void => setSidebarOpen((prev) => !prev)
 
   const normalizePath = (p: string | null | undefined): string => {
@@ -60,10 +65,13 @@ export default function ClientLayout({ children }: Readonly<ClientLayoutProps>) 
 
   const activeIdx = getActiveIndex()
 
+  if (isAuthPage || isCandidatePage) {
+    return <>{children}</>
+  }
+
   return (
     <div className="min-h-screen bg-dark-bg flex">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} activeIndex={activeIdx >= 0 ? activeIdx : undefined} />
-      {/* </CHANGE> */}
       <div className="flex-1 flex flex-col">
         <Header onMenuClick={toggleSidebar} />
         <main className="flex-1 pt-16 pl-0 lg:pl-20 bg-dark-bg overflow-x-hidden">{children}</main>

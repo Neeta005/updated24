@@ -11,8 +11,8 @@ import { MobileCard } from "@/components/ui/mobile-card"
 import { TableRows } from "./table-rows"
 import { useState } from "react"
 import { ViewSyllabusModal } from "./view-syllabus-modal"
-import { Text } from "@/components/atoms/text" // new import
-import { useRouter } from "next/navigation" // new import
+import { Text } from "@/components/atoms/text"
+import { useRouter } from "next/navigation"
 
 export function Syllabus() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -20,7 +20,7 @@ export function Syllabus() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const itemsPerPage = 10
   const totalPages = Math.ceil(syllabusData.length / itemsPerPage)
-  const router = useRouter() // new code
+  const router = useRouter()
 
   const handleViewSyllabus = (syllabusId: string) => {
     setSelectedSyllabus(syllabusId)
@@ -28,11 +28,12 @@ export function Syllabus() {
   }
 
   const handleEditSyllabus = (syllabusId: string) => {
-    router.push(`/syllabus/edit/${syllabusId}`) // updated code
+    router.push(`/syllabus/edit/${syllabusId}`)
   }
 
   const handleDeleteSyllabus = (syllabusId: string) => {
-    // existing code here
+    // TODO: implement delete logic (API call / state update)
+    console.log("delete", syllabusId)
   }
 
   return (
@@ -56,56 +57,50 @@ export function Syllabus() {
         <div className="border-b border-gray-600 mb-6"></div>
 
         {/* Filters */}
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
-  {/* Search Inputs */}
-  <div className="flex flex-col sm:flex-row w-full sm:gap-4">
-    {/* Main Search */}
-    <div className="relative w-full sm:w-60">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 md:hidden" />
-      <Input
-        placeholder="Search Subject"
-        className=" border border-gray-600 text-white placeholder:text-gray-300 rounded-md pl-10 md:pl-4 py-2 w-full"
-      />
-    </div>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row w-full sm:gap-4">
+            <div className="relative w-full sm:w-60">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 md:hidden" />
+              <Input
+                placeholder="Search Subject"
+                className="border border-gray-600 text-white placeholder:text-gray-300 rounded-md pl-10 md:pl-4 py-2 w-full"
+              />
+            </div>
 
-    {/* Search Topic */}
-    <div className="relative w-full sm:w-60">
-      <Input
-        placeholder="Search Topic"
-        className=" border border-gray-600 text-white placeholder:text-gray-300 rounded-md pl-4 py-2 w-full"
-      />
-    </div>
+            <div className="relative w-full sm:w-60">
+              <Input
+                placeholder="Search Topic"
+                className="border border-gray-600 text-white placeholder:text-gray-300 rounded-md pl-4 py-2 w-full"
+              />
+            </div>
 
-    {/* Search Target Audience */}
-    <div className="relative w-full sm:w-60">
-      <Input
-        placeholder="Search Target Audience"
-        className="border border-gray-600 text-white placeholder:text-gray-300 rounded-md pl-4 py-2 w-full"
-      />
-    </div>
-  </div>
+            <div className="relative w-full sm:w-60">
+              <Input
+                placeholder="Search Target Audience"
+                className="border border-gray-600 text-white placeholder:text-gray-300 rounded-md pl-4 py-2 w-full"
+              />
+            </div>
+          </div>
 
-  {/* Filter Select */}
-  <Select>
-    <SelectTrigger className="w-full sm:w-32 bg-gray-700 border border-gray-600 text-white rounded-md">
-      <SelectValue placeholder="Filter by" />
-    </SelectTrigger>
-    <SelectContent className="bg-gray-700 border border-gray-600 text-white">
-      <SelectItem value="latest" className="hover:bg-gray-600">
-        Latest
-      </SelectItem>
-      <SelectItem value="older" className="hover:bg-gray-600">
-        Older
-      </SelectItem>
-      <SelectItem value="higher-degree" className="hover:bg-gray-600">
-        Higher Degree
-      </SelectItem>
-    </SelectContent>
-  </Select>
-</div>
+          <Select>
+            <SelectTrigger className="w-full sm:w-32 bg-gray-700 border border-gray-600 text-white rounded-md">
+              <SelectValue placeholder="Filter by" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-700 border border-gray-600 text-white">
+              <SelectItem value="latest" className="hover:bg-gray-600">
+                Latest
+              </SelectItem>
+              <SelectItem value="older" className="hover:bg-gray-600">
+                Older
+              </SelectItem>
+              <SelectItem value="higher-degree" className="hover:bg-gray-600">
+                Higher Degree
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-
-        {/* Table */}
+        {/* Table (desktop) */}
         <div className="hidden md:block overflow-x-auto">
           <div className="grid grid-cols-[2fr_1fr_2fr_1fr] gap-x-32 px-6 py-2 bg-black text-white font-medium rounded-t-lg">
             <div>Subject</div>
@@ -149,11 +144,7 @@ export function Syllabus() {
         </div>
 
         {/* View Modal */}
-        <ViewSyllabusModal
-          isOpen={isViewModalOpen}
-          onClose={() => setIsViewModalOpen(false)}
-          syllabusId={selectedSyllabus}
-        />
+        
       </div>
     </div>
   )

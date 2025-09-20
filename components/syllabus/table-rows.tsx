@@ -39,7 +39,11 @@ export function TableRows({
       {syllabusData.map((item) => (
         <div
           key={item.id}
-          className="grid grid-cols-[2fr_1fr_2fr_1fr] gap-x-32 px-6 py-3 bg-gray-800 hover:bg-gray-700 transition-colors border-b border-gray-700 last:rounded-b-lg items-center"
+          className="grid grid-cols-[2fr_1fr_2fr_1fr] gap-x-32 px-6 py-3
+                     bg-gray-800 hover:bg-gray-700 transition-colors
+                     border-b border-gray-700 last:rounded-b-lg items-center
+                     overflow-visible cursor-pointer"
+          onClick={() => handleViewSyllabus(item.id)} // ✅ Whole row click
         >
           {/* Subject */}
           <div className="text-white">{item.subject}</div>
@@ -50,31 +54,38 @@ export function TableRows({
           </div>
 
           {/* Target Audience */}
-          <div className="text-white whitespace-nowrap">
-            {item.targetAudience}
-          </div>
+          <div className="text-white whitespace-nowrap">{item.targetAudience}</div>
 
           {/* Actions */}
-          <div>
+          <div
+            className="flex justify-left"
+            onClick={(e) => e.stopPropagation()} // ✅ Prevent row click when using dropdown
+          >
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-white hover:bg-gray-700 p-1"
+                  className="text-white hover:bg-gray-700 "
                 >
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-gray-800 border border-gray-600 text-white">
+
+              <DropdownMenuContent
+                className="bg-gray-800 border border-gray-600 text-white z-50"
+                align="center"
+                sideOffset={5}
+              >
                 <DropdownMenuItem
-                  className="hover:bg-gray-700 cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white"
                   onClick={() => handleViewSyllabus(item.id)}
                 >
                   <Eye size={16} className="mr-2" /> View
                 </DropdownMenuItem>
+
                 <DropdownMenuItem
-                  className="hover:bg-gray-700 cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white"
                   onClick={() => onEditSyllabus(item.id)}
                 >
                   <Image
@@ -83,11 +94,12 @@ export function TableRows({
                     width={12}
                     height={12}
                     className="mr-2"
-                  />{" "}
+                  />
                   Edit
                 </DropdownMenuItem>
+
                 <DropdownMenuItem
-                  className="hover:bg-gray-700 cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white"
                   onClick={() => onDisableSyllabus(item.id)}
                 >
                   <Trash size={16} className="mr-2" /> Delete
@@ -98,7 +110,7 @@ export function TableRows({
         </div>
       ))}
 
-      {/* Modal */}
+      {/* Local Modal */}
       <ViewSyllabusModal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}

@@ -10,10 +10,14 @@ export interface Section {
   isExpanded: boolean
 }
 
-export interface UploadedFile {
+interface UploadedFile {
   id: string
   name: string
-  url: string
+  size: string
+  content?: string
+  sections?: { id: string; title: string; lessons: string[] }[]
+  status?: 'success' | 'error'
+  error?: string
 }
 
 export interface TargetAudienceOption {

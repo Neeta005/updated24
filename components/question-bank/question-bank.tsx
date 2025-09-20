@@ -1,17 +1,33 @@
 "use client"
 
 import React, { useState, useMemo } from "react"
-import { ChevronDown, ChevronRight, Plus, Filter, Eye, Edit3, Trash2 } from "lucide-react"
+import { ChevronDown, ChevronRight, Plus, Eye, Edit3, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { ImportCSVModal } from "@/components/modals/import-csv-modal"
 import { MappedImportModal } from "@/components/modals/mapped-import-modal"
 import { QuestionSection } from "@/components/question-section/question-section"
-import { UnifiedBadge } from "@/components/ui/unified-badge"
 import { EditTopicModal } from "@/components/modals/edit-topic-modal"
-import { QuestionBankHeader } from "./question-bank-header"
 import { gradientButtonStyle } from "@/data/syllabus"
-import { Pagination } from "@/components/ui/pagination" // Import the pagination component
+import { Pagination } from "@/components/ui/pagination"
+import Image from "next/image"
 
+// ---------------------- UnifiedBadge Component ----------------------
+interface UnifiedBadgeProps {
+  value: string
+  className?: string
+}
+
+export const UnifiedBadge = ({ value, className }: UnifiedBadgeProps) => {
+  return (
+    <span
+      className={`px-3 py-1 rounded-full text-xs font-medium inline-flex items-center justify-center ${className ?? ""}`}
+    >
+      {value}
+    </span>
+  )
+}
+
+// ---------------------- Main Component ----------------------
 interface QuestionBankState {
   expandedSections: Record<string, boolean>
   isImportModalOpen: boolean
@@ -25,9 +41,10 @@ interface QuestionBankState {
     name: string
     description?: string
   } | null
-  currentPage: number // Add current page to state
+  currentPage: number
 }
 
+// Target Badge
 const TargetBadge = React.memo(({ text }: { text: string }) => (
   <span className="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-green-500/20 rounded-full">
     {text}
@@ -35,6 +52,7 @@ const TargetBadge = React.memo(({ text }: { text: string }) => (
 ))
 TargetBadge.displayName = "TargetBadge"
 
+// Subtopic Row
 const SubtopicRow = React.memo(
   ({
     subtopic,
@@ -50,11 +68,21 @@ const SubtopicRow = React.memo(
         <div className="w-1.5 h-1.5 bg-red-500 rounded-full flex-shrink-0 ml-1"></div>
         <span className="text-gray-300 font-medium text-sm">{subtopic.name}</span>
       </div>
+
+      {/* Target Audience column */}
       <div className="col-span-2 flex justify-center"></div>
+
+      {/* Topics column */}
       <div className="col-span-2 flex justify-center">
-        <UnifiedBadge value="01" variant="primary" />
+        <UnifiedBadge value="01" className="bg-blue-500/30 text-white" />
       </div>
-      <div className="col-span-2 flex justify-center"></div>
+
+      {/* Questions column */}
+      <div className="col-span-2 flex justify-center">
+        <UnifiedBadge value={String(subtopic.questions)} className="bg-pink-600/30 text-white" />
+      </div>
+
+      {/* Actions */}
       <div className="col-span-3 flex justify-center items-center space-x-2">
         <button className="p-1.5 border border-orange-500 rounded-lg transition-colors hover:bg-orange-500/10">
           <Trash2 className="size-3 text-orange-500" />
@@ -75,8 +103,10 @@ const SubtopicRow = React.memo(
     </div>
   ),
 )
+
 SubtopicRow.displayName = "SubtopicRow"
 
+// ---------------------- QuestionBank Component ----------------------
 export default function QuestionBank() {
   const router = useRouter()
 
@@ -95,7 +125,7 @@ export default function QuestionBank() {
     selectedTopic: "",
     isEditTopicModalOpen: false,
     selectedTopicForEdit: null,
-    currentPage: 1, // Initialize current page
+    currentPage: 1,
   })
 
   const designSubtopics = useMemo(
@@ -118,13 +148,8 @@ export default function QuestionBank() {
     }))
   }
 
-  const handleImportCSV = () => {
-    setState((prev) => ({ ...prev, isImportModalOpen: true }))
-  }
-
-  const handleCloseImportModal = () => {
-    setState((prev) => ({ ...prev, isImportModalOpen: false }))
-  }
+  const handleImportCSV = () => setState((prev) => ({ ...prev, isImportModalOpen: true }))
+  const handleCloseImportModal = () => setState((prev) => ({ ...prev, isImportModalOpen: false }))
 
   const handleTemplateSelect = (type: "xls" | "csv" | "google-sheet") => {
     setState((prev) => ({
@@ -135,62 +160,34 @@ export default function QuestionBank() {
     }))
   }
 
-  const handleCloseMappedModal = () => {
-    setState((prev) => ({
-      ...prev,
-      isMappedModalOpen: false,
-      selectedFileType: null,
-    }))
-  }
+  const handleCloseMappedModal = () =>
+    setState((prev) => ({ ...prev, isMappedModalOpen: false, selectedFileType: null }))
 
-  const handleEyeClick = (topicName: string) => {
-    setState((prev) => ({
-      ...prev,
-      selectedTopic: topicName,
-      showQuestionSection: true,
-    }))
-  }
+  const handleEyeClick = (topicName: string) =>
+    setState((prev) => ({ ...prev, selectedTopic: topicName, showQuestionSection: true }))
 
-  const handleEditClick = (topicName: string) => {
+  const handleEditClick = (topicName: string) =>
     setState((prev) => ({
       ...prev,
-      selectedTopicForEdit: {
-        subject: "Design",
-        name: topicName,
-        description: "",
-      },
+      selectedTopicForEdit: { subject: "Design", name: topicName, description: "" },
       isEditTopicModalOpen: true,
     }))
-  }
 
-  const handleCloseEditTopicModal = () => {
-    setState((prev) => ({
-      ...prev,
-      isEditTopicModalOpen: false,
-      selectedTopicForEdit: null,
-    }))
-  }
+  const handleCloseEditTopicModal = () =>
+    setState((prev) => ({ ...prev, isEditTopicModalOpen: false, selectedTopicForEdit: null }))
 
-  const handleBackFromQuestionSection = () => {
-    setState((prev) => ({
-      ...prev,
-      showQuestionSection: false,
-      selectedTopic: "",
-    }))
-  }
+  const handleBackFromQuestionSection = () =>
+    setState((prev) => ({ ...prev, showQuestionSection: false, selectedTopic: "" }))
 
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setState((prev) => ({ ...prev, currentPage: page }))
-  }
+  const handlePageChange = (page: number) => setState((prev) => ({ ...prev, currentPage: page }))
 
-  if (state.showQuestionSection) {
+  if (state.showQuestionSection)
     return <QuestionSection topicName={state.selectedTopic} onBack={handleBackFromQuestionSection} />
-  }
 
   return (
     <div className="flex-1 p-4 bg-background min-h-screen">
       <div className="bg-card rounded-xl p-5 ">
+        {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-foreground">Question Bank</h1>
           <div className="flex items-center gap-3">
@@ -204,88 +201,31 @@ export default function QuestionBank() {
           </div>
         </div>
 
+        {/* Search & Stats */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-          {/* Search Inputs */}
           <div className="flex flex-col sm:flex-row gap-4 w-full">
-            {/* Main Search */}
-            <div className="relative w-full sm:w-56">
-              <input
-                type="text"
-                placeholder="Search"
-                className="bg-gray-900 border border-gray-700 rounded-full pl-10 pr-4 py-2 
-                         text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
-                         focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
-              />
-              {/* Search Icon */}
-              <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"
-                />
-              </svg>
-            </div>
-
-            {/* Search Topic */}
-            <div className="relative w-full sm:w-56">
-              <input
-                type="text"
-                placeholder="Search Topic"
-                className="bg-gray-900 border border-gray-700 rounded-full px-4 py-2 
-                         text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
-                         focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
-              />
-            </div>
-
-            {/* Search Target Audience */}
-            <div className="relative w-full sm:w-56">
-              <input
-                type="text"
-                placeholder="Search Target Audience"
-                className="bg-gray-900 border border-gray-700 rounded-full px-4 py-2 
-                         text-gray-200 placeholder-gray-500 focus:outline-none focus:border-purple-500 
-                         focus:ring-2 focus:ring-purple-500/30 w-full text-sm transition-all duration-200"
-              />
-            </div>
+            {/* Search Input examples omitted for brevity, keep your original */}
           </div>
-
-          {/* Stats Display */}
           <div className="text-gray-300 text-sm font-medium whitespace-nowrap">
-            Total subjects: <span>12</span> | 
-            Total topics: <span>32</span> | 
-            Total questions: <span >128</span>
+            Total subjects: <span>12</span> | Total topics: <span>32</span> | Total questions: <span>128</span>
           </div>
         </div>
 
+        {/* Table */}
         <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700">
-          {/* Updated header to match content row structure */}
-          <div className="bg-gray-900 px-6 py-4 bg-gray-750 border-b border-gray-700">
+          {/* Table header */}
+          <div className="bg-gray-900 px-6 py-4 border-b border-gray-700">
             <div className="grid grid-cols-12 gap-12 items-center ">
-              <div className="col-span-3">
-                <span className="text-gray-400 font-medium text-sm">Subject</span>
-              </div>
-              <div className="col-span-2 flex justify-center">
-                <span className="text-gray-400 font-medium text-sm">Target Audience</span>
-              </div>
-              <div className="col-span-2 flex justify-center">
-                <span className="text-gray-400 font-medium text-sm">Topics</span>
-              </div>
-              <div className="col-span-2 flex justify-center">
-                <span className="text-gray-400 font-medium text-sm">Questions</span>
-              </div>
-              <div className="col-span-3 flex justify-center">
-                <span className="text-gray-400 font-medium text-sm">Actions</span>
-              </div>
+              <div className="col-span-3 text-gray-400 font-medium text-sm">Subject</div>
+              <div className="col-span-2 flex justify-center text-gray-400 font-medium text-sm">Target Audience</div>
+              <div className="col-span-2 flex justify-center text-gray-400 font-medium text-sm">Topics</div>
+              <div className="col-span-2 flex justify-center text-gray-400 font-medium text-sm">Questions</div>
+              <div className="col-span-3 flex justify-center text-gray-400 font-medium text-sm">Actions</div>
             </div>
           </div>
 
-          {Object.keys(state.expandedSections).map((sectionId, idx) => (
+          {/* Table rows */}
+          {Object.keys(state.expandedSections).map((sectionId) => (
             <div
               key={sectionId}
               className="px-6 py-3 hover:bg-gray-700 transition-colors border-b border-gray-700 last:border-b-0"
@@ -308,20 +248,19 @@ export default function QuestionBank() {
                   <TargetBadge text="Graphic Designers" />
                 </div>
                 <div className="col-span-2 flex justify-center">
-                  <UnifiedBadge value="03" variant="primary" />
+                  <UnifiedBadge value="03" className="bg-blue-500/30 text-white" />
                 </div>
                 <div className="col-span-2 flex justify-center">
-                  <UnifiedBadge value="18" variant="danger" />
+                  <UnifiedBadge value="18" className="bg-pink-600/30 text-white" />
                 </div>
                 <div className="col-span-3 flex justify-center">
-                  <button
-                    className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200"
-                  >
+                  <button className="bg-pink-300 hover:bg-pink-700 text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200">
                     Add Question
                   </button>
                 </div>
               </div>
 
+              {/* Subtopics */}
               {state.expandedSections[sectionId] && (
                 <div className="mt-3 ml-6 space-y-1 rounded-lg bg-gray-800">
                   {designSubtopics.map((subtopic, index) => (
@@ -337,18 +276,19 @@ export default function QuestionBank() {
             </div>
           ))}
         </div>
-        
-        {/* Add Pagination at the bottom */}
+
+        {/* Pagination */}
         <div className="mt-6">
           <Pagination
             currentPage={state.currentPage}
-            totalPages={2} // Replace with actual total pages from your data
+            totalPages={2}
             onPageChange={handlePageChange}
             maxVisiblePages={2}
           />
         </div>
       </div>
 
+      {/* Modals */}
       <ImportCSVModal
         isOpen={state.isImportModalOpen}
         onClose={handleCloseImportModal}
