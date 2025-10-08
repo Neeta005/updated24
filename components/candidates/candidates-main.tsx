@@ -2,53 +2,22 @@
 import { useState } from "react"
 import { candidateGroups } from "@/data/candidates"
 import { gradientButtonStyle } from "@/data/syllabus"
-import { CandidatesTable } from "./candidates-table"
-import { GroupView } from "./group-view"
-import { GroupEdit } from "./group-edit"
+import { useRouter } from "next/navigation"
 
 export function CandidatesMain() {
   const [activeTab, setActiveTab] = useState("groups")
-  const [currentView, setCurrentView] = useState<"main" | "table" | "view" | "edit">("main")
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
+  const router = useRouter()
 
   const handleMenuClick = () => {
-    setCurrentView("table")
+    router.push("/candidates/table")
   }
 
   const handleViewGroup = (groupId: string) => {
-    setSelectedGroupId(groupId)
-    setCurrentView("view")
+    router.push(`/candidates/view/${groupId}`)
   }
 
   const handleEditGroup = (groupId: string) => {
-    setSelectedGroupId(groupId)
-    setCurrentView("edit")
-  }
-
-  const handleBackToMain = () => {
-    setCurrentView("main")
-    setSelectedGroupId(null)
-  }
-
-  const handleBackToTable = () => {
-    setCurrentView("table")
-  }
-
-  const handleSave = () => {
-    // Handle save logic here
-    setCurrentView("view")
-  }
-
-  if (currentView === "table") {
-    return <CandidatesTable onClose={handleBackToMain} onViewGroup={handleViewGroup} onEditGroup={handleEditGroup} />
-  }
-
-  if (currentView === "view") {
-    return <GroupView onBack={handleBackToTable} onEdit={() => setCurrentView("edit")} />
-  }
-
-  if (currentView === "edit") {
-    return <GroupEdit onBack={() => setCurrentView("view")} onSave={handleSave} />
+    router.push(`/candidates/edit/${groupId}`)
   }
 
   return (
@@ -60,7 +29,6 @@ export function CandidatesMain() {
           <button onClick={handleMenuClick}>
             <img src="\icons\image 1.png" alt="Menu" className="size-8" />
           </button>
-
           <button
             className={`px-4 py-2 bg-orange-600 ${gradientButtonStyle} hover:bg-orange-700 text-white rounded-lg text-sm font-medium`}
           >

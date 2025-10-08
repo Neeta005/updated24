@@ -1,85 +1,81 @@
 "use client"
 
 import React from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import type { PaginationProps } from "@/types"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { gradientButtonStyle } from "@/data/syllabus"
 import { Button } from "@/components/ui/button"
+import type { PaginationProps } from "@/types"
 
 const Pagination = React.memo<PaginationProps>(
-  ({ currentPage, totalPages, onPageChange, itemsPerPage = 10, totalItems = 0 }) => {
-    const startItem = (currentPage - 1) * itemsPerPage + 1
-    const endItem = Math.min(currentPage * itemsPerPage, totalItems)
+  ({ currentPage, totalPages, onPageChange, itemsPerPage = 10, totalItems = 0, maxVisiblePages = 5 }) => {
+    if (!totalPages || totalPages <= 0) return null
 
-    const handlePrevious = () => {
-      if (currentPage > 1) {
-        onPageChange(currentPage - 1)
+    const getPageNumbers = () => {
+      const pages: (number | string)[] = []
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
+      let endPage = startPage + maxVisiblePages - 1
+      if (endPage > totalPages) {
+        endPage = totalPages
+        startPage = Math.max(1, endPage - maxVisiblePages + 1)
       }
-    }
-
-    const handleNext = () => {
-      if (currentPage < totalPages) {
-        onPageChange(currentPage + 1)
+      for (let i = startPage; i <= endPage; i++) pages.push(i)
+      if (startPage > 1) {
+        pages.unshift("...")
+        pages.unshift(1)
       }
-    }
-
-    const getVisiblePages = () => {
-      const pages = []
-      const maxVisible = 5
-      let start = Math.max(1, currentPage - Math.floor(maxVisible / 2))
-      const end = Math.min(totalPages, start + maxVisible - 1)
-
-      if (end - start + 1 < maxVisible) {
-        start = Math.max(1, end - maxVisible + 1)
-      }
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i)
+      if (endPage < totalPages) {
+        pages.push("...")
+        pages.push(totalPages)
       }
       return pages
     }
 
+    const pages = getPageNumbers()
+
     return (
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          Showing {startItem} to {endItem} of {totalItems} results
-        </div>
+      <nav className="flex items-center justify-between p-4 bg-gray-900 text-white rounded-b-lg">
+        {/* Previous */}
+        <button
+          className="flex items-center gap-1 px-4 py-2 rounded-md bg-gray-700 hover:bg-gray-600 transition"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+        >
+          <ChevronLeftIcon className="w-4 h-4" />
+          Prev
+        </button>
 
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePrevious}
-            disabled={currentPage === 1}
-            className="flex items-center gap-1 bg-transparent"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Previous
-          </Button>
-
-          {getVisiblePages().map((page) => (
-            <Button
-              key={page}
-              variant={page === currentPage ? "default" : "outline"}
-              size="sm"
-              onClick={() => onPageChange(page)}
-              className="min-w-[2rem]"
-            >
-              {page}
-            </Button>
+        {/* Page numbers */}
+        <ul className="flex gap-2 overflow-x-auto">
+          {pages.map((page, index) => (
+            <li key={index}>
+              {page === "..." ? (
+                <span className="px-3 py-2 text-gray-400">...</span>
+              ) : (
+                <button
+                  className={cn(
+                    "px-4 py-2 rounded-md font-medium transition",
+                    page === currentPage
+                      ? `${gradientButtonStyle} text-white shadow-md`
+                      : "bg-gray-700 text-gray-200 hover:bg-gray-600",
+                  )}
+                  onClick={() => typeof page === "number" && onPageChange(page)}
+                >
+                  {page}
+                </button>
+              )}
+            </li>
           ))}
+        </ul>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleNext}
-            disabled={currentPage === totalPages}
-            className="flex items-center gap-1 bg-transparent"
-          >
-            Next
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+        {/* Next - keep gradient, not disabled */}
+        <Button
+          className={`${gradientButtonStyle} text-white px-4 py-2 flex items-center gap-2 w-full sm:w-auto justify-center rounded-md shadow-md`}
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+        >
+          Next
+          <ChevronRightIcon className="w-4 h-4" />
+        </Button>
+      </nav>
     )
   },
 )

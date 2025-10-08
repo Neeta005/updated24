@@ -1,96 +1,95 @@
-import * as React from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { gradientButtonStyle } from "@/data/syllabus"
+"use client"
+
+import type * as React from "react"
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-type PaginationProps = {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  maxVisiblePages?: number;
-};
+import { Pagination as ReusablePagination } from "@/components/ui/reusable-pagination"
 
-export function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-  maxVisiblePages = 5,
-}: PaginationProps) {
-  if (totalPages <= 0) return null;
+// Types for composite usage
+type CompositeProps = {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  maxVisiblePages?: number
+  itemsPerPage?: number
+  totalItems?: number
+  className?: string
+  children?: React.ReactNode
+}
 
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
-
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = startPage + maxVisiblePages - 1;
-
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    if (startPage > 1) {
-      pages.unshift("...");
-      pages.unshift(1);
-    }
-    if (endPage < totalPages) {
-      pages.push("...");
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
-
-  const pages = getPageNumbers();
-
+// Type guard to detect composite props versus wrapper usage
+function isCompositeProps(props: any): props is CompositeProps {
   return (
-    <nav className="flex items-center justify-between p-4 bg-gray-900 text-white rounded-b-lg">
-      {/* Previous button */}
-      <button
-        className="flex items-center gap-1 px-4 py-2 rounded-md bg-gray-700 hover:bg-gray-600 transition"
-        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-      >
+    typeof props?.currentPage === "number" &&
+    typeof props?.totalPages === "number" &&
+    typeof props?.onPageChange === "function"
+  )
+}
+
+export function Pagination(props: React.ComponentProps<"nav"> | CompositeProps) {
+  if (isCompositeProps(props)) {
+    const { currentPage, totalPages, onPageChange, itemsPerPage, totalItems, className } = props
+    return (
+      <div className={cn("w-full", className)}>
+        <ReusablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+          itemsPerPage={itemsPerPage}
+          totalItems={totalItems}
+        />
+      </div>
+    )
+  }
+  const { className, ...rest } = props as React.ComponentProps<"nav">
+  return <nav role="navigation" aria-label="pagination" className={cn("w-full", className)} {...rest} />
+}
+
+// UL container
+export function PaginationContent({ className, ...props }: React.ComponentProps<"ul">) {
+  return <ul className={cn("flex items-center justify-center gap-1", className)} {...props} />
+}
+
+// LI item
+export function PaginationItem({ className, ...props }: React.ComponentProps<"li">) {
+  return <li className={cn("list-none", className)} {...props} />
+}
+
+// Page link
+export function PaginationLink({
+  className,
+  isActive,
+  href = "#",
+  ...props
+}: React.ComponentProps<"a"> & { isActive?: boolean }) {
+  return (
+    <Button asChild variant={isActive ? "default" : "outline"} size="sm" className={cn("min-w-[2rem]", className)}>
+      <a href={href} {...props} />
+    </Button>
+  )
+}
+
+// Previous control
+export function PaginationPrevious({ className, href = "#", ...props }: React.ComponentProps<"a">) {
+  return (
+    <Button asChild variant="outline" size="sm" className={cn("flex items-center gap-1 bg-transparent", className)}>
+      <a href={href} {...props}>
         <ChevronLeftIcon className="w-4 h-4" />
-        Prev
-      </button>
+        Previous
+      </a>
+    </Button>
+  )
+}
 
-      {/* Page numbers */}
-      <ul className="flex gap-2 overflow-x-auto">
-        {pages.map((page, index) => (
-          <li key={index}>
-            {page === "..." ? (
-              <span className="px-3 py-2 text-gray-400">...</span>
-            ) : (
-              <button
-                className={cn(
-                  "px-4 py-2 rounded-md font-medium transition",
-                page === currentPage
-  ? `${gradientButtonStyle} text-white shadow-md`
-  : "bg-gray-700 text-gray-200 hover:bg-gray-600"
-
-                )}
-                onClick={() => typeof page === "number" && onPageChange(page)}
-              >
-                {page}
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      {/* Next button with gradient, never disabled */}
-      <Button
-  className={`${gradientButtonStyle} text-white px-4 py-2 flex items-center gap-2 w-full sm:w-auto justify-center rounded-md shadow-md`}
->
- 
-  Next
-    <ChevronRightIcon className="w-4 h-4" />
-</Button>
-
-    </nav>
-  );
+// Next control
+export function PaginationNext({ className, href = "#", ...props }: React.ComponentProps<"a">) {
+  return (
+    <Button asChild variant="outline" size="sm" className={cn("flex items-center gap-1 bg-transparent", className)}>
+      <a href={href} {...props}>
+        Next
+        <ChevronRightIcon className="w-4 h-4" />
+      </a>
+    </Button>
+  )
 }

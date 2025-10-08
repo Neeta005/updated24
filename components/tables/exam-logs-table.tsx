@@ -3,17 +3,9 @@
 import { useState, useMemo } from "react"
 import { Clock, Eye } from "lucide-react"
 import type { StudentExamLog } from "@/types"
-
-// ✅ Reuse shared components
 import { CircularProgress } from "@/components/ui/circular-progress"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-} from "@/components/ui/pagination"
+import { useRouter } from "next/navigation"
+import { Pagination } from "@/components/ui/pagination" // ✅ Your existing component
 
 interface ExamLogsTableProps {
   searchTerm?: string
@@ -21,20 +13,27 @@ interface ExamLogsTableProps {
 }
 
 export function ExamLogsTable({ searchTerm = "", data }: ExamLogsTableProps) {
+  const router = useRouter()
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
+  // Filter data based on search
   const filteredData = useMemo(() => {
     if (!searchTerm) return data
     return data.filter((student) => student.name.toLowerCase().includes(searchTerm.toLowerCase()))
   }, [searchTerm, data])
 
+  // Calculate pagination
   const totalPages = Math.ceil(filteredData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage)
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+  }
+
   const handleViewLogs = (studentId: string) => {
-    // Implementation for viewing logs
+    router.push(`/exam-logs/${studentId}`)
   }
 
   const getViolationColor = (violations: number) => {
@@ -117,45 +116,12 @@ export function ExamLogsTable({ searchTerm = "", data }: ExamLogsTableProps) {
         </table>
       </div>
 
-      {/* ✅ Reusable Pagination */}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                setCurrentPage((prev) => Math.max(1, prev - 1))
-              }}
-            />
-          </PaginationItem>
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-            <PaginationItem key={pageNum}>
-              <PaginationLink
-                href="#"
-                isActive={currentPage === pageNum}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setCurrentPage(pageNum)
-                }}
-              >
-                {pageNum}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-              }}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      {/* ✅ Your existing Pagination component - Simple & Clean */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {filteredData.length === 0 && searchTerm && (
         <div className="text-center py-8 text-slate-400">No students found matching "{searchTerm}"</div>
