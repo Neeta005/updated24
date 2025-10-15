@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -92,7 +93,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
         <h1 className="text-2xl font-semibold text-white">Candidates</h1>
         <div className="flex items-center gap-3">
           <button onClick={onClose} className="text-slate-400 hover:text-white">
-            <img src="/icons/Vector.png" alt="Close" className="size-6" />
+            <img src="/icons/Vector (4).png" alt="Close" className="size-6" />
           </button>
 
           {activeTab === "candidates" ? (
@@ -101,7 +102,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
                 className="flex items-center gap-2 px-4 py-2.5 rounded-md bg-white text-gray-900 text-sm font-medium border border-slate-300 hover:bg-gray-100"
                 onClick={() => router.push("/candidates/import")}
               >
-                <Image src="/icons/imports.png" alt="Import Icon" width={18} height={18} />
+                <Image src="/icons/import (1).png" alt="Import Icon" width={18} height={18} />
                 Import List
               </button>
 
@@ -183,6 +184,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
                 value={audienceSearch}
                 onChange={setAudienceSearch}
                 icon="custom"
+                customIcon="/icons/audience tarr 1.png"
                 iconAlt="Audience Icon"
                 className="w-full sm:w-60"
               />
@@ -276,6 +278,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
                 value={nameSearch}
                 onChange={setNameSearch}
                 icon="custom"
+                customIcon="/icons/grupp 1.png"
                 iconAlt="Candidate"
                 className="w-full sm:w-60"
               />
@@ -284,6 +287,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
                 value={emailSearch}
                 onChange={setEmailSearch}
                 icon="custom"
+                customIcon="/icons/audience tarr 1.png"
                 iconAlt="Email"
                 className="w-full sm:w-60"
               />
@@ -390,6 +394,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
         }}
         candidate={editingCandidate}
         onSave={(updated) => {
+          console.log("[v0] Saved candidate:", updated)
         }}
       />
     </main>
