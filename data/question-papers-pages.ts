@@ -28,10 +28,9 @@ export const showcaseImages: Record<QuestionPapersPageKey, ShowcaseImage> = {
   create: {
     key: "create",
     title: "Create Question Paper",
-    // IMPORTANT: using the provided Source URL directly
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Question%20Paper%20Basic%20Info-Y8KddvRXbXFCp9GUo7MZqAIyvZwv5z.png",
-    alt: "Create Question Paper form with fields and subject/topic table",
-    description: "Enter basic information to create a question paper.",
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Question%20Paper%20Basic%20Info%20%281%29-v9k5elAJMOZPDnkgQN4hylg5B8C86k.png",
+    alt: "Create/Edit Question Paper form with fields and subject/topic table",
+    description: "Enter basic information to create or edit a question paper.",
   },
   delete: {
     key: "delete",
@@ -44,7 +43,7 @@ export const showcaseImages: Record<QuestionPapersPageKey, ShowcaseImage> = {
   details: {
     key: "details",
     title: "Question Paper Details",
-    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Question%20Paper%20Details-DQoOVtDgv3K5B1t4Gt3M7XGn2IZNto.png",
+    src: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Question%20Paper%20Details%20%281%29-PBzETzDi4hXcoe5c2tAPozdkJ78t2s.png",
     alt: "Manual Question Selection - Details",
     description: "Manual selection and configuration of questions.",
   },

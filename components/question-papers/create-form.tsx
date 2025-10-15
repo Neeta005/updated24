@@ -1,43 +1,48 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { ChevronDown, Plus } from "lucide-react"
 import { QUESTION_PAPER_ROUTES } from "@/data/question-papers-pages"
 
 export default function CreateForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isEdit = Boolean(searchParams.get("id"))
   const [title, setTitle] = useState("Programming Fundamentals")
   const [totalQuestions, setTotalQuestions] = useState<number | "">(50)
   const [totalMarks, setTotalMarks] = useState<number | "">(50)
   const [audience, setAudience] = useState("Students & Fresher")
   const [description, setDescription] = useState("Design")
-  
+
   // State to manage builder rows - START WITH 2 ROWS
   const [builderRows, setBuilderRows] = useState([
-    { id: 1, method: "Manual" }, 
-    { id: 2, method: "Manual" }
+    { id: 1, method: "Manual" },
+    { id: 2, method: "Manual" },
   ])
 
   // Function to add new row
   const addRow = () => {
-    const newId = builderRows.length > 0 ? Math.max(...builderRows.map(r => r.id)) + 1 : 1
+    const newId = builderRows.length > 0 ? Math.max(...builderRows.map((r) => r.id)) + 1 : 1
     setBuilderRows([...builderRows, { id: newId, method: "Manual" }])
   }
 
   // Function to toggle method between Manual and Random
   const toggleMethod = (id: number) => {
-    setBuilderRows(builderRows.map(row => 
-      row.id === id 
-        ? { ...row, method: row.method === "Manual" ? "Random" : "Manual" }
-        : row
-    ))
+    setBuilderRows(
+      builderRows.map((row) =>
+        row.id === id ? { ...row, method: row.method === "Manual" ? "Random" : "Manual" } : row,
+      ),
+    )
   }
 
   return (
     <main className="flex-1 p-6">
       <div className="rounded-2xl bg-card border border-slate-700 p-4 md:p-6 space-y-6">
-        <h1 className="text-white text-2xl font-semibold">Create Question Paper</h1>
+        {/* Heading now reflects Create vs Edit to match the provided design */}
+        <h1 className="text-white text-2xl font-semibold">
+          {isEdit ? "Edit question paper" : "Create Question Paper"}
+        </h1>
 
         {/* Form */}
         <div className="grid grid-cols-1 gap-4">
@@ -147,7 +152,10 @@ export default function CreateForm() {
 
           {/* Dynamic Builder Rows */}
           {builderRows.map((row) => (
-            <div key={row.id} className="px-4 py-4 grid grid-cols-12 gap-2 items-center border-t border-slate-700 bg-slate-800/90">
+            <div
+              key={row.id}
+              className="px-4 py-4 grid grid-cols-12 gap-2 items-center border-t border-slate-700 bg-slate-800/90"
+            >
               {/* Search */}
               <div className="col-span-3">
                 <input
@@ -202,7 +210,9 @@ export default function CreateForm() {
                 <button
                   onClick={() => toggleMethod(row.id)}
                   className={`inline-flex items-center gap-1.5 px-2 py-1.5 rounded-full text-slate-200 text-sm transition-all cursor-pointer ${
-                    row.method === "Manual" ? "bg-slate-700/50 hover:bg-slate-600/50" : "bg-green-700/50 hover:bg-green-600/50"
+                    row.method === "Manual"
+                      ? "bg-slate-700/50 hover:bg-slate-600/50"
+                      : "bg-green-700/50 hover:bg-green-600/50"
                   }`}
                 >
                   {row.method === "Manual" ? (
@@ -233,7 +243,7 @@ export default function CreateForm() {
           {/* Add Row (aligned bottom right) */}
           <div className="px-4 pb-4 border-t border-slate-700 pt-4 bg-slate-800/90">
             <div className="flex justify-end">
-              <button 
+              <button
                 onClick={addRow}
                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-orange-primary to-red-primary px-3 py-2 text-white min-w-[40px] min-h-[40px]"
               >

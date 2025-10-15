@@ -16,7 +16,9 @@ export function QuestionPapersGrid() {
   const [sortBy, setSortBy] = useState("Latest")
   const router = useRouter()
 
-  const handleEdit = (id: string) => {}
+  const handleEdit = (id: string) => {
+    router.push(`${QUESTION_PAPER_ROUTES.create}?id=${encodeURIComponent(id)}`)
+  }
   const handleDelete = (id: string) => router.push(`${QUESTION_PAPER_ROUTES.delete}?id=${id}`)
   const handleTogglePublish = (id: string, published: boolean) => {}
   const handleViewQuestions = (id: string) =>
@@ -50,16 +52,15 @@ export function QuestionPapersGrid() {
       <div className="flex flex-col sm:flex-row sm:justify-between items-center w-full gap-4">
         <div className="flex flex-col sm:flex-row gap-4 w-full">
           {/* Main Search */}
-         <SearchInput
-  placeholder="Search"
-  value={searchTerm}
-  onChange={setSearchTerm}
-  width="w-40"
-  icon="custom"
-  customIcon="/icons/subject.png"
-  iconAlt="Search Icon"
-/>
-
+          <SearchInput
+            placeholder="Search"
+            value={searchTerm}
+            onChange={setSearchTerm}
+            width="w-40"
+            icon="custom"
+            customIcon="/icons/subject.png"
+            iconAlt="Search Icon"
+          />
 
           {/* Search Topic */}
           <SearchInput
