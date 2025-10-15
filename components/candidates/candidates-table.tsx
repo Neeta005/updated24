@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -30,6 +29,12 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
 
   const [editOpen, setEditOpen] = useState(false)
   const [editingCandidate, setEditingCandidate] = useState<CandidateWithGroup | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  // Wait for component to mount before accessing searchParams
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // 🔍 Filter & Sort
   const filteredGroups = candidateGroups.filter((group) =>
@@ -63,28 +68,75 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
     currentPage * itemsPerPageCandidates,
   )
 
-  // Initialize tab from URL
+  // Initialize tab from URL - only after mount
   useEffect(() => {
-    const tab = searchParams.get("tab")
-    if (tab === "groups" || tab === "candidates") {
-      setActiveTab(tab)
-      setCurrentPage(1)
+    if (!mounted) return
+    
+    try {
+      const tab = searchParams?.get("tab")
+      if (tab === "groups" || tab === "candidates") {
+        setActiveTab(tab)
+        setCurrentPage(1)
+      }
+    } catch (error) {
+      console.error("Error reading tab param:", error)
     }
-  }, [searchParams])
+  }, [searchParams, mounted])
 
-  // Handle ?edit= param
+  // Handle ?edit= param - only after mount
   useEffect(() => {
-    const editId = searchParams.get("edit")
-    if (editId) {
-      setActiveTab("candidates")
-      const match = allCandidatesTable.find((c) => c.id === editId) || null
-      setEditingCandidate(match)
-      setEditOpen(Boolean(match))
-    } else {
-      setEditOpen(false)
-      setEditingCandidate(null)
+    if (!mounted) return
+    
+    try {
+      const editId = searchParams?.get("edit")
+      if (editId) {
+        setActiveTab("candidates")
+        const match = allCandidatesTable.find((c) => c.id === editId) || null
+        setEditingCandidate(match)
+        setEditOpen(Boolean(match))
+      } else {
+        setEditOpen(false)
+        setEditingCandidate(null)
+      }
+    } catch (error) {
+      console.error("Error reading edit param:", error)
     }
-  }, [searchParams])
+  }, [searchParams, mounted])
+
+  const handleTabChange = (tab: "groups" | "candidates") => {
+    setActiveTab(tab)
+    setCurrentPage(1)
+    try {
+      router.replace(`/candidates/table?tab=${tab}`)
+    } catch (error) {
+      console.error("Error changing tab:", error)
+    }
+  }
+
+  const handleEditModalClose = (isOpen: boolean) => {
+    setEditOpen(isOpen)
+    if (!isOpen) {
+      try {
+        const params = new URLSearchParams(searchParams?.toString() || "")
+        params.delete("edit")
+        if (!params.get("tab")) params.set("tab", "candidates")
+        router.replace(`/candidates/table?${params.toString()}`)
+      } catch (error) {
+        console.error("Error closing modal:", error)
+      }
+    }
+  }
+
+  // Don't render until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <main className="flex-1 p-6 bg-gray-900 min-h-screen">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-white">Loading...</div>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="flex-1 p-6 bg-gray-900 min-h-screen">
@@ -93,7 +145,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
         <h1 className="text-2xl font-semibold text-white">Candidates</h1>
         <div className="flex items-center gap-3">
           <button onClick={onClose} className="text-slate-400 hover:text-white">
-            <img src="/icons/Vector (4).png" alt="Close" className="size-6" />
+            <Image src="/icons/Vector (4).png" alt="Close" width={24} height={24} />
           </button>
 
           {activeTab === "candidates" ? (
@@ -129,11 +181,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
       <div className="w-full bg-slate-800 p-1.5 mb-6 rounded-md">
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              setActiveTab("groups")
-              setCurrentPage(1)
-              router.replace("/candidates/table?tab=groups")
-            }}
+            onClick={() => handleTabChange("groups")}
             className={`flex items-center justify-center min-w-[93px] h-[32px] px-[12px] gap-[10px] rounded-md
               ${
                 activeTab === "groups"
@@ -146,11 +194,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
           </button>
 
           <button
-            onClick={() => {
-              setActiveTab("candidates")
-              setCurrentPage(1)
-              router.replace("/candidates/table?tab=candidates")
-            }}
+            onClick={() => handleTabChange("candidates")}
             className={`flex items-center justify-center min-w-[110px] h-[32px] px-[12px] gap-[10px] rounded-md
               ${
                 activeTab === "candidates"
@@ -383,15 +427,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
       {/* Edit Candidate Modal */}
       <EditCandidateModal
         open={editOpen}
-        onOpenChange={(isOpen) => {
-          setEditOpen(isOpen)
-          if (!isOpen) {
-            const params = new URLSearchParams(searchParams.toString())
-            params.delete("edit")
-            if (!params.get("tab")) params.set("tab", "candidates")
-            router.replace(`/candidates/table?${params.toString()}`)
-          }
-        }}
+        onOpenChange={handleEditModalClose}
         candidate={editingCandidate}
         onSave={(updated) => {
           console.log("[v0] Saved candidate:", updated)
