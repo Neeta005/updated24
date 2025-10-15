@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -93,7 +92,7 @@ export function CandidatesTable({ onClose, onViewGroup, onEditGroup }: Candidate
         <h1 className="text-2xl font-semibold text-white">Candidates</h1>
         <div className="flex items-center gap-3">
           <button onClick={onClose} className="text-slate-400 hover:text-white">
-            <img src="/icons/Vector (4).png" alt="Close" className="size-6" />
+            <Image src="/icons/Vector (4).png" alt="Close" width={24} height={24} />
           </button>
 
           {activeTab === "candidates" ? (
