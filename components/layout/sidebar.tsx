@@ -54,7 +54,6 @@ export function Sidebar({ activeIndex, isOpen, setIsOpen }: SidebarProps) {
 
   const indexToUse = activeIndex ?? computedActiveIndex
 
-  // console.log("[v0] sidebar active debug:", { pathname, activeIndexProp: activeIndex, computedActiveIndex })
 
   return (
     <>

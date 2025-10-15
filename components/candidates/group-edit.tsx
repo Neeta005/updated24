@@ -1,19 +1,17 @@
 "use client"
 import { useState } from "react"
-import { Upload, Plus, Search, ChevronUp, Edit3, Trash2 } from "lucide-react"
+import { Plus, Search, ChevronUp, Edit3, Trash2 } from "lucide-react"
 import { GradientButton } from "@/components/ui/gradient-button"
 import Image from "next/image"
 import { Pagination } from "@/components/ui/pagination"
-import { cn } from "@/lib/utils"
-import { gradientButtonStyle } from "@/data/syllabus"
-import { 
-  groupCandidates, 
-  initialGroupEditData, 
-  targetAudienceOptions, 
-  educationOptions, 
+import {
+  groupCandidates,
+  initialGroupEditData,
+  targetAudienceOptions,
+  educationOptions,
   statusOptions,
-  type Candidate 
 } from "@/data/candidates"
+import { useRouter } from "next/navigation"
 
 interface GroupEditProps {
   onBack: () => void
@@ -25,12 +23,10 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [groupData, setGroupData] = useState(initialGroupEditData)
   const itemsPerPage = 5
+  const router = useRouter()
 
   const totalPages = Math.ceil(groupCandidates.length / itemsPerPage)
-  const paginatedCandidates = groupCandidates.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
+  const paginatedCandidates = groupCandidates.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   return (
     <main className="flex-1 p-6 bg-gray-900 min-h-screen">
@@ -84,13 +80,15 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">Target Audience</label>
-                <select 
+                <select
                   value={groupData.targetAudience}
                   onChange={(e) => setGroupData({ ...groupData, targetAudience: e.target.value })}
                   className="w-full px-4 py-3 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-slate-500"
                 >
                   {targetAudienceOptions.map((option) => (
-                    <option key={option} value={option}>{option}</option>
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -114,12 +112,7 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
           <h3 className="text-lg font-semibold text-white">Candidates</h3>
           <div className="flex items-center gap-3">
             <label className="px-5 py-2.5 bg-white text-gray-900 rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm cursor-pointer border border-slate-300">
-              <Image
-                src="/icons/import.png"
-                alt="Upload Icon"
-                width={16}
-                height={16}
-              />
+              <Image src="/icons/import.png" alt="Upload Icon" width={16} height={16} />
               Bulk Import
               <input type="file" accept=".csv,.xlsx" className="hidden" onChange={(e) => console.log(e.target.files)} />
             </label>
@@ -180,16 +173,25 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
                   <td className="px-6 py-4 text-slate-300">{candidate.education}</td>
                   <td className="px-6 py-4 text-slate-300">{candidate.experience}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${candidate.status === "Active" ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${candidate.status === "Active" ? "bg-green-900/30 text-green-400" : "bg-red-900/30 text-red-400"}`}
+                    >
                       {candidate.status}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button className="p-2 border border-red-500 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Delete">
+                      <button
+                        className="p-2 border border-red-500 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                        title="Delete"
+                      >
                         <Trash2 className="size-4" />
                       </button>
-                      <button className="p-2 border border-orange-500 text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors" title="Edit">
+                      <button
+                        className="p-2 border border-orange-500 text-orange-400 hover:bg-orange-500/10 rounded-lg transition-colors"
+                        title="Edit"
+                        onClick={() => router.push(`/candidates/table?tab=candidates&edit=${candidate.id}`)}
+                      >
                         <Edit3 className="size-4" />
                       </button>
                     </div>

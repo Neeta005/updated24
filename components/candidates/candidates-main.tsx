@@ -54,7 +54,10 @@ export function CandidatesMain() {
 
           <TabButton
             active={activeTab === "candidates"}
-            onClick={() => setActiveTab("candidates")}
+            onClick={() => {
+              setActiveTab("candidates")
+              router.push("/candidates/table?tab=candidates")
+            }}
             position="right"
             className="min-w-[110px] h-[32px] px-[12px] gap-[10px] text-[12px] leading-[18px] font-poppins font-semibold rounded-md"
           >
@@ -102,18 +105,8 @@ export function CandidatesMain() {
               <option>Name</option>
             </select>
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-              <svg
-                className="size-4 text-slate-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg className="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>
           </div>
@@ -123,10 +116,7 @@ export function CandidatesMain() {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {candidateGroups.map((group) => (
-          <div
-            key={group.id}
-            className="bg-card rounded-2xl border border-slate-600/50 p-5 relative flex flex-col"
-          >
+          <div key={group.id} className="bg-card rounded-2xl border border-slate-600/50 p-5 relative flex flex-col">
             {/* Action buttons */}
             <div className="absolute top-5 right-5 flex items-center gap-2">
               <button
@@ -144,25 +134,17 @@ export function CandidatesMain() {
             <div className="flex-1 flex flex-col justify-between mt-2">
               {/* Top content */}
               <div className="space-y-3">
-                <h3 className="text-xl font-semibold text-white pr-16">
-                  {group.name}
-                </h3>
+                <h3 className="text-xl font-semibold text-white pr-16">{group.name}</h3>
                 <span className="inline-block px-3 py-1 bg-orange-900/30 border border-orange-600/40 text-orange-400 text-xs rounded-sm font-medium">
                   {group.category}
                 </span>
-                <p className="text-slate-300 text-sm leading-relaxed line-clamp-3 mt-2">
-                  {group.description}
-                </p>
+                <p className="text-slate-300 text-sm leading-relaxed line-clamp-3 mt-2">{group.description}</p>
               </div>
 
               {/* Bottom content */}
               <div className="mt-4 space-y-2">
-                <div className="text-center text-white font-medium text-base">
-                  {group.count} Candidates
-                </div>
-                <div className="text-right text-slate-400 text-sm mt-2">
-                  Date Created: {group.createdAt}
-                </div>
+                <div className="text-center text-white font-medium text-base">{group.count} Candidates</div>
+                <div className="text-right text-slate-400 text-sm mt-2">Date Created: {group.createdAt}</div>
                 <button
                   onClick={() => handleViewGroup(group.id)}
                   className={`${gradientButtonStyle} mt-2 w-full py-3 text-white rounded-lg font-medium transition-all duration-200 text-base`}

@@ -66,7 +66,6 @@ export function FileUploadSection({ uploadedFiles, onFilesChange }: FileUploadSe
               return
             }
           } catch (e) {
-            console.log('File reading failed, trying alternative method')
           }
         }
 

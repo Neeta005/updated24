@@ -17,6 +17,10 @@ export type Candidate = {
   status: "Active" | "Inactive"
 }
 
+export type CandidateWithGroup = Candidate & {
+  group: string
+}
+
 export type GroupEditData = {
   groupName: string
   targetAudience: string
@@ -37,8 +41,7 @@ export const candidateGroups: CandidateGroup[] = [
     id: "g-2",
     name: "Frontend Engineers",
     category: "Coding & Development",
-    description:
-      "Highly motivated candidates focusing on UI, UX and performance oriented coding practices.",
+    description: "Highly motivated candidates focusing on UI, UX and performance oriented coding practices.",
     count: 42,
     createdAt: "02 Sep, 2025",
   },
@@ -46,8 +49,7 @@ export const candidateGroups: CandidateGroup[] = [
     id: "g-3",
     name: "Data Analysts",
     category: "Analytics",
-    description:
-      "Candidates skilled in SQL, Python and dashboarding with strong statistical foundations.",
+    description: "Candidates skilled in SQL, Python and dashboarding with strong statistical foundations.",
     count: 37,
     createdAt: "15 Jul, 2025",
   },
@@ -117,38 +119,230 @@ export const candidateGroups: CandidateGroup[] = [
 ]
 
 export const groupCandidates: Candidate[] = [
-  { id: "1", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "2", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "3", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "4", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "5", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "6", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "7", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "8", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "9", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "10", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
+  {
+    id: "1",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+  },
+  {
+    id: "2",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+  },
+  {
+    id: "3",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+  },
+  {
+    id: "4",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+  },
+  {
+    id: "5",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+  },
+  {
+    id: "6",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+  },
+  {
+    id: "7",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+  },
+  {
+    id: "8",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+  },
+  {
+    id: "9",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+  },
+  {
+    id: "10",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+  },
 ]
 
 export const initialGroupEditData: GroupEditData = {
   groupName: "Python Developers",
   targetAudience: "Python Developers",
-  description: "Lorem ipsum dolor sit amet consectetur. Eget ultrices varius potenti mauris aliquet. Mi adipiscing lectus justo ut adipiscing a nullam.",
+  description:
+    "Lorem ipsum dolor sit amet consectetur. Eget ultrices varius potenti mauris aliquet. Mi adipiscing lectus justo ut adipiscing a nullam.",
 }
 
-export const targetAudienceOptions = [
-  "Python Developers",
-  "Java Developers",
-  "Frontend Developers",
-]
+export const targetAudienceOptions = ["Python Developers", "Java Developers", "Frontend Developers"]
 
-export const educationOptions = [
-  "All",
-  "B.Sc. Computer Science",
-  "Other",
-]
+export const educationOptions = ["All", "B.Sc. Computer Science", "Other"]
 
-export const statusOptions = [
-  "All",
-  "Active",
-  "Inactive",
+export const statusOptions = ["All", "Active", "Inactive"]
+
+export const allCandidatesTable: CandidateWithGroup[] = [
+  {
+    id: "1",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
+  {
+    id: "2",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+    group: "Python Developers",
+  },
+  {
+    id: "3",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
+  {
+    id: "4",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
+  {
+    id: "5",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+    group: "Python Developers",
+  },
+  {
+    id: "6",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
+  {
+    id: "7",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+    group: "Python Developers",
+  },
+  {
+    id: "8",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
+  {
+    id: "9",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+    group: "Python Developers",
+  },
+  {
+    id: "10",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
+  {
+    id: "11",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Inactive",
+    group: "Python Developers",
+  },
+  {
+    id: "12",
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    phone: "0201-1234567",
+    education: "B.Sc. Computer Science",
+    experience: "2 yrs",
+    status: "Active",
+    group: "Python Developers",
+  },
 ]

@@ -73,7 +73,6 @@ export function Syllabus() {
 
   const handleDeleteSyllabus = (syllabusId: string) => {
     // TODO: implement delete logic (API call / state update)
-    console.log("delete", syllabusId)
   }
 
   // Reset search filters

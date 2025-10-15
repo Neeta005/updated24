@@ -93,3 +93,12 @@ export function PaginationNext({ className, href = "#", ...props }: React.Compon
     </Button>
   )
 }
+
+// Ellipsis control
+export function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span">) {
+  return (
+    <span aria-hidden className={cn("px-2 text-slate-400", className)} {...props}>
+      …
+    </span>
+  )
+}

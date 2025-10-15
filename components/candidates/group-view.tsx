@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Upload, Download, Plus, Search, Edit3, Trash2 } from "lucide-react"
+import { ArrowLeft, Plus, Search, Edit3, Trash2 } from "lucide-react"
 import { Pagination } from "@/components/ui/pagination"
 import { GradientButton } from "@/components/ui/gradient-button"
 import Image from "next/image"
-
+import { useRouter } from "next/navigation"
 
 interface Candidate {
   id: string
@@ -114,6 +114,7 @@ export function GroupView() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
   const totalPages = Math.ceil(allCandidates.length / itemsPerPage)
+  const router = useRouter()
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
@@ -129,39 +130,37 @@ export function GroupView() {
             <ArrowLeft className="size-4" />
             Back
           </button>
-         <label className="px-5 py-2.5 bg-white text-gray-900 rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm cursor-pointer border border-slate-300">
-        <Image
-          src="/icons/import.png" // replace with your public folder image
-          alt="Upload Icon"
-          width={16}
-          height={16}
-        />
-        Bulk Import
-       
-      </label>
-        <GradientButton className="flex items-center gap-2 text-sm">
-  <Image
-    src="/icons/export (1).png" // put your icon in public/icons/
-    alt="Download"
-    width={16}
-    height={16}
-  />
-  Export Candidates
-</GradientButton>
-
+          <label className="px-5 py-2.5 bg-white text-gray-900 rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm cursor-pointer border border-slate-300">
+            <Image
+              src="/icons/import.png" // replace with your public folder image
+              alt="Upload Icon"
+              width={16}
+              height={16}
+            />
+            Bulk Import
+          </label>
+          <GradientButton className="flex items-center gap-2 text-sm">
+            <Image
+              src="/icons/export (1).png" // put your icon in public/icons/
+              alt="Download"
+              width={16}
+              height={16}
+            />
+            Export Candidates
+          </GradientButton>
         </div>
       </div>
 
       {/* Group Info Card */}
       <div className="bg-card rounded-lg p-6 mb-8 relative border border-slate-800">
-     <button className="absolute top-4 right-4 p-2 hover:bg-slate-800 rounded-md transition-colors">
-  <Image
-    src="/icons/edit-2.png" // put your icon in public/icons/
-    alt="Edit"
-    width={30} // adjust size as needed
-    height={30}
-  />
-</button>
+        <button className="absolute top-4 right-4 p-2 hover:bg-slate-800 rounded-md transition-colors">
+          <Image
+            src="/icons/edit-2.png" // put your icon in public/icons/
+            alt="Edit"
+            width={30} // adjust size as needed
+            height={30}
+          />
+        </button>
 
         <div>
           <h2 className="text-xl font-medium text-white mb-2">Python Developers</h2>
@@ -169,8 +168,8 @@ export function GroupView() {
             Coding & Development
           </span>
           <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-3xl">
-            Lorem ipsum dolor sit amet consectetur. Eget ultrices varius potenti mauris
-            aliquet. Mi adipiscing lectus justo ut adipiscing a nullam.
+            Lorem ipsum dolor sit amet consectetur. Eget ultrices varius potenti mauris aliquet. Mi adipiscing lectus
+            justo ut adipiscing a nullam.
           </p>
 
           {/* Stats section */}
@@ -189,9 +188,7 @@ export function GroupView() {
             </div>
           </div>
 
-          <div className="text-right text-slate-500 text-xs mt-3">
-            Date Created: 08 Aug, 2025
-          </div>
+          <div className="text-right text-slate-500 text-xs mt-3">Date Created: 08 Aug, 2025</div>
         </div>
       </div>
 
@@ -233,13 +230,27 @@ export function GroupView() {
           <table className="w-full">
             <thead className="bg-black">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Candidate Name</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Phone</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Education</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Experience</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Candidate Name
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Phone
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Education
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Experience
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -253,9 +264,7 @@ export function GroupView() {
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        candidate.status === "Active"
-                          ? "bg-green-500/10 text-green-500"
-                          : "bg-red-500/10 text-red-500"
+                        candidate.status === "Active" ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
                       }`}
                     >
                       {candidate.status}
@@ -266,7 +275,10 @@ export function GroupView() {
                       <button className="p-2 border border-pink-500 text-pink-500 hover:bg-pink-500/10 rounded-md transition-colors">
                         <Trash2 className="w-4 h-4" />
                       </button>
-                      <button className="p-2 border border-orange-500 text-orange-500 hover:bg-orange-500/10 rounded-md transition-colors">
+                      <button
+                        className="p-2 border border-orange-500 text-orange-500 hover:bg-orange-500/10 rounded-md transition-colors"
+                        onClick={() => router.push(`/candidates/table?tab=candidates&edit=${candidate.id}`)}
+                      >
                         <Edit3 className="w-4 h-4" />
                       </button>
                     </div>

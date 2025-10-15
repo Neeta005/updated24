@@ -45,7 +45,6 @@ export default function SignInPage() {
         router.push("/welcome")
       }
     } catch (error) {
-      console.error("Sign in error:", error)
       alert("Sign in failed. Please try again.")
     } finally {
       setIsLoading(false)

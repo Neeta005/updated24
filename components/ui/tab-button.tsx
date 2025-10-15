@@ -28,6 +28,10 @@ export function TabButton({
     }
   }
 
+  const activeClasses =
+    "relative bg-gradient-to-b from-orange-500/20 to-orange-500/0 text-orange-500 border-t border-orange-500"
+  const inactiveClasses = "bg-transparent text-slate-400 hover:text-slate-300"
+
   return (
     <button
       onClick={onClick}
@@ -36,14 +40,11 @@ export function TabButton({
         text-xs leading-[18px] font-poppins font-semibold 
         transition-all duration-200
         ${getPositionClasses()} 
-        ${
-          active
-            ? "relative bg-gradient-to-b from-orange-500/20 to-orange-500/0 text-orange-500 border-t border-orange-500"
-            : "bg-transparent text-slate-400 hover:text-slate-300"
-        } 
+        ${active ? activeClasses : inactiveClasses} 
         ${className}`}
     >
-      {children}
+      {/* Wrap children in span with text-current so icons inherit color */}
+      <span className="flex items-center gap-2 text-current">{children}</span>
     </button>
   )
 }

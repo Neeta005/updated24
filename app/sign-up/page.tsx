@@ -37,7 +37,6 @@ export default function SignUpPage() {
       // After successful sign up, redirect to welcome
       router.push("/welcome")
     } catch (error) {
-      console.error("Sign up error:", error)
       alert("Sign up failed. Please try again.")
     } finally {
       setIsLoading(false)

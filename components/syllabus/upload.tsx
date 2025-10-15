@@ -40,7 +40,6 @@ export function Upload() {
         const parsedData = JSON.parse(savedData)
         setFormData(parsedData)
       } catch (error) {
-        console.error("Error parsing saved form data:", error)
       }
     }
   }, [])

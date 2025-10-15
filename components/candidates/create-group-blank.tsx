@@ -4,11 +4,20 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { gradientButtonStyle } from "@/data/syllabus"
-import { TabButton } from "@/components/ui/tab-button" // adjust import path as per your folder structure
+import { TabButton } from "@/components/ui/tab-button" // adjust import path as needed
 
 export function CreateGroupBlank() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<"groups" | "candidates">("groups")
+
+  const handleTabClick = (tab: "groups" | "candidates") => {
+    setActiveTab(tab)
+
+    // redirect only when switching to "candidates"
+    if (tab === "candidates") {
+      router.push("/candidates/table?tab=candidates")
+    }
+  }
 
   return (
     <main className="flex-1 p-6 bg-gray-900 min-h-screen">
@@ -30,7 +39,7 @@ export function CreateGroupBlank() {
         <div className="flex">
           <TabButton
             active={activeTab === "groups"}
-            onClick={() => setActiveTab("groups")}
+            onClick={() => handleTabClick("groups")}
             position="left"
           >
             All Groups
@@ -38,7 +47,7 @@ export function CreateGroupBlank() {
 
           <TabButton
             active={activeTab === "candidates"}
-            onClick={() => setActiveTab("candidates")}
+            onClick={() => handleTabClick("candidates")}
             position="right"
           >
             All Candidates

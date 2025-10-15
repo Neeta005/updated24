@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Eye } from "lucide-react"
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp} from "lucide-react"
 import { QUESTION_PAPER_ROUTES } from "@/data/question-papers-pages"
 import type { SubjectSection, QuestionItem } from "@/data/question-paper-details"
 import { questionPaperDetails } from "@/data/question-paper-details"
 import { Pagination } from "@/components/ui/pagination"
+import { Plus, Eye, Edit3, Trash2 } from "lucide-react"
 
 function LevelBadge({ level }: { level: SubjectSection["level"] }) {
   const styles =
@@ -18,14 +19,36 @@ function LevelBadge({ level }: { level: SubjectSection["level"] }) {
   return <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${styles}`}>{level}</span>
 }
 
-function MethodPill({ method }: { method: SubjectSection["selection"] }) {
+function MethodPill({ 
+  method, 
+  onToggle 
+}: { 
+  method: "manual" | "random"
+  onToggle: () => void
+}) {
   return (
-    <span className="inline-flex items-center gap-1.5 bg-slate-700/50 px-2 py-1.5 rounded-full text-slate-200 text-sm">
-      <span className="flex size-5 items-center justify-center rounded-full bg-white">
-        <img src="/icons/Knob.png" alt="Method Icon" className="h-3 w-3 object-contain" />
-      </span>
-      {method === "manual" ? "Manual" : "Random"}
-    </span>
+    <button
+      onClick={onToggle}
+      className={`inline-flex items-center gap-1.5 px-2 py-1.5 rounded-full text-slate-200 text-sm transition-all cursor-pointer ${
+        method === "manual" ? "bg-slate-700/50 hover:bg-slate-600/50" : "bg-green-700/50 hover:bg-green-600/50"
+      }`}
+    >
+      {method === "manual" ? (
+        <>
+          <span className="flex size-5 items-center justify-center rounded-full bg-white">
+            <img src="/icons/Knob.png" alt="Method Icon" className="h-3 w-3 object-contain" />
+          </span>
+          Manual
+        </>
+      ) : (
+        <>
+          Random
+          <span className="flex size-5 items-center justify-center rounded-full bg-white">
+            <img src="/icons/Knob.png" alt="Method Icon" className="h-3 w-3 object-contain" />
+          </span>
+        </>
+      )}
+    </button>
   )
 }
 
@@ -45,10 +68,12 @@ function SectionRow({
   section,
   isExpanded,
   onToggle,
+  onMethodToggle,
 }: {
   section: SubjectSection
   isExpanded: boolean
   onToggle: () => void
+  onMethodToggle: () => void
 }) {
   return (
     <div
@@ -69,33 +94,41 @@ function SectionRow({
       <div className="col-span-2">
         <LevelBadge level={section.level} />
       </div>
-      <div className="col-span-2">
-        <MethodPill method={section.selection} />
+      <div className="col-span-2" onClick={(e) => e.stopPropagation()}>
+        <MethodPill method={section.selection} onToggle={onMethodToggle} />
       </div>
-      <div className="col-span-2 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-        <button
-          type="button"
-          className="inline-flex items-center justify-center size-8 rounded-md border border-red-400 hover:bg-slate-700/50"
-          aria-label="Delete"
-          title="Delete"
-        >
-          <span className="size-5 text-red-400">🗑</span>
-        </button>
+    <div
+  className="col-span-2 flex items-center justify-end gap-2"
+  onClick={(e) => e.stopPropagation()}
+>
+  {/* Delete Button */}
+  <button
+    onClick={() => console.log("Delete", section.id)}
+    className="p-1.5 border border-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+    title="Delete Section"
+  >
+    <Trash2 className="size-3 text-red-500" />
+  </button>
 
-        <button
-          type="button"
-          className="inline-flex items-center justify-center w-8 h-8 rounded-md border border-white hover:bg-slate-700/50"
-          aria-label="View"
-          title="View"
-        >
-          <Eye className="size-4 text-slate-300" />
-        </button>
-        <span className="inline-flex items-center justify-center rounded-md  border border-red-300 ">
-          <span className="flex items-center justify-center size-8 rounded-md bg-black">
-            <img src="/icons/edit-2.png" alt="Edit" className="size-4 object-contain" />
-          </span>
-        </span>
-      </div>
+  {/* View Button */}
+  <button
+    onClick={() => console.log("View", section.id)}
+    className="p-1.5 border border-white hover:bg-gray-600 rounded-lg transition-colors"
+    title="View Section"
+  >
+    <Eye className="size-3 text-white" />
+  </button>
+
+  {/* Edit Button */}
+  <button
+    onClick={() => console.log("Edit", section.id)}
+    className="p-1.5 border border-orange-500 hover:bg-orange-500/10 rounded-lg transition-colors"
+    title="Edit Section"
+  >
+    <Edit3 className="size-3 text-orange-500" />
+  </button>
+</div>
+
     </div>
   )
 }
@@ -192,6 +225,16 @@ export default function DetailsManualSelection() {
     })
   }
 
+  const toggleMethod = (sectionId: string) => {
+    setSections((prev) =>
+      prev.map((s) =>
+        s.id === sectionId
+          ? { ...s, selection: s.selection === "manual" ? "random" : "manual" }
+          : s
+      )
+    )
+  }
+
   const handlePageChange = (sectionId: string, page: number) => {
     setSectionPages((prev) => ({ ...prev, [sectionId]: page }))
   }
@@ -250,6 +293,7 @@ export default function DetailsManualSelection() {
                   section={section}
                   isExpanded={expandedSections.has(section.id)}
                   onToggle={() => toggleSection(section.id)}
+                  onMethodToggle={() => toggleMethod(section.id)}
                 />
 
                 {/* Expanded Questions Section */}
@@ -266,8 +310,7 @@ export default function DetailsManualSelection() {
                       />
                     ))}
 
-                    {/* Custom Pagination Component */}
-                    {/* Debug: Always show pagination for testing - remove in production */}
+                   
                     <div className="p-2 bg-slate-700/30 text-xs text-slate-400">
                       Debug: Section {section.id} - Current Page: {currentPage}, Total Pages: {totalPages}, Questions: {section.questions.length}
                     </div>
@@ -299,7 +342,7 @@ export default function DetailsManualSelection() {
     onClick={() => router.push(QUESTION_PAPER_ROUTES.preview)}
     className="px-5 py-2 rounded-lg bg-gradient-to-r from-orange-primary to-red-primary text-white inline-flex items-center gap-2"
   >
-    Next
+    Save
     <ChevronRight className="size-4" />
   </button>
 </div>

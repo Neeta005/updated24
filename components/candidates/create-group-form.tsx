@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation"
 import { gradientButtonStyle } from "@/data/syllabus"
 import { TabButton } from "@/components/ui/tab-button"
 import { Edit3, Trash2 } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog"
+import ImportCsvCandidatesBulkModal from "@/components/modals/import-csv-candidates-bulk-modal"
+import Image from "next/image"
 
 export function CreateGroupForm() {
   const router = useRouter()
@@ -17,6 +20,15 @@ export function CreateGroupForm() {
   const [candidatePhone, setCandidatePhone] = useState("")
   const [candidates, setCandidates] = useState<Array<{ name: string; email: string; phone: string }>>([])
   const [bulkContactList, setBulkContactList] = useState("")
+  const [bulkImportOpen, setBulkImportOpen] = useState(false)
+
+  const [editOpen, setEditOpen] = useState(false)
+  const [editIndex, setEditIndex] = useState<number | null>(null)
+  const [editForm, setEditForm] = useState<{ name: string; email: string; phone: string }>({
+    name: "",
+    email: "",
+    phone: "",
+  })
 
   const addCandidate = () => {
     if (!candidateName || !candidateEmail || !candidatePhone) return
@@ -32,11 +44,31 @@ export function CreateGroupForm() {
 
   const countContacts = () => {
     if (!bulkContactList.trim()) return 0
-    return bulkContactList.split('\n').filter(line => line.trim()).length
+    return bulkContactList.split("\n").filter((line) => line.trim()).length
   }
 
   const clearAllContacts = () => {
     setBulkContactList("")
+  }
+
+  const onEdit = (idx: number) => {
+    const c = candidates[idx]
+    if (!c) return
+    setEditForm({ name: c.name, email: c.email, phone: c.phone })
+    setEditIndex(idx)
+    setEditOpen(true)
+  }
+
+  const onCloseEdit = (open: boolean) => {
+    setEditOpen(open)
+    if (!open) setEditIndex(null)
+  }
+
+  const saveEdit = () => {
+    if (editIndex === null) return
+    setCandidates((prev) => prev.map((c, i) => (i === editIndex ? { ...c, ...editForm } : c)))
+    setEditOpen(false)
+    setEditIndex(null)
   }
 
   return (
@@ -56,57 +88,94 @@ export function CreateGroupForm() {
       {/* Tabs */}
       <div className="w-full bg-slate-800 p-2 mb-6 rounded-md">
         <div className="flex gap-2">
-          <TabButton active={activeTab === "manual"} onClick={() => setActiveTab("manual")} position="left">
-            Manual Entry
-          </TabButton>
-          <TabButton active={activeTab === "bulk"} onClick={() => setActiveTab("bulk")} position="right">
-            Bulk Import
-          </TabButton>
+        <TabButton
+  active={activeTab === "manual"}
+  onClick={() => setActiveTab("manual")}
+  position="left"
+>
+  <div className="flex items-center gap-2">
+    <Image
+      src="/icons/manual outline 1.png" // 🧩 your icon path in public folder
+      alt="Manual Icon"
+      width={18}
+      height={18}
+      className="object-contain"
+    />
+    <span>Manual Entry</span>
+  </div>
+</TabButton>
+
+<TabButton
+  active={activeTab === "bulk"}
+  onClick={() => setActiveTab("bulk")}
+  position="right"
+>
+  <div className="flex items-center gap-2">
+    <Image
+      src="/icons/bulk outliine 1.png" // 🧩 your icon path in public folder
+      alt="Bulk Import Icon"
+      width={18}
+      height={18}
+      className="object-contain"
+    />
+    <span>Bulk Import</span>
+  </div>
+</TabButton>
+
         </div>
       </div>
 
       {/* Manual Entry */}
       {activeTab === "manual" && (
         <>
-          <div className="bg-card border border-slate-700 rounded-xl p-5 space-y-5">
-            <div className="text-white font-semibold">Manual Entry</div>
+       <div className="bg-card border border-slate-700 rounded-xl p-5 space-y-5">
+  <div className="flex items-center gap-2 text-white font-semibold">
+    <Image
+      src="/icons/manual outline 1.png"  // simple icon from public folder
+      alt="Manual Icon"
+      width={18}
+      height={18}
+      className="object-contain"
+    />
+    <span>Manual Entry</span>
+  </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-slate-300 text-sm mb-2">Group Name</label>
-                <input
-                  value={groupName}
-                  onChange={(e) => setGroupName(e.target.value)}
-                  placeholder="Python & Development"
-                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
-                />
-              </div>
+  <div className="grid md:grid-cols-2 gap-4 mt-2">
+    <div>
+      <label className="block text-slate-300 text-sm mb-2">Group Name</label>
+      <input
+        value={groupName}
+        onChange={(e) => setGroupName(e.target.value)}
+        placeholder="Python & Development"
+        className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+      />
+    </div>
 
-              <div>
-                <label className="block text-slate-300 text-sm mb-2">Target Audience</label>
-                <select
-                  value={audience}
-                  onChange={(e) => setAudience(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none"
-                >
-                  <option>Students & Fresher</option>
-                  <option>Experienced</option>
-                  <option>Mixed</option>
-                </select>
-              </div>
-            </div>
+    <div>
+      <label className="block text-slate-300 text-sm mb-2">Target Audience</label>
+      <select
+        value={audience}
+        onChange={(e) => setAudience(e.target.value)}
+        className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none"
+      >
+        <option>Students & Fresher</option>
+        <option>Experienced</option>
+        <option>Mixed</option>
+      </select>
+    </div>
+  </div>
 
-            <div>
-              <label className="block text-slate-300 text-sm mb-2">Description</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Enter Description"
-                rows={3}
-                className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
-              />
-            </div>
-          </div>
+  <div>
+    <label className="block text-slate-300 text-sm mb-2">Description</label>
+    <textarea
+      value={description}
+      onChange={(e) => setDescription(e.target.value)}
+      placeholder="Enter Description"
+      rows={3}
+      className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+    />
+  </div>
+</div>
 
           {/* Candidate List */}
           <div className="bg-card border border-slate-700 rounded-xl p-5 mt-6">
@@ -162,11 +231,7 @@ export function CreateGroupForm() {
             {candidates.length === 0 ? (
               <div className="py-14 text-center space-y-4">
                 <div className="mx-auto flex items-center justify-center">
-                  <img
-                    src="/icons/canddidate 1.png"
-                    alt="No Candidates"
-                    className="h-20 w-20 opacity-80"
-                  />
+                  <img src="/icons/canddidate 1.png" alt="No Candidates" className="h-20 w-20 opacity-80" />
                 </div>
                 <p className="text-white/90 text-base font-medium">No Candidates!</p>
                 <p className="text-slate-400 text-sm">Add some candidates to view here</p>
@@ -204,7 +269,11 @@ export function CreateGroupForm() {
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
-                            <button className="p-2 border border-orange-500 text-orange-500 hover:bg-orange-500/10 rounded-md transition-colors">
+                            <button
+                              onClick={() => onEdit(idx)}
+                              className="p-2 border border-orange-500 text-orange-500 hover:bg-orange-500/10 rounded-md transition-colors"
+                              title="Edit"
+                            >
                               <Edit3 className="w-4 h-4" />
                             </button>
                           </div>
@@ -216,6 +285,67 @@ export function CreateGroupForm() {
               </div>
             )}
           </div>
+
+          {/* Edit Candidate Modal */}
+          <Dialog open={editOpen} onOpenChange={onCloseEdit}>
+            <DialogContent className="max-w-2xl bg-[#0b1626] text-white border border-slate-700 rounded-2xl">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-semibold text-white">Edit Candidate</DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-slate-300 text-sm mb-2">Candidate Name</label>
+                  <input
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                    placeholder="John Doe"
+                    className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-slate-300 text-sm mb-2">Email</label>
+                    <input
+                      type="email"
+                      value={editForm.email}
+                      onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                      placeholder="johndoe@gmail.com"
+                      className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-300 text-sm mb-2">Phone</label>
+                    <input
+                      type="tel"
+                      value={editForm.phone}
+                      onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                      placeholder="05324343324"
+                      className="w-full px-3 py-2 rounded-lg border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="mt-6 flex justify-end gap-3">
+                <DialogClose asChild>
+                  <button
+                    onClick={() => onCloseEdit(false)}
+                    className="px-4 py-2 rounded-lg border border-slate-600 text-slate-200 hover:bg-slate-800"
+                  >
+                    Cancel
+                  </button>
+                </DialogClose>
+                <button
+                  onClick={saveEdit}
+                  className="px-4 py-2 rounded-lg text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90"
+                >
+                  Save
+                </button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </>
       )}
 
@@ -233,7 +363,7 @@ export function CreateGroupForm() {
                   value={groupName}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="Python & Development"
-                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-md border border-slate-600  text-white placeholder-slate-400 focus:outline-none"
                 />
               </div>
 
@@ -242,7 +372,7 @@ export function CreateGroupForm() {
                 <select
                   value={audience}
                   onChange={(e) => setAudience(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none"
+                  className="w-full px-3 py-2 rounded-md border border-slate-600  text-white focus:outline-none"
                 >
                   <option>Students & Fresher</option>
                   <option>Experienced</option>
@@ -258,7 +388,7 @@ export function CreateGroupForm() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Enter Description"
                 rows={3}
-                className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+                className="w-full px-3 py-2 rounded-md border border-slate-600  text-white placeholder-slate-400 focus:outline-none"
               />
             </div>
           </div>
@@ -267,12 +397,20 @@ export function CreateGroupForm() {
           <div className="bg-card border border-slate-700 rounded-xl p-5 mt-6">
             <div className="flex items-center justify-between mb-5">
               <div className="text-white font-semibold">Candidates Data</div>
-              <button className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90 flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                Import CSV
-              </button>
+            <button
+  onClick={() => setBulkImportOpen(true)}
+  className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90 flex items-center gap-2"
+>
+  <Image
+    src="/icons/uploadicon.png" // replace with your actual icon path in public folder
+    alt="Import CSV Icon"
+    width={16}
+    height={16}
+    className="object-contain"
+  />
+  <span>Import CSV</span>
+</button>
+
             </div>
 
             {/* Format Instructions */}
@@ -297,14 +435,14 @@ export function CreateGroupForm() {
                 onChange={(e) => setBulkContactList(e.target.value)}
                 placeholder="Enter contact in the format: Name, Email, Phone (one per line)"
                 rows={6}
-                className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none font-mono text-sm"
+                className="w-full px-3 py-2 rounded-md border border-slate-600  text-white placeholder-slate-400 focus:outline-none font-mono text-sm"
               />
               <div className="text-slate-500 text-sm mt-2">{countContacts()} contact detected</div>
             </div>
 
             {/* Clear All Button */}
             <div className="mt-5">
-              <button 
+              <button
                 onClick={clearAllContacts}
                 className="px-4 py-2 rounded-md bg-pink-600 text-white hover:bg-pink-700 flex items-center gap-2"
               >
@@ -316,6 +454,17 @@ export function CreateGroupForm() {
         </>
       )}
 
+      {/* Import CSV Modal */}
+      <ImportCsvCandidatesBulkModal
+        open={bulkImportOpen}
+        onOpenChange={(o) => setBulkImportOpen(o)}
+        onComplete={() => {
+          // Keep user on the same page and ensure Bulk tab remains active per requirement
+          setActiveTab("bulk")
+          setBulkImportOpen(false)
+        }}
+      />
+
       {/* Footer actions */}
       <div className="flex items-center justify-between mt-6">
         <button
@@ -326,9 +475,15 @@ export function CreateGroupForm() {
         </button>
 
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 rounded-md border border-slate-600 bg-white text-black hover:bg-gray-100">
-            Save as Draft
-          </button>
+      <button className="px-4 py-2 rounded-md border border-slate-600  hover:bg-gray-100 flex items-center gap-2">
+  <Image
+              src="/icons/Save (1).png"
+              width={16}
+              height={16}
+              className="object-contain" alt={""}  />
+  <span>Save as Draft</span>
+</button>
+
           <button className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90">
             + Create Group
           </button>
