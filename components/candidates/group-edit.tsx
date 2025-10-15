@@ -3,32 +3,17 @@ import { useState } from "react"
 import { Upload, Plus, Search, ChevronUp, Edit3, Trash2 } from "lucide-react"
 import { GradientButton } from "@/components/ui/gradient-button"
 import Image from "next/image"
-import { Pagination } from "@/components/ui/pagination" // reusable pagination
+import { Pagination } from "@/components/ui/pagination"
 import { cn } from "@/lib/utils"
 import { gradientButtonStyle } from "@/data/syllabus"
-
-interface Candidate {
-  id: string
-  name: string
-  email: string
-  phone: string
-  education: string
-  experience: string
-  status: "Active" | "Inactive"
-}
-
-const candidates: Candidate[] = [
-  { id: "1", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "2", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "3", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "4", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "5", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "6", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "7", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "8", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-  { id: "9", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Inactive" },
-  { id: "10", name: "John Doe", email: "johndoe@gmail.com", phone: "0201-1234567", education: "B.Sc. Computer Science", experience: "2 yrs", status: "Active" },
-]
+import { 
+  groupCandidates, 
+  initialGroupEditData, 
+  targetAudienceOptions, 
+  educationOptions, 
+  statusOptions,
+  type Candidate 
+} from "@/data/candidates"
 
 interface GroupEditProps {
   onBack: () => void
@@ -38,10 +23,11 @@ interface GroupEditProps {
 export function GroupEdit({ onBack, onSave }: GroupEditProps) {
   const [groupInfoExpanded, setGroupInfoExpanded] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const [groupData, setGroupData] = useState(initialGroupEditData)
   const itemsPerPage = 5
 
-  const totalPages = Math.ceil(candidates.length / itemsPerPage)
-  const paginatedCandidates = candidates.slice(
+  const totalPages = Math.ceil(groupCandidates.length / itemsPerPage)
+  const paginatedCandidates = groupCandidates.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
@@ -91,16 +77,21 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
                 <label className="block text-sm font-medium text-slate-300 mb-2">Group Name</label>
                 <input
                   type="text"
-                  defaultValue="Python Developers"
+                  value={groupData.groupName}
+                  onChange={(e) => setGroupData({ ...groupData, groupName: e.target.value })}
                   className="w-full px-4 py-3 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-slate-500"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">Target Audience</label>
-                <select className="w-full px-4 py-3 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-slate-500">
-                  <option>Python Developers</option>
-                  <option>Java Developers</option>
-                  <option>Frontend Developers</option>
+                <select 
+                  value={groupData.targetAudience}
+                  onChange={(e) => setGroupData({ ...groupData, targetAudience: e.target.value })}
+                  className="w-full px-4 py-3 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-slate-500"
+                >
+                  {targetAudienceOptions.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -108,7 +99,8 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
               <label className="block text-sm font-medium text-slate-300 mb-2">Group Description</label>
               <textarea
                 rows={4}
-                defaultValue="Lorem ipsum dolor sit amet consectetur. Eget ultrices varius potenti mauris aliquet. Mi adipiscing lectus justo ut adipiscing a nullam."
+                value={groupData.description}
+                onChange={(e) => setGroupData({ ...groupData, description: e.target.value })}
                 className="w-full px-4 py-3 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-slate-500 resize-none"
               />
             </div>
@@ -150,14 +142,18 @@ export function GroupEdit({ onBack, onSave }: GroupEditProps) {
             />
           </div>
           <select className="border border-slate-600 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-slate-500">
-            <option>Status: All</option>
-            <option>Active</option>
-            <option>Inactive</option>
+            {statusOptions.map((status) => (
+              <option key={status} value={status}>
+                {status === "All" ? "Status: All" : status}
+              </option>
+            ))}
           </select>
           <select className="border border-slate-600 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-slate-500">
-            <option>Education: All</option>
-            <option>B.Sc. Computer Science</option>
-            <option>Other</option>
+            {educationOptions.map((edu) => (
+              <option key={edu} value={edu}>
+                {edu === "All" ? "Education: All" : edu}
+              </option>
+            ))}
           </select>
         </div>
 

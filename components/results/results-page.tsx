@@ -191,7 +191,7 @@ export function ResultsPage() {
                         </td>
                         <td className="px-6 py-4">
                           <button
-                            onClick={() => router.push(`/exam-logs/${student.id}`)}
+                            onClick={() => router.push(`/result/view/${student.id}`)}
                             className="p-2 rounded-lg border border-white hover:bg-white/10 transition-colors flex items-center justify-center"
                           >
                             <Eye className="w-4 h-4 text-white" />

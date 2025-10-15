@@ -33,7 +33,7 @@ export function ExamLogsTable({ searchTerm = "", data }: ExamLogsTableProps) {
   }
 
   const handleViewLogs = (studentId: string) => {
-    router.push(`/exam-logs/${studentId}`)
+    router.push(`/exam-logs/view/${studentId}`)
   }
 
   const getViolationColor = (violations: number) => {
@@ -117,11 +117,7 @@ export function ExamLogsTable({ searchTerm = "", data }: ExamLogsTableProps) {
       </div>
 
       {/* ✅ Your existing Pagination component - Simple & Clean */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
 
       {filteredData.length === 0 && searchTerm && (
         <div className="text-center py-8 text-slate-400">No students found matching "{searchTerm}"</div>
