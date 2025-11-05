@@ -25,7 +25,7 @@ export function CandidateDashboardContent() {
         <CalendarSection />
 
         {/* Bottom Left - Skills Learned */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
+        <div className="bg-card backdrop-blur-sm rounded-xl border border-slate-700 p-6">
           <h3 className="text-white text-base font-semibold mb-6">Skills Earned</h3>
           <div className="space-y-4">
             {skillsData.map((skill) => (
@@ -35,7 +35,7 @@ export function CandidateDashboardContent() {
         </div>
 
         {/* Bottom Right - Exam Violations */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
+        <div className="bg-card backdrop-blur-sm rounded-xl border border-slate-700 p-6">
           <h3 className="text-white text-base font-semibold mb-6">Exam Violations</h3>
           <ViolationsList violations={violationsData} />
         </div>

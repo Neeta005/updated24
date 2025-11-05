@@ -21,7 +21,7 @@ export function CalendarSection() {
   ]
 
   return (
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
+    <div className="bg-card backdrop-blur-sm rounded-xl border border-slate-700 p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-white text-base font-semibold">
           {monthName} {currentYear}

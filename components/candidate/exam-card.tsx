@@ -19,17 +19,18 @@ export function ExamCard({ exam }: ExamCardProps) {
     <div className="bg-slate-900/80 rounded-lg p-4 border border-slate-700 hover:border-slate-600 transition-all">
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-white font-medium text-sm">{exam.title}</h3>
-        <button
-          className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-4 py-1.5 rounded font-medium transition-colors"
-          onClick={handleTakeAssessment}
-        >
-          Take Assessment
-        </button>
+       <button
+  className=" hover:bg-emerald-700 text-emerald-600 text-xs px-4 py-1.5 rounded font-medium transition-colors"
+  onClick={handleTakeAssessment}
+>
+  Take Assessment
+</button>
+
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
         {exam.tags.map((tag) => (
-          <span key={tag} className="bg-slate-700/70 text-gray-300 text-xs px-2.5 py-1 rounded">
+          <span key={tag} className=" text-gray-300 text-xs px-2.5 py-1 rounded">
             {tag}
           </span>
         ))}

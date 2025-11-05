@@ -9,7 +9,7 @@ interface PerformanceGraphProps {
 
 export function PerformanceGraph({ data }: PerformanceGraphProps) {
   return (
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6 w-full">
+    <div className="bg-card backdrop-blur-sm rounded-xl border border-slate-700 p-6 w-full">
       <h2 className="text-white text-xl font-bold mb-6">Performance Graph</h2>
       <div className="relative h-72">
         <ResponsiveContainer width="100%" height="100%">

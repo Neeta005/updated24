@@ -17,7 +17,7 @@ export function TabsSection({ activeTab, onTabChange, exams }: TabsSectionProps)
   ]
 
   return (
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700 p-6">
+    <div className="bg-card backdrop-blur-sm rounded-xl border border-slate-700 p-6">
       {/* Tabs inside the card */}
       <div className="flex gap-2 bg-slate-900/50 p-1 rounded-lg w-fit mb-6">
         {tabs.map((tab) => (
