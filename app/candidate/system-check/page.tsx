@@ -1,21 +1,20 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { GradientButton } from "@/components/ui/gradient-button"; // adjust path if needed
 
 // Simple UI Components
 const Button = ({ children, onClick, disabled, variant = "default", className = "" }) => {
-  const baseStyles = "px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+  const baseStyles =
+    "px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
   const variantStyles = {
     default: "bg-orange-500 hover:bg-orange-600 text-white",
-    outline: "border border-slate-600 text-white hover:bg-slate-800 bg-transparent"
+    outline: "border border-slate-600 text-white hover:bg-slate-800 bg-transparent",
   }
-  
+
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      className={`${baseStyles} ${variantStyles[variant]} ${className}`}
-    >
+    <button onClick={onClick} disabled={disabled} className={`${baseStyles} ${variantStyles[variant]} ${className}`}>
       {children}
     </button>
   )
@@ -57,12 +56,12 @@ const Switch = ({ checked, onCheckedChange }) => {
       aria-checked={checked}
       onClick={() => onCheckedChange(!checked)}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-        checked ? 'bg-orange-500' : 'bg-slate-600'
+        checked ? "bg-orange-500" : "bg-slate-600"
       }`}
     >
       <span
         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-          checked ? 'translate-x-6' : 'translate-x-1'
+          checked ? "translate-x-6" : "translate-x-1"
         }`}
       />
     </button>
@@ -70,26 +69,27 @@ const Switch = ({ checked, onCheckedChange }) => {
 }
 
 // System Check Page Component
-function SystemCheckPage({ onStartExam }) {
+function SystemCheckPage() {
   const [cameraAllowed, setCameraAllowed] = useState(true)
   const [microphoneAllowed, setMicrophoneAllowed] = useState(true)
   const [showToast, setShowToast] = useState(false)
   const [toastMessage, setToastMessage] = useState({ title: "", description: "", type: "error" })
+  const router = useRouter()
 
   const systemChecksList = [
-    { id: "os", label: "Operating System", value: "Windows", status: "compatible" },
-    { id: "browser", label: "Browser", value: "Chrome", status: "incompatible", note: "To fix the issue contact us!" },
-    { id: "version", label: "Browser Version", value: "135.0.0.0 Safari/537.36", status: "compatible" },
-    { id: "resolution", label: "Screen Resolution", value: "1600×1000", status: "compatible" },
-    { id: "connectivity", label: "Exam Server Connectivity", value: "18.01 Mbps", status: "compatible" },
-    { id: "server", label: "Server Status", value: "200 Ok", status: "compatible" },
-    { id: "js", label: "Javascript", value: "Enabled", status: "compatible" },
-    { id: "mic1", label: "Microphone", value: "Enabled", status: "compatible" },
-    { id: "mic2", label: "Microphone", value: "Enabled", status: "compatible" },
+    { id: "os", label: "Operating System", value: "Windows" },
+    { id: "browser", label: "Browser", value: "Chrome" },
+    { id: "version", label: "Browser Version", value: "135.0.0.0 Safari/537.36" },
+    { id: "resolution", label: "Screen Resolution", value: "1600×1000" },
+    { id: "connectivity", label: "Exam Server Connectivity", value: "18.01 Mbps" },
+    { id: "server", label: "Server Status", value: "200 Ok" },
+    { id: "js", label: "Javascript", value: "Enabled" },
+    { id: "mic1", label: "Microphone", value: "Enabled" },
+    { id: "mic2", label: "Microphone", value: "Enabled" },
   ]
 
   const [systemChecksState, setSystemChecksState] = useState(
-    systemChecksList.reduce((acc, check) => ({ ...acc, [check.id]: false }), {})
+    systemChecksList.reduce((acc, check) => ({ ...acc, [check.id]: false }), {}),
   )
 
   const allSystemsChecked = Object.values(systemChecksState).every((checked) => checked)
@@ -109,7 +109,7 @@ function SystemCheckPage({ onStartExam }) {
       toast({
         title: "Incomplete",
         description: "Please check all system requirements before continuing.",
-        type: "error"
+        type: "error",
       })
       return
     }
@@ -117,11 +117,11 @@ function SystemCheckPage({ onStartExam }) {
     toast({
       title: "Success",
       description: "System check passed. Starting exam...",
-      type: "success"
+      type: "success",
     })
 
     setTimeout(() => {
-      onStartExam()
+      router.push("/candidate/exam")
     }, 500)
   }
 
@@ -130,7 +130,7 @@ function SystemCheckPage({ onStartExam }) {
     toast({
       title: "Reset Complete",
       description: "Please check all requirements again.",
-      type: "success"
+      type: "success",
     })
   }
 
@@ -157,11 +157,13 @@ function SystemCheckPage({ onStartExam }) {
       {/* Toast Notification */}
       {showToast && (
         <div className="fixed top-4 right-4 z-50 animate-slide-in">
-          <div className={`px-6 py-4 rounded-lg shadow-lg border ${
-            toastMessage.type === "success" 
-              ? "bg-emerald-900 border-emerald-700 text-emerald-200" 
-              : "bg-red-900 border-red-700 text-red-200"
-          }`}>
+          <div
+            className={`px-6 py-4 rounded-lg shadow-lg border ${
+              toastMessage.type === "success"
+                ? "bg-emerald-900 border-emerald-700 text-emerald-200"
+                : "bg-red-900 border-red-700 text-red-200"
+            }`}
+          >
             <div className="font-semibold">{toastMessage.title}</div>
             <div className="text-sm mt-1">{toastMessage.description}</div>
           </div>
@@ -169,7 +171,7 @@ function SystemCheckPage({ onStartExam }) {
       )}
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold text-white mb-3">Check your system compatibility</h1>
+        <h1 className="text-4xl  text-white mb-3">Check your system compatibility</h1>
         <p className="text-gray-400 text-sm mb-8">
           To ensure uninterrupted exam delivery, please check your system compatibility and proximity to our exam
           server.
@@ -192,14 +194,14 @@ function SystemCheckPage({ onStartExam }) {
 
                   {/* Right: Status + Checkbox */}
                   <div className="flex items-center gap-4 ml-4 flex-shrink-0">
-                    <span
-                      className={`text-sm font-medium ${
-                        check.status === "compatible" ? "text-emerald-400" : "text-red-400"
-                      }`}
-                    >
-                      {check.status === "compatible" ? "Compatible" : "Incompatible"}
-                    </span>
-                    {check.note && <span className="text-gray-400 text-xs whitespace-nowrap">{check.note}</span>}
+                    {systemChecksState[check.id] ? (
+                      <span className="text-sm font-medium text-emerald-400">Compatible</span>
+                    ) : (
+                      <>
+                        <span className="text-sm font-medium text-red-400">Incompatible</span>
+                        <span className="text-gray-400 text-xs whitespace-nowrap">To fix the issue contact us!</span>
+                      </>
+                    )}
                     <Checkbox
                       id={check.id}
                       checked={systemChecksState[check.id]}
@@ -233,39 +235,71 @@ function SystemCheckPage({ onStartExam }) {
               <p className="text-gray-400 text-sm text-center">Camera & Microphone</p>
             </div>
 
-            <div className="space-y-4">
-              {/* Camera Permission */}
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300 text-sm font-medium">Camera</span>
-                  <Switch checked={cameraAllowed} onCheckedChange={setCameraAllowed} />
-                </div>
-                <p className="text-gray-400 text-xs">{cameraAllowed ? "Allowed Camera" : "Camera Not Allowed"}</p>
-              </div>
+       <div className="space-y-4 flex flex-col items-center">
+  {/* Camera Permission */}
+  <div
+    className=" cursor-pointer flex items-center gap-3"
+    onClick={() => setCameraAllowed(!cameraAllowed)}
+  >
+    <svg
+      className={`w-6 h-6 ${cameraAllowed ? "text-emerald-400" : "text-red-400"}`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+      />
+    </svg>
+    <span className={`text-sm ${cameraAllowed ? "text-emerald-400" : "text-red-400"}`}>
+      {cameraAllowed ? "Allowed Camera" : "Camera Not Allowed"}
+    </span>
+  </div>
 
-              {/* Microphone Permission */}
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-4 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300 text-sm font-medium">Microphone</span>
-                  <Switch checked={microphoneAllowed} onCheckedChange={setMicrophoneAllowed} />
-                </div>
-                <p className="text-gray-400 text-xs">
-                  {microphoneAllowed ? "Allowed Microphone" : "Microphone Not Allowed"}
-                </p>
-              </div>
-            </div>
+  {/* Microphone Permission */}
+  <div
+    className=" cursor-pointer flex items-center gap-3"
+    onClick={() => setMicrophoneAllowed(!microphoneAllowed)}
+  >
+    <svg
+      className={`w-6 h-6 ${microphoneAllowed ? "text-emerald-400" : "text-red-400"}`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M12 1v11m0 0a3 3 0 003-3V1a3 3 0 00-6 0v8a3 3 0 003 3zm-6 6a6 6 0 0012 0"
+      />
+    </svg>
+    <span className={`text-sm ${microphoneAllowed ? "text-emerald-400" : "text-red-400"}`}>
+      {microphoneAllowed ? "Allowed Microphone" : "Microphone Not Allowed"}
+    </span>
+  </div>
+</div>
+
           </div>
         </div>
 
         {/* Bottom Buttons */}
-        <div className="flex justify-center gap-4 mt-12 pb-8">
-          <Button variant="outline" onClick={handleRecheck}>
-            Re-Check
-          </Button>
-          <Button onClick={handleContinue}>
-            Continue to Exam
-          </Button>
-        </div>
+      <div className="flex justify-center gap-4 mt-12 pb-8">
+  <Button variant="outline" onClick={handleRecheck}>
+    Re-Check
+  </Button>
+  <GradientButton
+    onClick={handleContinue}
+    size="md"        // make it same size as original Button
+    className=""     // do not force w-full
+  >
+    Continue to Exam
+  </GradientButton>
+</div>
+
       </div>
     </div>
   )
@@ -283,13 +317,13 @@ function ExamPage({ onBackToCheck }) {
       id: 1,
       question: "What is the capital of France?",
       options: ["London", "Berlin", "Paris", "Madrid"],
-      correctAnswer: 2
+      correctAnswer: 2,
     },
     {
       id: 2,
       question: "Which programming language is known as the 'language of the web'?",
       options: ["Python", "JavaScript", "Java", "C++"],
-      correctAnswer: 1
+      correctAnswer: 1,
     },
     {
       id: 3,
@@ -298,22 +332,22 @@ function ExamPage({ onBackToCheck }) {
         "Hyper Text Markup Language",
         "High Tech Modern Language",
         "Home Tool Markup Language",
-        "Hyperlinks and Text Markup Language"
+        "Hyperlinks and Text Markup Language",
       ],
-      correctAnswer: 0
+      correctAnswer: 0,
     },
     {
       id: 4,
       question: "Which company developed React?",
       options: ["Google", "Facebook", "Microsoft", "Amazon"],
-      correctAnswer: 1
+      correctAnswer: 1,
     },
     {
       id: 5,
       question: "What is the time complexity of binary search?",
       options: ["O(n)", "O(log n)", "O(n²)", "O(1)"],
-      correctAnswer: 1
-    }
+      correctAnswer: 1,
+    },
   ]
 
   // Timer countdown
@@ -335,7 +369,7 @@ function ExamPage({ onBackToCheck }) {
     const hours = Math.floor(seconds / 3600)
     const mins = Math.floor((seconds % 3600) / 60)
     const secs = seconds % 60
-    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+    return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
   const handleAnswerSelect = (questionId, optionIndex) => {
@@ -359,7 +393,7 @@ function ExamPage({ onBackToCheck }) {
   if (isSubmitted) {
     const score = calculateScore()
     const percentage = ((score / questions.length) * 100).toFixed(1)
-    
+
     return (
       <div className="w-full min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex items-center justify-center p-4">
         <div className="max-w-2xl w-full bg-slate-800 border border-slate-700 rounded-xl p-8 text-center">
@@ -372,10 +406,10 @@ function ExamPage({ onBackToCheck }) {
               />
             </svg>
           </div>
-          
+
           <h2 className="text-3xl font-bold text-white mb-4">Exam Completed!</h2>
           <p className="text-gray-400 mb-8">Thank you for completing the exam.</p>
-          
+
           <div className="bg-slate-900 border border-slate-700 rounded-lg p-6 mb-8">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
@@ -397,7 +431,7 @@ function ExamPage({ onBackToCheck }) {
             <Button onClick={() => window.location.reload()} className="w-full">
               Take Another Exam
             </Button>
-            <Button variant="outline" onClick={onBackToCheck} className="w-full">
+            <Button variant="outline" onClick={onBackToCheck} className="w-full bg-transparent">
               Back to System Check
             </Button>
           </div>
@@ -414,9 +448,13 @@ function ExamPage({ onBackToCheck }) {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clipRule="evenodd"
+              />
             </svg>
-            <span className={`text-lg font-mono font-bold ${timeLeft < 300 ? 'text-red-400' : 'text-orange-400'}`}>
+            <span className={`text-lg font-mono font-bold ${timeLeft < 300 ? "text-red-400" : "text-orange-400"}`}>
               {formatTime(timeLeft)}
             </span>
           </div>
@@ -442,10 +480,10 @@ function ExamPage({ onBackToCheck }) {
                 onClick={() => setCurrentQuestion(idx)}
                 className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                   currentQuestion === idx
-                    ? 'bg-orange-500 text-white'
+                    ? "bg-orange-500 text-white"
                     : answers[q.id] !== undefined
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                      ? "bg-emerald-600 text-white"
+                      : "bg-slate-700 text-gray-300 hover:bg-slate-600 hover:border-slate-500"
                 }`}
               >
                 {idx + 1}
@@ -465,9 +503,7 @@ function ExamPage({ onBackToCheck }) {
                 <span className="text-sm text-emerald-400">✓ Answered</span>
               )}
             </div>
-            <h2 className="text-2xl font-semibold text-white mb-8">
-              {questions[currentQuestion].question}
-            </h2>
+            <h2 className="text-2xl font-semibold text-white mb-8">{questions[currentQuestion].question}</h2>
           </div>
 
           <div className="space-y-3 mb-8">
@@ -477,8 +513,8 @@ function ExamPage({ onBackToCheck }) {
                 onClick={() => handleAnswerSelect(questions[currentQuestion].id, idx)}
                 className={`w-full text-left p-4 rounded-lg border transition-all ${
                   answers[questions[currentQuestion].id] === idx
-                    ? 'bg-orange-500 border-orange-500 text-white'
-                    : 'bg-slate-700 border-slate-600 text-gray-300 hover:bg-slate-600 hover:border-slate-500'
+                    ? "bg-orange-500 border-orange-500 text-white"
+                    : "bg-slate-700 border-slate-600 text-gray-300 hover:bg-slate-600 hover:border-slate-500"
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -517,16 +553,12 @@ function ExamPage({ onBackToCheck }) {
 
 // Main App Component
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('check') // 'check' or 'exam'
+  const [currentPage, setCurrentPage] = useState("check") // 'check' or 'exam'
 
   return (
     <>
-      {currentPage === 'check' && (
-        <SystemCheckPage onStartExam={() => setCurrentPage('exam')} />
-      )}
-      {currentPage === 'exam' && (
-        <ExamPage onBackToCheck={() => setCurrentPage('check')} />
-      )}
+      {currentPage === "check" && <SystemCheckPage />}
+      {currentPage === "exam" && <ExamPage onBackToCheck={() => setCurrentPage("check")} />}
     </>
   )
 }

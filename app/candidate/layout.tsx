@@ -43,16 +43,29 @@ export default function CandidateLayout({ children }: CandidateLayoutProps) {
 
   const activeIdx = getActiveIndex()
 
+  // Show sidebar only on dashboard and exam logs main page
+  const showSidebarPaths = ["/candidate/dashboard", "/candidate/exam-logs"]
+  const shouldShowSidebar = showSidebarPaths.includes(normalizePath(pathname))
+
   return (
     <div className="min-h-screen bg-slate-900 flex">
-      <CandidateSidebar
-        isOpen={sidebarOpen}
-        setIsOpen={setSidebarOpen}
-        activeIndex={activeIdx >= 0 ? activeIdx : undefined}
-      />
+      {shouldShowSidebar && (
+        <CandidateSidebar
+          isOpen={sidebarOpen}
+          setIsOpen={setSidebarOpen}
+          activeIndex={activeIdx >= 0 ? activeIdx : undefined}
+        />
+      )}
+
       <div className="flex-1 flex flex-col">
         <CandidateHeader />
-        <main className="flex-1 pt-20 pl-0 lg:pl-20 bg-slate-900 overflow-x-hidden">{children}</main>
+        <main
+          className={`flex-1 pt-20 ${
+            shouldShowSidebar ? "pl-0 lg:pl-20" : "pl-0"
+          } bg-slate-900 overflow-x-hidden`}
+        >
+          {children}
+        </main>
       </div>
     </div>
   )

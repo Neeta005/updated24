@@ -54,7 +54,7 @@ export function PerformanceGraph({ data }: PerformanceGraphProps) {
                 const { cx, cy, index } = props;
                 if (index === 2) { // Tuesday
                   return (
-                    <g>
+                    <g key={`dot-${index}`}>
                       <circle cx={cx} cy={cy} r={10} fill="#8B5CF6" stroke="#1E293B" strokeWidth={4} />
                     </g>
                   );
@@ -69,4 +69,3 @@ export function PerformanceGraph({ data }: PerformanceGraphProps) {
     </div>
   )
 }
-

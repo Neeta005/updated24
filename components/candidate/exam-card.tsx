@@ -52,4 +52,3 @@ export function ExamCard({ exam }: ExamCardProps) {
     </div>
   )
 }
-

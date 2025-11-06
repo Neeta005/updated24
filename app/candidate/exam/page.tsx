@@ -1,34 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { examSession } from "@/data/exam-questions"
 import { ChevronRight } from "lucide-react"
+import { MCQQuestion } from "@/components/exam/mcq-question"
+import { EssayQuestion } from "@/components/exam/essay-question"
+import { SubmissionModal } from "@/components/exam/submission-modal"
+import { SuccessModal } from "@/components/exam/SuccessModal"
+import { useRouter } from "next/navigation"
 
 export default function ExamPage() {
+  const router = useRouter()
+
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string | null>>({})
+  const [essayAnswers, setEssayAnswers] = useState<Record<number, string>>({})
   const [bookmarked, setBookmarked] = useState<Set<number>>(new Set())
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   const question = examSession.questions[currentQuestion]
   const totalQuestions = examSession.questions.length
 
-  const handleAnswerSelect = (optionId: string) => {
-    setAnswers({
-      ...answers,
-      [question.id]: optionId,
-    })
+  const handleAnswerSelect = (questionId: number, answer: string) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: answer }))
   }
 
-  const handleBookmark = () => {
-    const newBookmarked = new Set(bookmarked)
-    if (newBookmarked.has(question.id)) {
-      newBookmarked.delete(question.id)
-    } else {
-      newBookmarked.add(question.id)
-    }
-    setBookmarked(newBookmarked)
+  const handleEssayChange = (questionId: number, text: string) => {
+    setEssayAnswers((prev) => ({ ...prev, [questionId]: text }))
+  }
+
+  const handleBookmark = (questionId: number) => {
+    setBookmarked((prev) => {
+      const newBookmarks = new Set(prev)
+      if (newBookmarks.has(questionId)) newBookmarks.delete(questionId)
+      else newBookmarks.add(questionId)
+      return newBookmarks
+    })
   }
 
   const handleNext = () => {
@@ -47,13 +56,26 @@ export default function ExamPage() {
     handleNext()
   }
 
-  const attemptedCount = Object.values(answers).filter((a) => a !== null && a !== undefined).length
+  const handleSubmit = () => {
+    setShowSubmissionModal(true)
+  }
+
+  const handleSubmitAnyway = () => {
+    console.log("Exam submitted with answers:", { answers, essayAnswers })
+    setShowSubmissionModal(false)
+    setShowSuccessModal(true)
+  }
+
+  const attemptedCount =
+    Object.values(answers).filter((a) => a).length +
+    Object.values(essayAnswers).filter((a) => a?.trim().length > 0).length
+
   const skippedCount = totalQuestions - attemptedCount
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 to-slate-900 flex">
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? "" : ""}`}>
+      <div className="flex-1">
         {/* Header */}
         <div className="bg-slate-900 border-b border-slate-700 px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-8">
@@ -74,74 +96,72 @@ export default function ExamPage() {
         </div>
 
         {/* Question Content */}
-        <div className="p-8 max-w-3xl">
-          {/* Bookmark Icon */}
-          <div className="flex justify-end mb-6">
-            <button
-              onClick={handleBookmark}
-              className={`p-2 rounded-lg transition-colors ${
-                bookmarked.has(question.id) ? "bg-orange-500 text-white" : "bg-slate-800 text-gray-400 hover:text-white"
-              }`}
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M5 3a2 2 0 012-2h10a2 2 0 012 2v18l-8-4-8 4V3z" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Question Number and Text */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              {currentQuestion + 1}. {question.text}
-            </h2>
-          </div>
-
-          {/* Options */}
-          <div className="space-y-3 mb-8">
-            {question.options.map((option) => (
-              <label
-                key={option.id}
-                className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors ${
-                  answers[question.id] === option.id
-                    ? "bg-blue-900 border-blue-500"
-                    : "bg-slate-800 border-slate-700 hover:border-slate-600"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name={`question-${question.id}`}
-                  value={option.id}
-                  checked={answers[question.id] === option.id}
-                  onChange={() => handleAnswerSelect(option.id)}
-                  className="w-4 h-4"
-                />
-                <span className="text-gray-300">{option.text}</span>
-              </label>
-            ))}
-          </div>
+        <div className="p-8 max-w-4xl">
+          {question.type === "mcq" ? (
+            <MCQQuestion
+              questionNumber={currentQuestion + 1}
+              totalQuestions={totalQuestions}
+              question={question.text}
+              options={question.options || []}
+              selectedAnswer={answers[question.id] || null}
+              isBookmarked={bookmarked.has(question.id)}
+              subject={examSession.subject}
+              topic={examSession.topic}
+              imageUrl={question.imageUrl}
+              codeSnippet={question.codeSnippet}
+              codeLanguage={question.codeLanguage}
+              onAnswerSelect={handleAnswerSelect}
+              onToggleBookmark={handleBookmark}
+            />
+          ) : (
+            <EssayQuestion
+              questionNumber={currentQuestion + 1}
+              question={question.text}
+              answerText={essayAnswers[question.id] || ""}
+              isBookmarked={bookmarked.has(question.id)}
+              subject={examSession.subject}
+              topic={examSession.topic}
+              codeSnippet={question.codeSnippet}
+              codeLanguage={question.codeLanguage}
+              onAnswerChange={handleEssayChange}
+              onToggleBookmark={handleBookmark}
+            />
+          )}
 
           {/* Navigation Buttons */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-8">
             <button className="text-orange-500 hover:text-orange-400 font-medium" onClick={handleSkip}>
               Skip
             </button>
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="border-slate-600 text-white hover:bg-slate-800 bg-transparent"
+              {currentQuestion === totalQuestions - 1 ? (
+                <button
+                  className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium"
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              ) : (
+                <button
+                  className="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg"
+                  onClick={handleNext}
+                >
+                  Next
+                </button>
+              )}
+              <button
+                className="px-6 py-2 rounded-lg border border-slate-600 text-white hover:bg-slate-800 bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handlePrevious}
                 disabled={currentQuestion === 0}
               >
                 Previous
-              </Button>
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleNext}>
-                Next
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Right Sidebar */}
       {sidebarOpen && (
         <div className="w-80 bg-slate-900 border-l border-slate-700 p-6 overflow-y-auto flex flex-col">
           {/* Collapse Button */}
@@ -241,6 +261,26 @@ export default function ExamPage() {
           </div>
         </div>
       )}
+
+      {/* Submission Modal */}
+      <SubmissionModal
+        isOpen={showSubmissionModal}
+        unattemptedCount={totalQuestions - attemptedCount}
+        bookmarkedCount={bookmarked.size}
+        skippedCount={skippedCount}
+        onReviewUnattempted={() => setShowSubmissionModal(false)}
+        onSubmitAnyway={handleSubmitAnyway}
+      />
+
+      {/* ✅ Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        attempted={attemptedCount}
+        bookmarked={bookmarked.size}
+        skipped={skippedCount}
+        onViewResult={() => router.push("/candidate/results")}
+        onGoToDashboard={() => router.push("/candidate/dashboard")}
+      />
     </div>
   )
 }

@@ -48,4 +48,3 @@ export function TabsSection({ activeTab, onTabChange, exams }: TabsSectionProps)
     </div>
   )
 }
-
