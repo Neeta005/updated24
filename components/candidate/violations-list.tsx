@@ -8,24 +8,28 @@ interface ViolationsListProps {
 
 export function ViolationsList({ violations }: ViolationsListProps) {
   const totalViolations = violations.reduce((sum, v) => sum + v.count, 0)
+  const maxViolations = 100 // Change according to required max range
+  const progressPercent = Math.min((totalViolations / maxViolations) * 100, 100)
+  const progressOffset = 150.8 - (150.8 * progressPercent) / 100
 
   return (
     <div className="space-y-6">
-      {/* Header with total and severity */}
-      <div className="flex items-center justify-between gap-6 pb-6 border-b border-slate-700">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            {/* Donut chart background */}
-            <svg width="60" height="60" viewBox="0 0 60 60" className="transform -rotate-90">
-              <circle
-                cx="30"
-                cy="30"
-                r="24"
-                fill="none"
-                stroke="#374151"
-                strokeWidth="8"
-              />
-              {/* Yellow arc */}
+      {/* Header */}
+      <div className="flex items-center justify-between gap-6 pb-6 border-b border-slate-700/60">
+        {/* Total Violations */}
+        <div className="flex items-center justify-between w-[240px] bg-slate-800 rounded-xl px-4 py-3 shadow-[0_0_12px_rgba(255,255,255,0.15)] border border-white/10">
+          <div>
+            <div className="text-[10px] text-gray-400 tracking-wide">Total Violations</div>
+            <div className="text-[28px] leading-none font-extrabold text-yellow-400 mt-1">
+              {totalViolations}
+            </div>
+          </div>
+
+          <div className="relative w-[60px] h-[60px]">
+            <svg width="60" height="60" viewBox="0 0 60 60" className="rotate-[-90deg]">
+              {/* Background circle */}
+              <circle cx="30" cy="30" r="24" fill="none" stroke="#374151" strokeWidth="8" />
+              {/* Progress circle */}
               <circle
                 cx="30"
                 cy="30"
@@ -34,23 +38,26 @@ export function ViolationsList({ violations }: ViolationsListProps) {
                 stroke="#FCD34D"
                 strokeWidth="8"
                 strokeDasharray="150.8"
-                strokeDashoffset="0"
+                strokeDashoffset={progressOffset}
                 strokeLinecap="round"
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">●</span>
+              <span className="text-white text-[10px] font-medium opacity-80">
+                {Math.round(progressPercent)}%
+              </span>
             </div>
           </div>
-          <div>
-            <div className="text-3xl font-bold text-yellow-400">{totalViolations}</div>
-            <div className="text-xs text-gray-400">Total Violations</div>
-          </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            {/* Gauge chart */}
+
+        {/* Severity */}
+        <div className="flex items-center justify-between w-[240px] bg-slate-800 rounded-xl px-4 py-3 shadow-[0_0_12px_rgba(255,255,255,0.15)] border border-white/10">
+          <div>
+            <div className="text-[10px] text-gray-400 tracking-wide">Severity</div>
+            <div className="text-yellow-400 font-bold text-[15px] leading-none mt-1">Medium</div>
+          </div>
+
+          <div className="relative w-[50px] h-[50px]">
             <svg width="50" height="50" viewBox="0 0 50 50">
               <circle
                 cx="25"
@@ -63,7 +70,6 @@ export function ViolationsList({ violations }: ViolationsListProps) {
                 strokeDashoffset="28"
                 transform="rotate(-135 25 25)"
               />
-              {/* Multi-color gauge */}
               <circle
                 cx="25"
                 cy="25"
@@ -83,34 +89,29 @@ export function ViolationsList({ violations }: ViolationsListProps) {
                   <stop offset="100%" stopColor="#10B981" />
                 </linearGradient>
               </defs>
-              {/* Needle indicator */}
               <circle cx="25" cy="25" r="8" fill="#475569" />
               <circle cx="25" cy="25" r="4" fill="#94A3B8" />
             </svg>
           </div>
-          <div>
-            <div className="text-yellow-400 font-bold text-base">Medium</div>
-            <div className="text-xs text-gray-400">Severity</div>
-          </div>
         </div>
       </div>
 
-      {/* Violations list */}
+      {/* Violations List */}
       <div className="space-y-1">
         {violations.map((violation) => (
           <div
             key={violation.id}
-            className="flex justify-between items-center py-3 border-b border-slate-700/50 last:border-b-0"
+            className="flex justify-between items-center py-3 border-b border-[#2A2D31] last:border-b-0"
           >
             <div className="flex items-center gap-3">
-              <span className="text-gray-300 text-sm">{violation.type}</span>
+              <span className="text-gray-300 text-[14px]">{violation.type}</span>
               {violation.badge && (
-                <span className="bg-green-600/20 text-green-400 text-xs px-2.5 py-1 rounded-full border border-green-600/30 font-medium">
+                <span className="bg-green-600/25 text-green-400 text-[10px] px-2 py-0.5 rounded-full border border-green-600/40 font-medium leading-none">
                   {violation.badge}
                 </span>
               )}
             </div>
-            <span className="text-white font-bold text-base">
+            <span className="text-white font-semibold text-[17px] leading-none tabular-nums">
               {String(violation.count).padStart(2, "0")}
             </span>
           </div>

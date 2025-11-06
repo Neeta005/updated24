@@ -20,7 +20,7 @@ export function ExamCard({ exam }: ExamCardProps) {
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-white font-medium text-sm">{exam.title}</h3>
        <button
-  className=" hover:bg-emerald-700 text-emerald-600 text-xs px-4 py-1.5 rounded font-medium transition-colors"
+  className=" hover:bg-emerald-900 text-emerald-600 text-xs px-4 py-1.5 rounded font-medium transition-colors"
   onClick={handleTakeAssessment}
 >
   Take Assessment

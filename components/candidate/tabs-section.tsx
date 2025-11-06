@@ -36,11 +36,7 @@ export function TabsSection({ activeTab, onTabChange, exams }: TabsSectionProps)
       </div>
 
       {/* Header with See All */}
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-white text-base font-semibold">Today Exams</h3>
-        <button className="text-red-400 hover:text-red-300 text-xs font-medium">See All</button>
-      </div>
-
+     
       {/* Exam Cards */}
       <div className="space-y-4">
         {exams.length > 0 ? (
