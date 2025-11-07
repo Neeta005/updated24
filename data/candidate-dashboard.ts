@@ -74,3 +74,14 @@ export const violationsData: ViolationItem[] = [
   { id: "4", type: "Multiple Faces Found", count: 6 },
   { id: "5", type: "Noise Detected", count: 5 },
 ]
+// Subjects data
+export const subjects = [
+  {
+    name: "Subject 1: Networking",
+    topics: ["Introduction to Network", "Routing & Switching", "HTML & CSS", "Client vs Server", "TCP/IP"],
+  },
+  {
+    name: "Subject 2: Networking",
+    topics: ["Introduction to Network", "Routing & Switching", "HTML & CSS", "Client vs Server", "TCP/IP"],
+  },
+]

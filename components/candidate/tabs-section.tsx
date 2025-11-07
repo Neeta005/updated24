@@ -7,9 +7,10 @@ interface TabsSectionProps {
   activeTab: "today" | "upcoming" | "completed"
   onTabChange: (tab: "today" | "upcoming" | "completed") => void
   exams: ExamItem[]
+  onViewSyllabus?: (exam: ExamItem) => void
 }
 
-export function TabsSection({ activeTab, onTabChange, exams }: TabsSectionProps) {
+export function TabsSection({ activeTab, onTabChange, exams, onViewSyllabus }: TabsSectionProps) {
   const tabs = [
     { id: "today", label: "Today" },
     { id: "upcoming", label: "Upcoming" },
@@ -25,8 +26,8 @@ export function TabsSection({ activeTab, onTabChange, exams }: TabsSectionProps)
             key={tab.id}
             onClick={() => onTabChange(tab.id as "today" | "upcoming" | "completed")}
             className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
-              activeTab === tab.id 
-                ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg" 
+              activeTab === tab.id
+                ? "bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg"
                 : "text-gray-400 hover:text-white"
             }`}
           >
@@ -36,11 +37,11 @@ export function TabsSection({ activeTab, onTabChange, exams }: TabsSectionProps)
       </div>
 
       {/* Header with See All */}
-     
+
       {/* Exam Cards */}
       <div className="space-y-4">
         {exams.length > 0 ? (
-          exams.map((exam) => <ExamCard key={exam.id} exam={exam} />)
+          exams.map((exam) => <ExamCard key={exam.id} exam={exam} onViewSyllabus={onViewSyllabus} />)
         ) : (
           <div className="text-center py-12 text-gray-400 text-sm">No exams in this category</div>
         )}

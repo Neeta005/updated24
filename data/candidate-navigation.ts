@@ -22,11 +22,4 @@ export const candidateMenuItems: MenuItem[] = [
     href: "/candidate/exam-logs",
     activeMatch: ["/candidate/exam-logs"],
   },
-  {
-    id: "results",
-    name: "Results",
-    icon: "/results-icon.jpg",
-    href: "/candidate/results",
-    activeMatch: ["/candidate/results"],
-  },
 ]
