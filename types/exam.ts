@@ -23,3 +23,14 @@ export interface Option {
   text: string
   isCorrect: boolean
 }
+
+export interface Exam {
+  id: string
+  title: string
+  course: string
+  subject: string
+  date: string
+  time: string
+  marks: number
+  passingPercentage: number
+}

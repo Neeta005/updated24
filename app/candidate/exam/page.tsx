@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { examSession } from "@/data/exam-questions"
-import { ChevronRight } from "lucide-react"
 import { MCQQuestion } from "@/components/exam/mcq-question"
 import { EssayQuestion } from "@/components/exam/essay-question"
 import { SubmissionModal } from "@/components/exam/submission-modal"
@@ -11,7 +10,6 @@ import { ResultsModal } from "@/components/candidate/results-modal"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { GradientButton } from "@/components/ui/gradient-button" // <-- import it
-
 
 export default function ExamPage() {
   const router = useRouter()
@@ -28,8 +26,8 @@ export default function ExamPage() {
   const question = examSession.questions[currentQuestion]
   const totalQuestions = examSession.questions.length
 
-  const handleAnswerSelect = (questionId: number, answer: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: answer }))
+  const handleAnswerSelect = (answer: string) => {
+    setAnswers((prev) => ({ ...prev, [question.id]: answer }))
   }
 
   const handleEssayChange = (questionId: number, text: string) => {
@@ -71,21 +69,19 @@ export default function ExamPage() {
       {/* Main Content */}
       <div className="flex-1 relative">
         {/* 🔹 Collapse Button — same as before, just nudged right */}
-      
-<button
-  onClick={() => setSidebarOpen(!sidebarOpen)}
-  className="absolute right-[-50px] z-50 text-gray-400 hover:text-white  "
->
-  <Image
-    src="/icons/hamburger.png"   // <-- your custom icon in public/
-    alt="Toggle Sidebar"
-    width={20}
-    height={20}
-    className={`transition-transform duration-300 ${
-      sidebarOpen ? "rotate-180" : "rotate-0"
-    }`}
-  />
-</button>
+
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="absolute right-[-50px] z-50 text-gray-400 hover:text-white  "
+        >
+          <Image
+            src="/icons/hamburger.png" // <-- your custom icon in public/
+            alt="Toggle Sidebar"
+            width={20}
+            height={20}
+            className={`transition-transform duration-300 ${sidebarOpen ? "rotate-180" : "rotate-0"}`}
+          />
+        </button>
 
         {/* Question Content */}
         <div className="p-8 max-w-4xl">
@@ -125,28 +121,23 @@ export default function ExamPage() {
             <button className="text-orange-500 hover:text-orange-400 font-medium" onClick={handleSkip}>
               Skip
             </button>
-  <div className="flex gap-3">
-  {/* Previous Button stays normal */}
-  <button
-    className="px-6 py-2 rounded-lg border border-slate-600 text-white hover:bg-slate-800 bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-    onClick={handlePrevious}
-    disabled={currentQuestion === 0}
-  >
-    Previous
-  </button>
+            <div className="flex gap-3">
+              {/* Previous Button stays normal */}
+              <button
+                className="px-6 py-2 rounded-lg border border-slate-600 text-white hover:bg-slate-800 bg-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handlePrevious}
+                disabled={currentQuestion === 0}
+              >
+                Previous
+              </button>
 
-  {/* Next or Submit using GradientButton */}
-  {currentQuestion === totalQuestions - 1 ? (
-    <GradientButton onClick={handleSubmit}>
-      Submit
-    </GradientButton>
-  ) : (
-    <GradientButton onClick={handleNext}>
-      Next
-    </GradientButton>
-  )}
-</div>
-
+              {/* Next or Submit using GradientButton */}
+              {currentQuestion === totalQuestions - 1 ? (
+                <GradientButton onClick={handleSubmit}>Submit</GradientButton>
+              ) : (
+                <GradientButton onClick={handleNext}>Next</GradientButton>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -187,8 +178,8 @@ export default function ExamPage() {
                     currentQuestion === index
                       ? "bg-blue-500 text-white"
                       : answers[examSession.questions[index].id]
-                      ? "bg-green-500 text-white"
-                      : "bg-slate-700 text-gray-400 hover:bg-slate-600"
+                        ? "bg-green-500 text-white"
+                        : "bg-slate-700 text-gray-400 hover:bg-slate-600"
                   }`}
                 >
                   {index + 1}

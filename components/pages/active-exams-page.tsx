@@ -51,16 +51,16 @@ export function ActiveExamsPage() {
           </Link>
         </div>
 
-   <div className="mb-6 sm:mb-8 w-full bg-slate-800 rounded-lg px-4 py-1">
-  <div className="flex space-x-0 justify-start">
+<div className="mb-6 sm:mb-8 w-full bg-slate-800 rounded-lg px-4 py-1">
+  <div className="flex space-x-1 justify-start">
     {tabs.map((tab) => (
       <button
         key={tab}
         onClick={() => setActiveTab(tab)}
-        className={`font-medium transition-colors rounded-md ${
+        className={`px-6 py-2 rounded-md font-medium transition-all duration-200 ${
           activeTab === tab
-            ? "bg-gray-700 text-orange-500 px-5 py-2" // slightly smaller box
-            : "text-gray-400 hover:text-white px-6 py-3"
+            ? "bg-gray-700 text-orange-500"
+            : "text-gray-400 hover:text-white hover:bg-gray-700/50"
         }`}
       >
         {tab}
@@ -68,6 +68,7 @@ export function ActiveExamsPage() {
     ))}
   </div>
 </div>
+
 
 
         <div className="space-y-4">

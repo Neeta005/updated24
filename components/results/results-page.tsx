@@ -189,14 +189,15 @@ export function ResultsPage() {
                             {student.grade}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <button
-                            onClick={() => router.push(`/result/view/${student.id}`)}
-                            className="p-2 rounded-lg border border-white hover:bg-white/10 transition-colors flex items-center justify-center"
-                          >
-                            <Eye className="w-4 h-4 text-white" />
-                          </button>
-                        </td>
+                       <td className="px-6 py-4">
+  <button
+    onClick={() => router.push(`/candidate/exam`)}
+    className="p-2 rounded-lg border border-white hover:bg-white/10 transition-colors flex items-center justify-center"
+  >
+    <Eye className="w-4 h-4 text-white" />
+  </button>
+</td>
+
                       </tr>
                     )
                   })}

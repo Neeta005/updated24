@@ -111,13 +111,12 @@ export function SyllabusPreview({
                   ) : (
                     <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
                   )}
-                 <span className="text-lg font-bold text-foreground">
-  {section.title || `Section ${idx + 1}`}
-</span>
-
+                  <span className="text-lg font-bold text-foreground">
+                    {section.title || `Section ${idx + 1}`}
+                  </span>
                 </button>
 
-                {/* Lessons (expand always, even if empty) */}
+                {/* Lessons */}
                 {isExpanded && (
                   <div className="bg-slate-800/60 px-4 pb-3">
                     <div className="pl-7 space-y-2 pt-3">
@@ -127,7 +126,7 @@ export function SyllabusPreview({
                           .map((lesson) => (
                             <div
                               key={lesson.id}
-                              className=" text-md py-1"
+                              className="text-md py-1 whitespace-pre-line"
                             >
                               {lesson.value}
                             </div>
@@ -146,7 +145,7 @@ export function SyllabusPreview({
         </div>
       )}
 
-      {/* File Upload Preview - Show extracted content as syllabus sections */}
+      {/* File Upload Preview */}
       {activeTab === "upload" && uploadedFiles.length > 0 && (
         <div className="space-y-3">
           {uploadedFiles.map((file) => (
@@ -190,7 +189,7 @@ export function SyllabusPreview({
                 )}
               </div>
 
-              {/* Display extracted sections from file as syllabus */}
+              {/* Extracted Sections */}
               {file.sections && file.sections.length > 0 && (
                 <div className="space-y-3 mb-6">
                   {file.sections.map((section) => {
@@ -217,7 +216,7 @@ export function SyllabusPreview({
                           </span>
                         </button>
 
-                        {/* Lessons from file */}
+                        {/* Lessons */}
                         {isExpanded && (
                           <div className="bg-slate-800/60 px-4 pb-3">
                             <div className="pl-7 space-y-2 pt-3">
@@ -225,7 +224,7 @@ export function SyllabusPreview({
                                 section.lessons.map((lesson, lessonIdx) => (
                                   <div
                                     key={lessonIdx}
-                                    className="text-md py-1"
+                                    className="text-md py-1 whitespace-pre-line"
                                   >
                                     {lesson}
                                   </div>

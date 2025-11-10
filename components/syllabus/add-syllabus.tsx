@@ -163,11 +163,12 @@ export function AddSyllabus() {
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8 pt-6 border-t border-border">
-          <Link href="/syllabus" passHref>
-            <Button asChild className="bg-muted hover:bg-accent text-card-foreground px-8 py-2 h-10 w-full sm:w-auto">
-              <a>Cancel</a>
-            </Button>
-          </Link>
+         <Link href="/syllabus" passHref>
+  <Button asChild className="bg-muted hover:bg-accent text-card-foreground px-8 py-2 h-10 w-full sm:w-auto">
+    Cancel
+  </Button>
+</Link>
+
 
           <GradientButton onClick={handleAddSyllabus} className="w-full sm:w-auto">
             Add Syllabus

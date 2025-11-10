@@ -1,9 +1,5 @@
-import { ActiveExams } from "@/components/exams/active-exams"
+import { ExamsPage } from "@/components/exams/exams-page"
 
-export default function ExamsPage() {
-  return (
-    <div className="p-4">
-      <ActiveExams />
-    </div>
-  )
+export default function ExamsPageRoute() {
+  return <ExamsPage />
 }

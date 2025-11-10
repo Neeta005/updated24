@@ -1,4 +1,5 @@
 export interface Exam {
+  id: number
   title: string
   date: string
   time: string
@@ -8,6 +9,7 @@ export interface Exam {
 
 export const activeExams: Exam[] = [
   {
+    id: 1,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Ends In 00:56",
@@ -15,6 +17,7 @@ export const activeExams: Exam[] = [
     status: "Active",
   },
   {
+    id: 2,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Ends In 00:56",
@@ -22,6 +25,7 @@ export const activeExams: Exam[] = [
     status: "Active",
   },
   {
+    id: 3,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Ends In 00:56",
@@ -29,6 +33,7 @@ export const activeExams: Exam[] = [
     status: "Active",
   },
   {
+    id: 4,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Ends In 00:56",
@@ -36,6 +41,7 @@ export const activeExams: Exam[] = [
     status: "Active",
   },
   {
+    id: 5,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Ends In 00:56",
@@ -43,6 +49,7 @@ export const activeExams: Exam[] = [
     status: "Active",
   },
   {
+    id: 6,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Ends In 00:56",
@@ -53,6 +60,7 @@ export const activeExams: Exam[] = [
 
 export const upcomingExams: Exam[] = [
   {
+    id: 7,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Starts In 00:56",
@@ -60,6 +68,7 @@ export const upcomingExams: Exam[] = [
     status: "Upcoming",
   },
   {
+    id: 8,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Starts In 00:56",
@@ -67,6 +76,7 @@ export const upcomingExams: Exam[] = [
     status: "Upcoming",
   },
   {
+    id: 9,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Starts In 00:56",
@@ -74,6 +84,7 @@ export const upcomingExams: Exam[] = [
     status: "Upcoming",
   },
   {
+    id: 10,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Starts In 00:56",
@@ -81,6 +92,7 @@ export const upcomingExams: Exam[] = [
     status: "Upcoming",
   },
   {
+    id: 11,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Starts In 00:56",
@@ -88,6 +100,7 @@ export const upcomingExams: Exam[] = [
     status: "Upcoming",
   },
   {
+    id: 12,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "Starts In 00:56",
@@ -98,6 +111,7 @@ export const upcomingExams: Exam[] = [
 
 export const completedExams: Exam[] = [
   {
+    id: 13,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "20 Students Enrolled",
@@ -105,6 +119,7 @@ export const completedExams: Exam[] = [
     status: "Completed",
   },
   {
+    id: 14,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "20 Students Enrolled",
@@ -112,6 +127,7 @@ export const completedExams: Exam[] = [
     status: "Completed",
   },
   {
+    id: 15,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "20 Students Enrolled",
@@ -119,6 +135,7 @@ export const completedExams: Exam[] = [
     status: "Completed",
   },
   {
+    id: 16,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "20 Students Enrolled",
@@ -126,6 +143,7 @@ export const completedExams: Exam[] = [
     status: "Completed",
   },
   {
+    id: 17,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "20 Students Enrolled",
@@ -133,6 +151,7 @@ export const completedExams: Exam[] = [
     status: "Completed",
   },
   {
+    id: 18,
     title: "Mid - Term: Network Security",
     date: "05 Aug, 2025",
     time: "20 Students Enrolled",

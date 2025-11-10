@@ -15,6 +15,7 @@ const iconMap = {
   exams: BookOpen,
   "exam-logs": FileText,
   results: BarChart3,
+  assessment: BookOpen,
 }
 
 export function CandidateSidebar({ isOpen, setIsOpen, activeIndex }: CandidateSidebarProps) {

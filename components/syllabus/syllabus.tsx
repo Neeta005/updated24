@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { syllabusData, gradientButtonStyle } from "@/data/syllabus"
 import { Pagination } from "@/components/ui/pagination"
@@ -11,77 +10,111 @@ import { useState, useMemo } from "react"
 import { ViewSyllabusModal } from "./view-syllabus-modal"
 import { Text } from "@/components/atoms/text"
 import { useRouter } from "next/navigation"
-import { SearchInput } from "@/components/ui/search-input" // Import the reusable component
+import { SearchInput } from "@/components/ui/search-input"
+import { ArrowUpDown } from "lucide-react"
 
 export function Syllabus() {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedSyllabus, setSelectedSyllabus] = useState<string | null>(null)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
-  
-  // Search states
+
   const [subjectSearch, setSubjectSearch] = useState("")
   const [topicSearch, setTopicSearch] = useState("")
   const [targetAudienceSearch, setTargetAudienceSearch] = useState("")
   const [sortFilter, setSortFilter] = useState("")
+  
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
 
   const itemsPerPage = 10
   const router = useRouter()
 
-  // Filter and search logic
+  // Sorting handler
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => {
+      if (prev?.key === key) {
+        // toggle direction
+        return { key, direction: prev.direction === "asc" ? "desc" : "asc" }
+      }
+      return { key, direction: "asc" }
+    })
+  }
+
   const filteredData = useMemo(() => {
     let filtered = syllabusData
 
-    // Apply search filters
     if (subjectSearch) {
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.subject.toLowerCase().includes(subjectSearch.toLowerCase())
       )
     }
 
     if (topicSearch) {
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.topic?.toLowerCase().includes(topicSearch.toLowerCase())
       )
     }
 
     if (targetAudienceSearch) {
-      filtered = filtered.filter(item => 
+      filtered = filtered.filter(item =>
         item.targetAudience.toLowerCase().includes(targetAudienceSearch.toLowerCase())
       )
     }
 
-    // Apply sorting
     if (sortFilter === "latest") {
-      filtered = [...filtered].sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+      filtered = [...filtered].sort((a, b) =>
+        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      )
     } else if (sortFilter === "older") {
-      filtered = [...filtered].sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime())
+      filtered = [...filtered].sort((a, b) =>
+        new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
+      )
+    }
+
+    // Apply column sorting
+    if (sortConfig) {
+      filtered = [...filtered].sort((a, b) => {
+        const aVal = (a[sortConfig.key] || "").toString().toLowerCase()
+        const bVal = (b[sortConfig.key] || "").toString().toLowerCase()
+        if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1
+        if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1
+        return 0
+      })
     }
 
     return filtered
-  }, [subjectSearch, topicSearch, targetAudienceSearch, sortFilter])
+  }, [subjectSearch, topicSearch, targetAudienceSearch, sortFilter, sortConfig])
 
   const totalPages = Math.ceil(filteredData.length / itemsPerPage)
 
-  const handleViewSyllabus = (syllabusId: string) => {
-    setSelectedSyllabus(syllabusId)
+  const handleViewSyllabus = (id: string) => {
+    setSelectedSyllabus(id)
     setIsViewModalOpen(true)
   }
 
-  const handleEditSyllabus = (syllabusId: string) => {
-    router.push(`/syllabus/edit/${syllabusId}`)
-  }
+  const handleEditSyllabus = (id: string) => router.push(`/syllabus/edit/${id}`)
+  const handleDeleteSyllabus = (id: string) => {}
 
-  const handleDeleteSyllabus = (syllabusId: string) => {
-    // TODO: implement delete logic (API call / state update)
-  }
-
-  // Reset search filters
   const resetFilters = () => {
     setSubjectSearch("")
     setTopicSearch("")
     setTargetAudienceSearch("")
     setSortFilter("")
+    setSortConfig(null)
     setCurrentPage(1)
+  }
+
+  // Helper to render arrow direction (↑↓)
+  const renderSortIcon = (key: string) => {
+    if (sortConfig?.key !== key)
+      return <ArrowUpDown className="w-4 h-4 ml-2 opacity-50" />
+    return (
+      <ArrowUpDown
+        className={`w-4 h-4 ml-2 transition-transform ${
+          sortConfig.direction === "asc" ? "rotate-180 text-blue-400" : "text-blue-400"
+        }`}
+      />
+    )
   }
 
   return (
@@ -107,44 +140,40 @@ export function Syllabus() {
         {/* Filters */}
         <div className="flex flex-col gap-4 mb-6">
           <div className="flex flex-col sm:flex-row w-full gap-4">
-            {/* Subject Search with custom icon */}
             <SearchInput
               placeholder="Search Subject"
               value={subjectSearch}
               onChange={setSubjectSearch}
               className="w-full sm:w-60"
               icon="custom"
-              customIcon="/icons/subject.png" // Add your icon to public/icons/
+              customIcon="/icons/subject.png"
               iconAlt="Subject search"
             />
 
-            {/* Topic Search with custom icon */}
             <SearchInput
               placeholder="Search Topic"
               value={topicSearch}
               onChange={setTopicSearch}
               className="w-full sm:w-60"
               icon="custom"
-              customIcon="/icons/noun-topic-6799098 1.png" // Add your icon to public/icons/
+              customIcon="/icons/noun-topic-6799098 1.png"
               iconAlt="Topic search"
             />
 
-            {/* Target Audience Search with custom icon */}
             <SearchInput
               placeholder="Search Target Audience"
               value={targetAudienceSearch}
               onChange={setTargetAudienceSearch}
               className="w-full sm:w-60"
               icon="custom"
-              customIcon="/icons/audience tarr 1 (1).png" // Add your icon to public/icons/
+              customIcon="/icons/audience tarr 1 (1).png"
               iconAlt="Target audience search"
             />
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex gap-2">
-              {/* Clear filters button */}
-              {(subjectSearch || topicSearch || targetAudienceSearch || sortFilter) && (
+              {(subjectSearch || topicSearch || targetAudienceSearch || sortFilter || sortConfig) && (
                 <Button
                   variant="outline"
                   onClick={resetFilters}
@@ -153,33 +182,14 @@ export function Syllabus() {
                   Clear Filters
                 </Button>
               )}
-              
-              {/* Search results count */}
               <span className="text-gray-400 text-sm flex items-center">
                 {filteredData.length} of {syllabusData.length} results
               </span>
             </div>
-{/* 
-            <Select value={sortFilter} onValueChange={setSortFilter}>
-              <SelectTrigger className="w-full sm:w-32 bg-gray-700 border border-gray-600 text-white rounded-md">
-                <SelectValue placeholder="Filter by" />
-              </SelectTrigger>
-              <SelectContent className="bg-gray-700 border border-gray-600 text-white">
-                <SelectItem value="latest" className="hover:bg-gray-600">
-                  Latest
-                </SelectItem>
-                <SelectItem value="older" className="hover:bg-gray-600">
-                  Older
-                </SelectItem>
-                <SelectItem value="higher-degree" className="hover:bg-gray-600">
-                  Higher Degree
-                </SelectItem>
-              </SelectContent>
-            </Select> */}
           </div>
         </div>
 
-        {/* No results message */}
+        {/* No results */}
         {filteredData.length === 0 && (
           <div className="text-center py-8 text-gray-400">
             <p className="text-lg">No syllabus found matching your search criteria.</p>
@@ -193,16 +203,33 @@ export function Syllabus() {
           </div>
         )}
 
-        {/* Table (desktop) */}
+        {/* Table */}
         {filteredData.length > 0 && (
           <div className="hidden md:block overflow-x-auto">
+            {/* Header with sorting */}
             <div className="grid grid-cols-[2fr_1fr_2fr_1fr] gap-x-32 px-6 py-2 bg-black text-white font-medium rounded-t-lg">
-              <div>Subject</div>
-              <div>Category</div>
-              <div className="whitespace-nowrap">Target Audience</div>
+              <div
+                className="flex items-center cursor-pointer select-none"
+                onClick={() => handleSort("subject")}
+              >
+                Subject {renderSortIcon("subject")}
+              </div>
+              <div
+                className="flex items-center cursor-pointer select-none"
+                onClick={() => handleSort("category")}
+              >
+                Category {renderSortIcon("category")}
+              </div>
+              <div
+                className="flex items-center whitespace-nowrap cursor-pointer select-none"
+                onClick={() => handleSort("targetAudience")}
+              >
+                Target Audience {renderSortIcon("targetAudience")}
+              </div>
               <div>Actions</div>
             </div>
 
+            {/* Rows */}
             <TableRows
               data={filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
               onViewSyllabus={handleViewSyllabus}
@@ -212,7 +239,7 @@ export function Syllabus() {
           </div>
         )}
 
-        {/* Mobile View */}
+        {/* Mobile view */}
         {filteredData.length > 0 && (
           <div className="block md:hidden space-y-4">
             {filteredData
@@ -232,7 +259,6 @@ export function Syllabus() {
           </div>
         )}
 
-        {/* Pagination */}
         {filteredData.length > 0 && (
           <div className="mt-6">
             <Pagination
@@ -245,7 +271,6 @@ export function Syllabus() {
           </div>
         )}
 
-        {/* View Modal */}
         {selectedSyllabus && (
           <ViewSyllabusModal
             isOpen={isViewModalOpen}

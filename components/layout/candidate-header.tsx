@@ -1,8 +1,10 @@
 "use client"
 
-import { Bell, Search, User } from "lucide-react"
+import { Bell, Search } from "lucide-react"
+import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function CandidateHeader() {
   return (
@@ -10,13 +12,18 @@ export function CandidateHeader() {
       <div className="flex items-center justify-between px-6 py-3">
         {/* Left side - Logo and Navigation */}
         <div className="flex items-center space-x-8">
+          {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-white rounded-full"></div>
-            </div>
-            <span className="text-white font-semibold text-lg">LANTERNS</span>
+            <Image
+              src="/images/logo.png"
+              alt="LANTERNS Logo"
+              width={80}
+              height={32}
+              className="w-20 h-8"
+            />
           </div>
 
+          {/* Navigation Menu */}
           <nav className="hidden md:flex items-center space-x-6">
             <a href="/candidate/dashboard" className="text-white hover:text-orange-400 transition-colors">
               Home
@@ -33,8 +40,9 @@ export function CandidateHeader() {
           </nav>
         </div>
 
-        {/* Right side - Search and Profile */}
-        <div className="flex items-center space-x-4">
+        {/* Right side - Search, Notification & Profile */}
+        <div className="flex items-center space-x-5">
+          {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
@@ -44,15 +52,18 @@ export function CandidateHeader() {
             />
           </div>
 
+          {/* Notification Bell */}
           <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
             <Bell className="w-5 h-5" />
           </Button>
 
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-white text-sm">Profile</span>
+          {/* Profile Avatar */}
+          <div className="flex flex-col items-center w-15 h-12">
+            <Avatar className="size-8">
+              <AvatarImage src="/images/avtar.jpg" alt="User Avatar" />
+              <AvatarFallback className="bg-orange-500 text-white text-xs">JD</AvatarFallback>
+            </Avatar>
+            <span className="text-white text-xs mt-1">Profile</span>
           </div>
         </div>
       </div>
