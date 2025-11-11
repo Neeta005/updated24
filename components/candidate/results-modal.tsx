@@ -41,7 +41,7 @@ function CircularProgress({
 }) {
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
-  
+
   // If filled is true, show 100% complete circle, otherwise use the percentage
   const displayPercentage = filled ? 100 : percentage
   const offset = circumference - (displayPercentage / 100) * circumference
@@ -272,7 +272,7 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
         <div className="bg-slate-900 rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto border border-slate-700/50">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700/50 sticky top-0 bg-slate-900 z-10">
-            <h1 className="text-2xl font-bold text-white">Score Card</h1>
+            <h1 className="text-2xl font-bold text-white">Score Ca</h1>
             <div className="flex items-center gap-4">
               <button
                 onClick={() => setIsShareModalOpen(true)}
@@ -589,3 +589,5 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
     </>
   )
 }
+
+export { CircularProgress, ShareModal }

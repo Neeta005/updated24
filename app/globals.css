@@ -103,6 +103,16 @@
   }
   body {
     @apply bg-background text-foreground font-archivo;
+    /* Enhanced scrollbar fix: force scrollbar to always be visible and reserve space */
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+    /* Ensure overflow hidden doesn't cause reflow */
+    scroll-behavior: smooth;
+  }
+
+  /* Added CSS to prevent Radix Select from hiding scrollbar visually */
+  body[style*="overflow: hidden"] {
+    overflow: auto !important;
   }
 }
 

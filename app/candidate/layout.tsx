@@ -43,7 +43,6 @@ export default function CandidateLayout({ children }: CandidateLayoutProps) {
 
   const activeIdx = getActiveIndex()
 
-  // Show sidebar only on dashboard, exam logs, and assessment main page
   const showSidebarPaths = ["/candidate/dashboard", "/candidate/exam-logs", "/candidate/assessment"]
   const shouldShowSidebar = showSidebarPaths.includes(normalizePath(pathname))
 
