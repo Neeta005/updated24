@@ -1,189 +1,213 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { ChevronDown, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { ArrowLeft, Plus, Trash2 } from "lucide-react"
+import { gradientButtonStyle } from "@/data/syllabus"
 
-import type { Question } from "@/types"  // ✅ you already have this in types folder
+export function AddQuestionMCQ() {
+  const router = useRouter()
+  const [question, setQuestion] = useState("")
+  const [options, setOptions] = useState<string[]>(["", "", "", ""])
+  const [selectedIndex, setSelectedIndex] = useState<number>(0)
+  const [topic, setTopic] = useState("UI Design")
+  const [type, setType] = useState("MCQs")
+  const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard">("Easy")
+  const [status, setStatus] = useState<"Draft" | "Published">("Draft")
+  const [marks, setMarks] = useState("05")
 
-// Props for this component
-export interface AddQuestionMCQProps {
-  onBack: () => void
-}
-
-// Option type
-export interface Option {
-  id: string
-  text: string
-  isCorrect: boolean
-}
-
-// Enums/unions for dropdowns
-export type Subject = "Design" | "Development" | "Security"
-export type Topic = "UI Design" | "UX Design" | "Interactive Design"
-export type QuestionType = "MCQS" | "Text" | "Code"
-
-// Component
-export function AddQuestionMCQ({ onBack }: AddQuestionMCQProps) {
-  // States
-  const [question, setQuestion] = useState<string>(
-    'Which of the following best describes "Visual Hierarchy" in UI design'
-  )
-  const [subject, setSubject] = useState<Subject>("Design")
-  const [topic, setTopic] = useState<Topic>("UI Design")
-  const [type, setType] = useState<QuestionType>("MCQS")
-  const [difficulty, setDifficulty] = useState<Question["difficulty"]>("Easy") // ✅ uses your types file
-  const [status, setStatus] = useState<Question["status"]>("Draft")
-  const [marks, setMarks] = useState<number>(5)
-  const [options, setOptions] = useState<Option[]>([
-    { id: "1", text: "Using random colors to make UI attractive", isCorrect: false },
-    { id: "2", text: "Organizing elements to guide the user's attention", isCorrect: true },
-    { id: "3", text: "Adding animations to every UI element", isCorrect: false },
-    { id: "4", text: "Using only black and white colors", isCorrect: false },
-  ])
-
-  // Handlers
-  const addOption = (): void => {
-    const newOption: Option = {
-      id: Date.now().toString(),
-      text: "",
-      isCorrect: false,
-    }
-    setOptions((prev: Option[]) => [...prev, newOption])
-  }
-
-  const removeOption = (id: string): void => {
-    setOptions((prev: Option[]) => prev.filter((option) => option.id !== id))
-  }
-
-  const updateOption = (id: string, text: string): void => {
-    setOptions((prev: Option[]) =>
-      prev.map((option) => (option.id === id ? { ...option, text } : option))
-    )
-  }
-
-  const setCorrectOption = (id: string): void => {
-    setOptions((prev: Option[]) =>
-      prev.map((option) => ({ ...option, isCorrect: option.id === id }))
-    )
-  }
+  const addOption = () => setOptions((prev) => [...prev, ""])
+  const updateOption = (i: number, val: string) => setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)))
+  const removeOption = (i: number) => setOptions((prev) => prev.filter((_, idx) => idx !== i))
 
   return (
-    <div className="p-4">
-      {/* Back Button */}
-      <button onClick={onBack} className="flex items-center gap-2 text-sm font-medium mb-4">
-        <ArrowLeft size={16} /> Back
-      </button>
-
-      {/* Question Input */}
-      <textarea
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        className="w-full p-2 border rounded mb-4"
-        rows={3}
-      />
-
-      {/* Options Section */}
-      <div className="mb-4">
-        <h3 className="font-medium mb-2">Options</h3>
-        {options.map((option) => (
-          <div key={option.id} className="flex items-center gap-2 mb-2">
-            <input
-              type="radio"
-              checked={option.isCorrect}
-              onChange={() => setCorrectOption(option.id)}
-            />
-            <input
-              type="text"
-              value={option.text}
-              onChange={(e) => updateOption(option.id, e.target.value)}
-              className="flex-1 p-2 border rounded"
-              placeholder="Enter option text"
-            />
-            <button onClick={() => removeOption(option.id)} className="text-red-500">
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
-        <button onClick={addOption} className="flex items-center gap-2 text-blue-500 mt-2">
-          <Plus size={16} /> Add Option
+    <div className="min-h-screen text-white bg-gray-900 p-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-white">Add Question</h1>
+        <button
+          onClick={() => router.back()}
+          className="px-6 py-2 rounded-lg border border-gray-400 text-white hover:bg-gray-700 transition-colors font-medium"
+        >
+          Back
         </button>
       </div>
 
-      {/* Question Meta */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Subject</label>
-          <select
-            value={subject}
-            onChange={(e) => setSubject(e.target.value as Subject)}
-            className="w-full border p-2 rounded"
-          >
-            <option value="Design">Design</option>
-            <option value="Development">Development</option>
-            <option value="Security">Security</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Topic</label>
-          <select
-            value={topic}
-            onChange={(e) => setTopic(e.target.value as Topic)}
-            className="w-full border p-2 rounded"
-          >
-            <option value="UI Design">UI Design</option>
-            <option value="UX Design">UX Design</option>
-            <option value="Interactive Design">Interactive Design</option>
-          </select>
-        </div>
-      </div>
+      {/* Main Container */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Question Editor */}
+        <div className="lg:col-span-2">
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
+            {/* Question Text Area */}
+            <div>
+              <textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="Write a Question..."
+                className="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-base placeholder-gray-400 focus:outline-none focus:border-blue-500 min-h-32 resize-none"
+              />
+            </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Type</label>
-          <select
-            value={type}
-            onChange={(e) => setType(e.target.value as QuestionType)}
-            className="w-full border p-2 rounded"
-          >
-            <option value="MCQS">MCQS</option>
-            <option value="Text">Text</option>
-            <option value="Code">Code</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Difficulty</label>
-          <select
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value as Question["difficulty"])}
-            className="w-full border p-2 rounded"
-          >
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Marks</label>
-          <input
-            type="number"
-            value={marks}
-            onChange={(e) => setMarks(Number(e.target.value))}
-            className="w-full border p-2 rounded"
-          />
-        </div>
-      </div>
+            {/* Options List */}
+            <div className="space-y-3">
+              {options.map((opt, i) => (
+                <div
+                  key={i}
+                  className={`flex items-center gap-3 rounded-lg border px-4 py-3 transition-colors ${
+                    i === selectedIndex ? "border-blue-500 bg-blue-500/10" : "border-gray-600 bg-gray-700/50"
+                  }`}
+                >
+                  <button
+                    onClick={() => setSelectedIndex(i)}
+                    className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                      i === selectedIndex ? "border-red-500" : "border-gray-400"
+                    }`}
+                  >
+                    {i === selectedIndex && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
+                  </button>
 
-      {/* Status Selector */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Status</label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as Question["status"])}
-          className="w-full border p-2 rounded"
-        >
-          <option value="Draft">Draft</option>
-          <option value="Published">Published</option>
-        </select>
+                  <input
+                    value={opt}
+                    onChange={(e) => updateOption(i, e.target.value)}
+                    className="flex-1 bg-transparent outline-none text-white placeholder-gray-400 text-sm"
+                    placeholder={`Option ${i + 1}`}
+                  />
+
+                  {options.length > 2 && (
+                    <button
+                      onClick={() => removeOption(i)}
+                      className="text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Add Option Button */}
+            <button
+              onClick={addOption}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Option</span>
+            </button>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end gap-3 mt-6">
+            <button
+              onClick={() => router.back()}
+              className="px-6 py-2 rounded-lg border border-gray-600 text-white hover:bg-gray-700 transition-colors font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              className={`px-6 py-2 ${gradientButtonStyle} rounded-lg text-white font-semibold text-sm shadow-md transition-all duration-200 flex items-center gap-2`}
+            >
+              <span>Save</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Right Panel: Question Details */}
+        <div className="lg:col-span-1">
+          <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 space-y-6">
+            <h3 className="text-lg font-semibold text-white">Question Details</h3>
+
+            {/* Topic */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Topic:</label>
+              <div className="relative">
+                <select
+                  value={topic}
+                  onChange={(e) => setTopic(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white text-sm focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="UI Design">UI Design</option>
+                  <option value="UX Design">UX Design</option>
+                  <option value="Interactive Design">Interactive Design</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Type */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Type</label>
+              <div className="relative">
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white text-sm focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="MCQs">MCQs</option>
+                  <option value="True/False">True/False</option>
+                  <option value="Short Answer">Short Answer</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Difficulty */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Difficulty</label>
+              <div className="flex gap-2">
+                {(["Easy", "Medium", "Hard"] as const).map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setDifficulty(d)}
+                    className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors ${
+                      difficulty === d
+                        ? d === "Easy"
+                          ? "bg-green-500/30 text-green-400 border border-green-500"
+                          : d === "Medium"
+                            ? "bg-yellow-500/30 text-yellow-400 border border-yellow-500"
+                            : "bg-red-500/30 text-red-400 border border-red-500"
+                        : "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
+                    }`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Status */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Status</label>
+              <div className="flex gap-2">
+                {(["Draft", "Published"] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setStatus(s)}
+                    className={`flex-1 py-2 rounded-full text-xs font-medium transition-colors ${
+                      status === s
+                        ? s === "Draft"
+                          ? "bg-pink-500/30 text-pink-400 border border-pink-500"
+                          : "bg-green-500/30 text-green-400 border border-green-500"
+                        : "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Marks */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-300">Marks</label>
+              <input
+                value={marks}
+                onChange={(e) => setMarks(e.target.value)}
+                className="w-full rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white text-center focus:border-blue-500 focus:outline-none text-sm"
+                placeholder="Enter marks"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

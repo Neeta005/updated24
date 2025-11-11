@@ -7,11 +7,8 @@ import { ImportCSVModal } from "@/components/modals/import-csv-modal"
 import { MappedImportModal } from "@/components/modals/mapped-import-modal"
 import { QuestionSection } from "@/components/question-section/question-section"
 import { EditTopicModal } from "@/components/modals/edit-topic-modal"
-import { gradientButtonStyle } from "@/data/syllabus"
 import { Pagination } from "@/components/ui/pagination"
-import Image from "next/image"
 import { GradientButton } from "@/components/ui/gradient-button"
-
 
 // ---------------------- UnifiedBadge Component ----------------------
 interface UnifiedBadgeProps {
@@ -183,6 +180,10 @@ export default function QuestionBank() {
 
   const handlePageChange = (page: number) => setState((prev) => ({ ...prev, currentPage: page }))
 
+  const handleAddQuestion = () => {
+    router.push("/question-bank/add-question")
+  }
+
   if (state.showQuestionSection)
     return <QuestionSection topicName={state.selectedTopic} onBack={handleBackFromQuestionSection} />
 
@@ -193,15 +194,14 @@ export default function QuestionBank() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-foreground">Question Bank</h1>
           <div className="flex items-center gap-3">
-           <GradientButton
-  onClick={handleImportCSV}
-  size="sm"
-  className="flex items-center justify-center gap-2 font-semibold text-sm shadow-md"
->
-  <Plus className="size-4 text-white" />
-  <span>Import CSV</span>
-</GradientButton>
-
+            <GradientButton
+              onClick={handleImportCSV}
+              size="sm"
+              className="flex items-center justify-center gap-2 font-semibold text-sm shadow-md"
+            >
+              <Plus className="size-4 text-white" />
+              <span>Import CSV</span>
+            </GradientButton>
           </div>
         </div>
 
@@ -258,7 +258,10 @@ export default function QuestionBank() {
                   <UnifiedBadge value="18" className="bg-pink-600/30 text-white" />
                 </div>
                 <div className="col-span-3 flex justify-center">
-                  <button className="bg-pink-500 hover:bg-pink-700 text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200">
+                  <button
+                    onClick={handleAddQuestion}
+                    className="bg-pink-500 hover:bg-pink-700 text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors duration-200"
+                  >
                     Add Question
                   </button>
                 </div>
