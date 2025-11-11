@@ -1,5 +1,6 @@
 "use client"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 interface ResultsModalProps {
   isOpen: boolean
@@ -23,34 +24,32 @@ type TopicResult = {
 }
 
 // Circular Progress Component
-function CircularProgress({ 
-  percentage, 
-  size = 64, 
-  strokeWidth = 4, 
-  color = "#3b82f6", 
-  showPercentage = false 
-}: { 
+function CircularProgress({
+  percentage,
+  size = 64,
+  strokeWidth = 4,
+  color = "#3b82f6",
+  showPercentage = false,
+  filled = false,
+}: {
   percentage: number
   size?: number
   strokeWidth?: number
   color?: string
   showPercentage?: boolean
+  filled?: boolean
 }) {
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
-  const offset = circumference - (percentage / 100) * circumference
+  
+  // If filled is true, show 100% complete circle, otherwise use the percentage
+  const displayPercentage = filled ? 100 : percentage
+  const offset = circumference - (displayPercentage / 100) * circumference
 
   return (
     <div className="relative inline-flex items-center justify-center">
       <svg width={size} height={size} className="transform -rotate-90">
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="#334155"
-          strokeWidth={strokeWidth}
-          fill="none"
-        />
+        <circle cx={size / 2} cy={size / 2} r={radius} stroke="#334155" strokeWidth={strokeWidth} fill="none" />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -60,15 +59,11 @@ function CircularProgress({
           fill="none"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
-          strokeLinecap="round"
+          strokeLinecap={filled ? "butt" : "round"}
           className="transition-all duration-500"
         />
       </svg>
-      {showPercentage && (
-        <span className="absolute text-sm font-bold text-white">
-          {percentage}%
-        </span>
-      )}
+      {showPercentage && <span className="absolute text-sm font-bold text-white">{percentage}%</span>}
     </div>
   )
 }
@@ -78,28 +73,27 @@ function ShareModal({ isOpen, onClose }: ShareModalProps) {
   const [copied, setCopied] = useState(false)
   const shareUrl = "https://youtu.be/TGxkBC6L2k"
 
-const handleCopy = async () => {
-  if (typeof navigator !== "undefined" && navigator.clipboard) {
-    try {
-      await navigator.clipboard.writeText(shareUrl)
+  const handleCopy = async () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareUrl)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch (err) {
+        console.error("Clipboard copy failed:", err)
+      }
+    } else {
+      // fallback if clipboard API not supported
+      const textArea = document.createElement("textarea")
+      textArea.value = shareUrl
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand("copy")
+      document.body.removeChild(textArea)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error("Clipboard copy failed:", err)
     }
-  } else {
-    // fallback if clipboard API not supported
-    const textArea = document.createElement("textarea")
-    textArea.value = shareUrl
-    document.body.appendChild(textArea)
-    textArea.select()
-    document.execCommand("copy")
-    document.body.removeChild(textArea)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
   }
-}
-
 
   if (!isOpen) return null
 
@@ -107,10 +101,7 @@ const handleCopy = async () => {
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[60]">
       <div className="bg-[#1e293b] rounded-lg w-full max-w-md p-6 border border-slate-700/50 relative">
         {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-        >
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -135,10 +126,10 @@ const handleCopy = async () => {
           <button className="flex flex-col items-center gap-2 group">
             <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
               <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" fill="#EA4335"/>
-                <path d="M22 6l-10 7L2 6" fill="#C5221F" fillOpacity=".5"/>
-                <path d="M2 18l7-5.5" fill="#FBBC04"/>
-                <path d="M22 18l-7-5.5" fill="#34A853"/>
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" fill="#EA4335" />
+                <path d="M22 6l-10 7L2 6" fill="#C5221F" fillOpacity=".5" />
+                <path d="M2 18l7-5.5" fill="#FBBC04" />
+                <path d="M22 18l-7-5.5" fill="#34A853" />
               </svg>
             </div>
             <span className="text-sm text-gray-300 group-hover:text-white transition-colors">Email</span>
@@ -177,9 +168,16 @@ const handleCopy = async () => {
 
 // Main Results Modal Component - NAMED EXPORT
 export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
+  const router = useRouter()
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
   const [filterText, setFilterText] = useState("")
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      window.history.pushState({ view: "results" }, "", "/candidate/results")
+    }
+  }, [isOpen])
 
   const subjects = [
     { name: "Graphic Design", grade: "A1", percentage: 92, color: "#3b82f6" },
@@ -251,7 +249,7 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
     }
 
     return result
-  }, [filterText, sortConfig, topicData])
+  }, [filterText, sortConfig])
 
   const handleSort = (key: string) => {
     setSortConfig((current) =>
@@ -259,27 +257,37 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
     )
   }
 
+  const handleClose = () => {
+    window.history.back()
+    onClose()
+  }
+
   if (!isOpen) return null
 
   return (
     <>
       <ShareModal isOpen={isShareModalOpen} onClose={() => setIsShareModalOpen(false)} />
-      
+
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-slate-900 rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto border border-slate-700/50">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700/50 sticky top-0 bg-slate-900 z-10">
             <h1 className="text-2xl font-bold text-white">Score Card</h1>
             <div className="flex items-center gap-4">
-              <button 
+              <button
                 onClick={() => setIsShareModalOpen(true)}
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                  />
                 </svg>
               </button>
-              <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+              <button onClick={handleClose} className="text-gray-400 hover:text-white transition-colors">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -424,7 +432,11 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                      <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     Graphic Design
                   </h4>
@@ -486,7 +498,11 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
                   <h4 className="text-white font-semibold flex items-center gap-2">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-                      <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     Web Development
                   </h4>
@@ -543,7 +559,7 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
               </div>
             </div>
 
-            {/* Grade Legend */}
+            {/* Grade Legend - WITH FILLED CIRCLES */}
             <div className="rounded-lg p-3 border border-slate-700/50">
               <div className="flex items-center justify-around gap-8">
                 {gradeLegend.map((item) => (
@@ -555,6 +571,7 @@ export function ResultsModal({ isOpen, onClose }: ResultsModalProps) {
                         strokeWidth={4}
                         color={item.color}
                         showPercentage={false}
+                        filled={true}
                       />
                       <span className="absolute inset-0 flex items-center justify-center text-lg font-bold text-white">
                         {item.grade}

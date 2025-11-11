@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { BaseCard } from "@/components/ui/base-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CircularProgress } from "@/components/ui/circular-progress"
@@ -19,8 +20,17 @@ interface ViolatorCardProps {
 }
 
 export function ViolatorCard({ violator }: ViolatorCardProps) {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push("/exam-logs/view")
+  }
+
   return (
-    <BaseCard className="p-3 md:p-4 flex items-center justify-between border border-gray-600 rounded-lg bg-card">
+    <BaseCard 
+      className="p-3 md:p-4 flex items-center justify-between border border-gray-600 rounded-lg bg-card  hover:border-primary/50 "
+      onClick={handleClick}
+    >
       {/* Rank + Avatar + Info */}
       <div className="flex items-center gap-3 md:gap-4">
         <Text variant="body" className="text-white text-xl font-bold w-7 text-center">
