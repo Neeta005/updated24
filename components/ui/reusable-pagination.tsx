@@ -2,9 +2,7 @@
 
 import React from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { gradientButtonStyle } from "@/data/syllabus"
-import { Button } from "@/components/ui/button"
+import { GradientButton } from "@/components/ui/gradient-button"
 import type { PaginationProps } from "@/types"
 
 const Pagination = React.memo<PaginationProps>(
@@ -50,14 +48,13 @@ const Pagination = React.memo<PaginationProps>(
             <li key={index}>
               {page === "..." ? (
                 <span className="px-3 py-2 text-gray-400">...</span>
+              ) : page === currentPage ? (
+                <GradientButton size="sm" className="px-4 py-2">
+                  {page}
+                </GradientButton>
               ) : (
                 <button
-                  className={cn(
-                    "px-4 py-2 rounded-md font-medium transition",
-                    page === currentPage
-                      ? `${gradientButtonStyle} text-white shadow-md`
-                      : "bg-gray-700 text-gray-200 hover:bg-gray-600",
-                  )}
+                  className="px-4 py-2 rounded-md font-medium transition bg-gray-700 text-gray-200 hover:bg-gray-600"
                   onClick={() => typeof page === "number" && onPageChange(page)}
                 >
                   {page}
@@ -67,14 +64,15 @@ const Pagination = React.memo<PaginationProps>(
           ))}
         </ul>
 
-        {/* Next - keep gradient, not disabled */}
-        <Button
-          className={`${gradientButtonStyle} text-white px-4 py-2 flex items-center gap-2 w-full sm:w-auto justify-center rounded-md shadow-md`}
+        {/* Next */}
+        <GradientButton
+          size="md"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          className="flex items-center gap-2"
         >
           Next
           <ChevronRightIcon className="w-4 h-4" />
-        </Button>
+        </GradientButton>
       </nav>
     )
   },

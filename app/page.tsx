@@ -4,11 +4,9 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { GradientButton } from "@/components/ui/gradient-button"
 import { Input } from "@/components/ui/input"
-import { gradientButtonStyle } from "@/data/syllabus"
 import Image from "next/image"
-
 
 export default function SignInPage() {
   const [activeTab, setActiveTab] = useState<"candidate" | "recruiter">("recruiter")
@@ -70,11 +68,7 @@ export default function SignInPage() {
 
       {/* Logo */}
       <div className="absolute top-2 left-8 z-10 flex items-center space-x-2">
-        <img
-          src="/images/logo.png"
-          alt="Lanterns Logo"
-          className="w-25 h-25 object-contain"
-        />
+        <img src="/images/logo.png" alt="Lanterns Logo" className="w-25 h-25 object-contain" />
       </div>
 
       {/* Main Content */}
@@ -90,24 +84,18 @@ export default function SignInPage() {
 
             {/* Tab Buttons */}
             <div className="flex gap-2 mb-6 justify-start">
-              <button
+              <GradientButton
                 onClick={() => setActiveTab("candidate")}
-                className={`w-32 py-2 px-4 rounded-lg font-medium border transition-all duration-200
-                  ${activeTab === "candidate"
-                    ? `${gradientButtonStyle} text-white border-transparent`
-                    : "bg-transparent text-white border-white hover:bg-slate-700/20"}`}
+                className={activeTab === "candidate" ? "" : "opacity-50"}
               >
                 Candidate
-              </button>
-              <button
+              </GradientButton>
+              <GradientButton
                 onClick={() => setActiveTab("recruiter")}
-                className={`w-32 py-2 px-4 rounded-lg font-medium border transition-all duration-200
-                  ${activeTab === "recruiter"
-                    ? `${gradientButtonStyle} text-white border-transparent`
-                    : "bg-transparent text-white border-white hover:bg-slate-700/20"}`}
+                className={activeTab === "recruiter" ? "" : "opacity-50"}
               >
                 Recruiter
-              </button>
+              </GradientButton>
             </div>
 
             {activeTab === "recruiter" ? (
@@ -115,13 +103,13 @@ export default function SignInPage() {
                 {/* Recruiter Form including LinkedIn Input */}
                 <form onSubmit={handleSignIn} className="space-y-6">
                   <div className="relative w-full mb-6">
-                   <Image
-  src="\icons\linkedin.png"
-  alt="LinkedIn"
-  width={32}
-  height={32}
-  className="absolute left-3 top-1/2 -translate-y-1/2"
-/>
+                    <Image
+                      src="\icons\linkedin.png"
+                      alt="LinkedIn"
+                      width={32}
+                      height={32}
+                      className="absolute left-3 top-1/2 -translate-y-1/2"
+                    />
                     <input
                       type="text"
                       placeholder="With LinkedIn"
@@ -148,13 +136,9 @@ export default function SignInPage() {
                     disabled={isLoading}
                   />
 
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className={`${gradientButtonStyle} w-full hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
+                  <GradientButton type="submit" disabled={isLoading} className="w-full">
                     {isLoading ? "Signing in..." : "Sign in"}
-                  </Button>
+                  </GradientButton>
                 </form>
               </>
             ) : (
@@ -195,13 +179,9 @@ export default function SignInPage() {
                   </label>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className= {`${gradientButtonStyle} w-full hover:from-orange-600 hover:to-red-600 text-white font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
+                <GradientButton type="submit" disabled={isLoading} className="w-full">
                   {isLoading ? "Signing in..." : "Sign in"}
-                </Button>
+                </GradientButton>
               </form>
             )}
 

@@ -1,13 +1,12 @@
 "use client"
 
-import React, { useState, useMemo } from "react"
-import { Eye, Book, Users } from "lucide-react"
+import { useState, useMemo } from "react"
+import { Eye } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { DataTable } from "@/components/tables/data-table"
 import { TopicBadge } from "./topic-badge"
 import { mockQuestions } from "@/data/questions"
 import { createQuestionColumns } from "@/data/question-table-columns"
-import { gradientButtonStyle } from "@/data/manual2"
 import { Pagination } from "@/components/ui/pagination"
 import { SearchInput } from "@/components/ui/search-input"
 import { Button } from "@/components/ui/button"
@@ -59,38 +58,33 @@ export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
       <div className="bg-card rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-card-foreground">Question Bank</h1>
-         <div className="flex items-center gap-3">
-  {/* Back button */}
-  <Button
-    onClick={onBack}
-    variant="outline"
-    size="md"
-    className="h-10 px-6 py-2 text-sm text-card-foreground border-white hover:bg-white/10"
-  >
-    Back
-  </Button>
+          <div className="flex items-center gap-3">
+            {/* Back button */}
+            <Button
+              onClick={onBack}
+              variant="outline"
+              size="md"
+              className="h-10 px-6 py-2 text-sm text-card-foreground border-white hover:bg-white/10 bg-transparent"
+            >
+              Back
+            </Button>
 
-  {/* Add Question button */}
-  <Button
-    onClick={handleAddQuestion}
-    variant="default"
-    size="md"
-    className="h-10 px-6 py-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90"
-  >
-    Add Question
-  </Button>
+            {/* Add Question button */}
+            <Button
+              onClick={handleAddQuestion}
+              variant="default"
+              size="md"
+              className="h-10 px-6 py-2 text-sm bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Add Question
+            </Button>
 
-  {/* View QA button - Gradient */}
-  <GradientButton
-    onClick={handlePreview}
-    size="md"
-    className="h-10 px-6 py-2 text-sm flex items-center gap-2"
-  >
-    <Eye size={16} />
-    View QA
-  </GradientButton>
-</div>
-
+            {/* View QA button - Gradient */}
+            <GradientButton onClick={handlePreview} size="md" className="flex items-center gap-2">
+              <Eye size={16} />
+              View QA
+            </GradientButton>
+          </div>
         </div>
 
         {/* Filters */}
@@ -98,36 +92,35 @@ export function QuestionSection({ topicName, onBack }: QuestionSectionProps) {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Search Inputs */}
             <div className="flex flex-col sm:flex-row gap-4 w-full">
-             <SearchInput
-  placeholder="Search"
-  value={searchMain}
-  onChange={setSearchMain}
-  className="w-full sm:w-56"
-  icon="custom"
-  customIcon="/icons/subject.png"  // Make sure this exists in public/icons
-  iconAlt="Search icon"
-/>
+              <SearchInput
+                placeholder="Search"
+                value={searchMain}
+                onChange={setSearchMain}
+                className="w-full sm:w-56"
+                icon="custom"
+                customIcon="/icons/subject.png" // Make sure this exists in public/icons
+                iconAlt="Search icon"
+              />
 
-<SearchInput
-  placeholder="Search Topic"
-  value={searchTopic}
-  onChange={setSearchTopic}
-  className="w-full sm:w-56"
-  icon="custom"
-  customIcon="/icons/noun-topic-6799098 1.png"   // Make sure this exists in public/icons
-  iconAlt="Topic icon"
-/>
+              <SearchInput
+                placeholder="Search Topic"
+                value={searchTopic}
+                onChange={setSearchTopic}
+                className="w-full sm:w-56"
+                icon="custom"
+                customIcon="/icons/noun-topic-6799098 1.png" // Make sure this exists in public/icons
+                iconAlt="Topic icon"
+              />
 
-<SearchInput
-  placeholder="Search Target Audience"
-  value={searchAudience}
-  onChange={setSearchAudience}
-  className="w-full sm:w-56"
-  icon="custom"
-  customIcon="/icons/audience tarr 1 (1).png"   // Make sure this exists in public/icons
-  iconAlt="Users icon"
-/>
-
+              <SearchInput
+                placeholder="Search Target Audience"
+                value={searchAudience}
+                onChange={setSearchAudience}
+                className="w-full sm:w-56"
+                icon="custom"
+                customIcon="/icons/audience tarr 1 (1).png" // Make sure this exists in public/icons
+                iconAlt="Users icon"
+              />
             </div>
 
             {/* Results count */}

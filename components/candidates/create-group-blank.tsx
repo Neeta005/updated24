@@ -3,8 +3,8 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { gradientButtonStyle } from "@/data/syllabus"
-import { TabButton } from "@/components/ui/tab-button" // adjust import path as needed
+import { GradientButton } from "@/components/ui/gradient-button"
+import { TabButton } from "@/components/ui/tab-button"
 
 export function CreateGroupBlank() {
   const router = useRouter()
@@ -12,8 +12,6 @@ export function CreateGroupBlank() {
 
   const handleTabClick = (tab: "groups" | "candidates") => {
     setActiveTab(tab)
-
-    // redirect only when switching to "candidates"
     if (tab === "candidates") {
       router.push("/candidates/table?tab=candidates")
     }
@@ -25,31 +23,20 @@ export function CreateGroupBlank() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-white">Candidates</h1>
         <div className="flex items-center gap-3">
-          <button
-            className={`${gradientButtonStyle} px-4 py-2 text-white rounded-lg text-sm font-medium`}
-            onClick={() => router.push("/candidates/create/new")}
-          >
+          <GradientButton onClick={() => router.push("/candidates/create/new")} size="md">
             + Create New Group
-          </button>
+          </GradientButton>
         </div>
       </div>
 
       {/* Tabs Bar */}
       <div className="w-full bg-slate-800 p-1.5 mb-6 rounded-md">
         <div className="flex">
-          <TabButton
-            active={activeTab === "groups"}
-            onClick={() => handleTabClick("groups")}
-            position="left"
-          >
+          <TabButton active={activeTab === "groups"} onClick={() => handleTabClick("groups")} position="left">
             All Groups
           </TabButton>
 
-          <TabButton
-            active={activeTab === "candidates"}
-            onClick={() => handleTabClick("candidates")}
-            position="right"
-          >
+          <TabButton active={activeTab === "candidates"} onClick={() => handleTabClick("candidates")} position="right">
             All Candidates
           </TabButton>
         </div>
@@ -74,9 +61,7 @@ export function CreateGroupBlank() {
               {activeTab === "groups" ? "No Group Added yet!" : "No Candidates Added yet!"}
             </p>
             <p className="text-slate-400 text-sm">
-              {activeTab === "groups"
-                ? "Create Group to manage them"
-                : "Add candidates to view them here"}
+              {activeTab === "groups" ? "Create Group to manage them" : "Add candidates to view them here"}
             </p>
           </div>
         </div>

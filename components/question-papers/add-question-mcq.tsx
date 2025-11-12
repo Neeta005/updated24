@@ -17,8 +17,7 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { defaultAddMcq } from "@/data/question-papers/add-mcq"
-import { gradientButtonStyle } from "@/data/syllabus"
-
+import { GradientButton } from "@/components/ui/gradient-button"
 
 export function AddQuestionMcq() {
   const router = useRouter()
@@ -35,8 +34,7 @@ export function AddQuestionMcq() {
   const [collapsed, setCollapsed] = useState(false)
 
   const addOption = () => setOptions((prev) => [...prev, ""])
-  const updateOption = (i: number, val: string) =>
-    setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)))
+  const updateOption = (i: number, val: string) => setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)))
   const removeOption = (i: number) => setOptions((prev) => prev.filter((_, idx) => idx !== i))
 
   return (
@@ -59,46 +57,36 @@ export function AddQuestionMcq() {
 
         <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
           {/* Expand button when collapsed - on top-right */}
-       {collapsed && (
-  <button
-    onClick={() => setCollapsed(false)}
-    className="absolute right-6 top-6 flex flex-col items-center gap-2 z-50 group"
-  >
-    {/* Icon inside white-bordered box */}
-    <div className="w-10 h-10 flex items-center justify-center rounded-lg border border-white bg-gray-800 group-hover:bg-gray-700 transition-colors">
-      <img
-        src="\icons\edit-2 (1).png" // 👉 place pencil.png inside /public
-        alt="Add details"
-        className="w-5 h-5"
-      />
-    </div>
+          {collapsed && (
+            <button
+              onClick={() => setCollapsed(false)}
+              className="absolute right-6 top-6 flex flex-col items-center gap-2 z-50 group"
+            >
+              {/* Icon inside white-bordered box */}
+              <div className="w-10 h-10 flex items-center justify-center rounded-lg border border-white bg-gray-800 group-hover:bg-gray-700 transition-colors">
+                <img
+                  src="\icons\edit-2 (1).png" // 👉 place pencil.png inside /public
+                  alt="Add details"
+                  className="w-5 h-5"
+                />
+              </div>
 
-    {/* Label below box */}
-    <span className="text-white text-sm font-medium">Add Details</span>
-  </button>
-)}
-
+              {/* Label below box */}
+              <span className="text-white text-sm font-medium">Add Details</span>
+            </button>
+          )}
 
           {/* Left: Question editor */}
           <section className={`${collapsed ? "lg:col-span-11 pr-12" : "lg:col-span-8"} relative`}>
-            {!collapsed && (
-              <div className="hidden lg:block absolute -right-3 top-0 bottom-0 w-px bg-gray-700"></div>
-            )}
+            {!collapsed && <div className="hidden lg:block absolute -right-3 top-0 bottom-0 w-px bg-gray-700"></div>}
 
             <div className="rounded-lg bg-card">
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
                 <h2 className="font-semibold text-lg">Multiple Choice Question (MCQ)</h2>
                 <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={coding}
-                    onChange={() => setCoding(!coding)}
-                    className="sr-only"
-                  />
+                  <input type="checkbox" checked={coding} onChange={() => setCoding(!coding)} className="sr-only" />
                   <div
-                    className={`w-10 h-6 rounded-full transition-colors ${
-                      coding ? "bg-blue-500" : "bg-gray-600"
-                    }`}
+                    className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-blue-500" : "bg-gray-600"}`}
                   ></div>
                   <span
                     className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
@@ -159,9 +147,7 @@ export function AddQuestionMcq() {
                     <div
                       key={i}
                       className={`flex items-center gap-3 rounded-lg border px-4 py-3 max-w-3xl mx-auto transition-colors ${
-                        i === selectedIndex
-                          ? "border-blue-500 bg-blue-500/10"
-                          : "border-gray-600 bg-gray-700/50"
+                        i === selectedIndex ? "border-blue-500 bg-blue-500/10" : "border-gray-600 bg-gray-700/50"
                       }`}
                     >
                       <button
@@ -170,9 +156,7 @@ export function AddQuestionMcq() {
                           i === selectedIndex ? "border-red-500" : "border-gray-400"
                         }`}
                       >
-                        {i === selectedIndex && (
-                          <div className="h-2 w-2 rounded-full bg-red-500"></div>
-                        )}
+                        {i === selectedIndex && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
                       </button>
 
                       <input
@@ -191,14 +175,13 @@ export function AddQuestionMcq() {
                     </div>
                   ))}
 
-                 <button
-  onClick={addOption}
-  className="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors max-w-2xl justify-start"
->
-  <span className="text-lg leading-none">+</span>
-  <span>Add Option</span>
-</button>
-
+                  <button
+                    onClick={addOption}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors max-w-2xl justify-start"
+                  >
+                    <span className="text-lg leading-none">+</span>
+                    <span>Add Option</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -210,12 +193,7 @@ export function AddQuestionMcq() {
               >
                 Cancel
               </button>
-         <button
-  className={`flex items-center justify-center px-6 py-2 gap-2 ${gradientButtonStyle} rounded-md text-white font-semibold text-sm shadow-md transition-all duration-200`}
->
-  Save
-</button>
-
+              <GradientButton size="md">Save</GradientButton>
             </div>
           </section>
 
@@ -310,9 +288,9 @@ export function AddQuestionMcq() {
                                 ? d === "Easy"
                                   ? "bg-green-500/20 text-green-400 border border-green-500"
                                   : d === "Medium"
-                                  ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500"
-                                  : "bg-red-500/20 text-red-400 border border-red-500"
-                                : "bg-gray-700 text-gray-3... hover:bg-gray-600"
+                                    ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500"
+                                    : "bg-red-500/20 text-red-400 border border-red-500"
+                                : "bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600"
                             }`}
                           >
                             {d}

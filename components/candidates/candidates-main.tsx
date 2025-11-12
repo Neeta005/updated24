@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { candidateGroups } from "@/data/candidates"
-import { gradientButtonStyle } from "@/data/syllabus"
 import { useRouter } from "next/navigation"
 import { TabButton } from "@/components/ui/tab-button" // adjust path if needed
+import { GradientButton } from "@/components/ui/gradient-button"
 
 export function CandidatesMain() {
   const [activeTab, setActiveTab] = useState<"groups" | "candidates">("groups")
@@ -31,12 +31,7 @@ export function CandidatesMain() {
           <button onClick={handleMenuClick}>
             <img src="\icons\image 1.png" alt="Menu" className="size-8" />
           </button>
-          <button
-            onClick={() => router.push("/candidates/create")}
-            className={`px-4 py-2 bg-orange-600 ${gradientButtonStyle} hover:bg-orange-700 text-white rounded-lg text-sm font-medium`}
-          >
-            + Create New Group
-          </button>
+          <GradientButton onClick={() => router.push("/candidates/create")}>+ Create New Group</GradientButton>
         </div>
       </div>
 
@@ -145,12 +140,9 @@ export function CandidatesMain() {
               <div className="mt-4 space-y-2">
                 <div className="text-center text-white font-medium text-base">{group.count} Candidates</div>
                 <div className="text-right text-slate-400 text-sm mt-2">Date Created: {group.createdAt}</div>
-                <button
-                  onClick={() => handleViewGroup(group.id)}
-                  className={`${gradientButtonStyle} mt-2 w-full py-3 text-white rounded-lg font-medium transition-all duration-200 text-base`}
-                >
+                <GradientButton onClick={() => handleViewGroup(group.id)} className="w-full">
                   View
-                </button>
+                </GradientButton>
               </div>
             </div>
           </div>

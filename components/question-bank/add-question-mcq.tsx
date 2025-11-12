@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation"
 import { ChevronDown, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
-import { gradientButtonStyle } from "@/data/syllabus"
+import { GradientButton } from "@/components/ui/gradient-button"
 
 export function AddQuestionMCQ() {
   const router = useRouter()
@@ -103,11 +103,7 @@ export function AddQuestionMCQ() {
             >
               Cancel
             </button>
-            <button
-              className={`px-6 py-2 ${gradientButtonStyle} rounded-lg text-white font-semibold text-sm shadow-md transition-all duration-200 flex items-center gap-2`}
-            >
-              <span>Save</span>
-            </button>
+            <GradientButton size="md">Save</GradientButton>
           </div>
         </div>
 

@@ -1,26 +1,11 @@
 "use client"
 
-import { useState, ChangeEvent } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import {
-  ChevronRight,
-  ChevronDown,
-  Trash2,
-  Plus,
-  Bold,
-  Italic,
-  Underline,
-  List,
-  Code,
-} from "lucide-react"
-import { sampleQuestion, Option, QuestionData } from "@/data/questionData"
-import {
-  questionStatus,
-  questionDifficulties,
-  questionTypes,
-  questionTopics,
-} from "@/data/questionMeta"
-import { gradientButtonStyle } from "@/data/syllabus"
+import { ChevronRight, ChevronDown, Trash2, Plus, Bold, Italic, Underline, List, Code } from "lucide-react"
+import { sampleQuestion, type Option, type QuestionData } from "@/data/questionData"
+import { questionStatus, questionDifficulties, questionTypes, questionTopics } from "@/data/questionMeta"
+import { GradientButton } from "@/components/ui/gradient-button"
 
 interface EditQuestionFormProps {
   questionId: string
@@ -90,9 +75,7 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
 
           {/* Left column */}
           <section className={`${collapsed ? "lg:col-span-11 pr-12" : "lg:col-span-8"} relative`}>
-            {!collapsed && (
-              <div className="hidden lg:block absolute -right-3 top-0 bottom-0 w-px bg-gray-700"></div>
-            )}
+            {!collapsed && <div className="hidden lg:block absolute -right-3 top-0 bottom-0 w-px bg-gray-700"></div>}
 
             <div className="rounded-lg bg-card">
               {/* Toolbar + Question */}
@@ -100,14 +83,13 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
                 <div className="flex items-center justify-between mb-3">
                   <h2 className="font-semibold text-lg">Question</h2>
                   <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={coding}
-                      onChange={() => setCoding(!coding)}
-                      className="sr-only"
-                    />
-                    <div className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-blue-500" : "bg-gray-600"}`}></div>
-                    <span className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${coding ? "translate-x-6" : "translate-x-0"} flex items-center justify-center text-gray-800`}>
+                    <input type="checkbox" checked={coding} onChange={() => setCoding(!coding)} className="sr-only" />
+                    <div
+                      className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-blue-500" : "bg-gray-600"}`}
+                    ></div>
+                    <span
+                      className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${coding ? "translate-x-6" : "translate-x-0"} flex items-center justify-center text-gray-800`}
+                    >
                       <Code size={16} />
                     </span>
                   </label>
@@ -115,11 +97,21 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
 
                 {/* Formatting toolbar */}
                 <div className="flex items-center gap-2 bg-gray-800 p-2 rounded-md">
-                  <button className="p-2 rounded hover:bg-gray-700 transition-colors"><Bold size={16} /></button>
-                  <button className="p-2 rounded hover:bg-gray-700 transition-colors"><Italic size={16} /></button>
-                  <button className="p-2 rounded hover:bg-gray-700 transition-colors"><Underline size={16} /></button>
-                  <button className="p-2 rounded hover:bg-gray-700 transition-colors"><List size={16} /></button>
-                  <button className="p-2 rounded hover:bg-gray-700 transition-colors"><Code size={16} /></button>
+                  <button className="p-2 rounded hover:bg-gray-700 transition-colors">
+                    <Bold size={16} />
+                  </button>
+                  <button className="p-2 rounded hover:bg-gray-700 transition-colors">
+                    <Italic size={16} />
+                  </button>
+                  <button className="p-2 rounded hover:bg-gray-700 transition-colors">
+                    <Underline size={16} />
+                  </button>
+                  <button className="p-2 rounded hover:bg-gray-700 transition-colors">
+                    <List size={16} />
+                  </button>
+                  <button className="p-2 rounded hover:bg-gray-700 transition-colors">
+                    <Code size={16} />
+                  </button>
                 </div>
 
                 <textarea
@@ -178,12 +170,9 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
                 >
                   Cancel
                 </button>
-                <button
-                  onClick={handleSave}
-                  className={`flex items-center justify-center px-6 py-2 gap-2 ${gradientButtonStyle} rounded-md text-white font-semibold text-sm shadow-md transition-all duration-200`}
-                >
+                <GradientButton onClick={handleSave} size="md">
                   Save
-                </button>
+                </GradientButton>
               </div>
             </div>
           </section>
@@ -213,7 +202,9 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
                         className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white pr-10 focus:border-orange-primary focus:outline-none"
                       >
                         {questionTopics.map((t) => (
-                          <option key={t} value={t} className="bg-gray-800">{t}</option>
+                          <option key={t} value={t} className="bg-gray-800">
+                            {t}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -230,7 +221,9 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
                         className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white pr-10 focus:border-orange-primary focus:outline-none"
                       >
                         {questionTypes.map((qt) => (
-                          <option key={qt} value={qt} className="bg-gray-800">{qt}</option>
+                          <option key={qt} value={qt} className="bg-gray-800">
+                            {qt}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -250,8 +243,8 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
                               ? level === "Easy"
                                 ? "bg-green-primary text-white"
                                 : level === "Medium"
-                                ? "bg-yellow-primary text-white"
-                                : "bg-red-primary text-white"
+                                  ? "bg-yellow-primary text-white"
+                                  : "bg-red-primary text-white"
                               : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                           }`}
                         >

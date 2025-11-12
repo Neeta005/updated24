@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { gradientButtonStyle } from "@/data/syllabus"
+import { GradientButton } from "@/components/ui/gradient-button"
 import { TabButton } from "@/components/ui/tab-button"
 import { Edit3, Trash2 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog"
@@ -76,106 +76,93 @@ export function CreateGroupForm() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-white">Create New Group</h1>
-        <button
-          type="button"
-          aria-disabled="true"
-          className={`${gradientButtonStyle} px-4 py-2 text-white rounded-lg text-sm font-medium opacity-90`}
-        >
+        <GradientButton size="md" disabled>
           Create New Group
-        </button>
+        </GradientButton>
       </div>
 
       {/* Tabs */}
       <div className="w-full bg-slate-800 p-2 mb-6 rounded-md">
         <div className="flex gap-2">
-        <TabButton
-  active={activeTab === "manual"}
-  onClick={() => setActiveTab("manual")}
-  position="left"
->
-  <div className="flex items-center gap-2">
-    <Image
-      src="/icons/manual outline 1.png" // 🧩 your icon path in public folder
-      alt="Manual Icon"
-      width={18}
-      height={18}
-      className="object-contain"
-    />
-    <span>Manual Entry</span>
-  </div>
-</TabButton>
+          <TabButton active={activeTab === "manual"} onClick={() => setActiveTab("manual")} position="left">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/icons/manual outline 1.png" // 🧩 your icon path in public folder
+                alt="Manual Icon"
+                width={18}
+                height={18}
+                className="object-contain"
+              />
+              <span>Manual Entry</span>
+            </div>
+          </TabButton>
 
-<TabButton
-  active={activeTab === "bulk"}
-  onClick={() => setActiveTab("bulk")}
-  position="right"
->
-  <div className="flex items-center gap-2">
-    <Image
-      src="/icons/bulk outliine 1.png" // 🧩 your icon path in public folder
-      alt="Bulk Import Icon"
-      width={18}
-      height={18}
-      className="object-contain"
-    />
-    <span>Bulk Import</span>
-  </div>
-</TabButton>
-
+          <TabButton active={activeTab === "bulk"} onClick={() => setActiveTab("bulk")} position="right">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/icons/bulk outliine 1.png" // 🧩 your icon path in public folder
+                alt="Bulk Import Icon"
+                width={18}
+                height={18}
+                className="object-contain"
+              />
+              <span>Bulk Import</span>
+            </div>
+          </TabButton>
         </div>
       </div>
 
       {/* Manual Entry */}
       {activeTab === "manual" && (
         <>
-       <div className="bg-card border border-slate-700 rounded-xl p-5 space-y-5">
-  <div className="flex items-center gap-2 text-white font-semibold">
-    <Image
-      src="/icons/manual outline 1.png"  // simple icon from public folder
-      alt="Manual Icon"
-      width={18}
-      height={18}
-      className="object-contain"
-    />
-    <span>Manual Entry</span>
-  </div>
+          <div className="bg-card border border-slate-700 rounded-xl p-5 space-y-5">
+            <div className="flex items-center gap-2 text-white font-semibold">
+              <Image
+                src="/icons/manual outline 1.png" // simple icon from public folder
+                alt="Manual Icon"
+                width={18}
+                height={18}
+                className="object-contain"
+              />
+              <span>Manual Entry</span>
+            </div>
 
-  <div className="grid md:grid-cols-2 gap-4 mt-2">
-    <div>
-      <label className="block text-slate-300 text-sm mb-2">Group Name</label>
-      <input
-        value={groupName}
-        onChange={(e) => setGroupName(e.target.value)}
-        placeholder="Python & Development"
-        className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
-      />
-    </div>
+            <div className="grid md:grid-cols-2 gap-4 mt-2">
+              <div>
+                <label className="block text-slate-300 text-sm mb-2">Group Name</label>
+                <input
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  placeholder="Python & Development"
+                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+                />
+              </div>
 
-    <div>
-      <label className="block text-slate-300 text-sm mb-2">Target Audience</label>
-      <select
-        value={audience}
-        onChange={(e) => setAudience(e.target.value)}
-        className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none"
-      >
-        <option>Students & Fresher</option>
-        <option>Experienced</option>
-        <option>Mixed</option>
-      </select>
-    </div>
-  </div>
+              <div>
+                <label className="block text-slate-300 text-sm mb-2">Target Audience</label>
+                <select
+                  value={audience}
+                  onChange={(e) => setAudience(e.target.value)}
+                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none"
+                >
+                  <option>Students & Fresher</option>
+                  <option>Experienced</option>
+                  <option>Mixed</option>
+                </select>
+              </div>
+            </div>
 
-  <div>
-    <label className="block text-slate-300 text-sm mb-2">Description</label>
-    <textarea
-      value={description}
-      onChange={(e) => setDescription(e.target.value)}
-      placeholder="Enter Description"
-      rows={3}
-      className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
-    />
-  </div>
-</div>
+            <div>
+              <label className="block text-slate-300 text-sm mb-2">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Enter Description"
+                rows={3}
+                className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white placeholder-slate-400 focus:outline-none"
+              />
+            </div>
+          </div>
 
           {/* Candidate List */}
           <div className="bg-card border border-slate-700 rounded-xl p-5 mt-6">
@@ -397,20 +384,19 @@ export function CreateGroupForm() {
           <div className="bg-card border border-slate-700 rounded-xl p-5 mt-6">
             <div className="flex items-center justify-between mb-5">
               <div className="text-white font-semibold">Candidates Data</div>
-            <button
-  onClick={() => setBulkImportOpen(true)}
-  className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90 flex items-center gap-2"
->
-  <Image
-    src="/icons/uploadicon.png" // replace with your actual icon path in public folder
-    alt="Import CSV Icon"
-    width={16}
-    height={16}
-    className="object-contain"
-  />
-  <span>Import CSV</span>
-</button>
-
+              <button
+                onClick={() => setBulkImportOpen(true)}
+                className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90 flex items-center gap-2"
+              >
+                <Image
+                  src="/icons/uploadicon.png" // replace with your actual icon path in public folder
+                  alt="Import CSV Icon"
+                  width={16}
+                  height={16}
+                  className="object-contain"
+                />
+                <span>Import CSV</span>
+              </button>
             </div>
 
             {/* Format Instructions */}
@@ -475,14 +461,10 @@ export function CreateGroupForm() {
         </button>
 
         <div className="flex items-center gap-3">
-      <button className="px-4 py-2 rounded-md border border-slate-600  hover:bg-gray-100 flex items-center gap-2">
-  <Image
-              src="/icons/Save (1).png"
-              width={16}
-              height={16}
-              className="object-contain" alt={""}  />
-  <span>Save as Draft</span>
-</button>
+          <button className="px-4 py-2 rounded-md border border-slate-600  hover:bg-gray-100 flex items-center gap-2">
+            <Image src="/icons/Save (1).png" width={16} height={16} className="object-contain" alt={""} />
+            <span>Save as Draft</span>
+          </button>
 
           <button className="px-4 py-2 rounded-md text-white font-medium bg-gradient-to-r from-orange-500 to-pink-600 hover:opacity-90">
             + Create Group

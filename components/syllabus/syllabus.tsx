@@ -2,8 +2,15 @@
 
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { syllabusData, gradientButtonStyle } from "@/data/syllabus"
-import { Pagination } from "@/components/ui/pagination"
+import { syllabusData } from "@/data/syllabus"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination"
 import { MobileCard } from "@/components/ui/mobile-card"
 import { TableRows } from "./table-rows"
 import { useState, useMemo } from "react"
@@ -12,6 +19,7 @@ import { Text } from "@/components/atoms/text"
 import { useRouter } from "next/navigation"
 import { SearchInput } from "@/components/ui/search-input"
 import { ArrowUpDown } from "lucide-react"
+import { GradientButton } from "@/components/ui/gradient-button"
 
 export function Syllabus() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -22,7 +30,7 @@ export function Syllabus() {
   const [topicSearch, setTopicSearch] = useState("")
   const [targetAudienceSearch, setTargetAudienceSearch] = useState("")
   const [sortFilter, setSortFilter] = useState("")
-  
+
   // Sorting state
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
 
@@ -44,30 +52,26 @@ export function Syllabus() {
     let filtered = syllabusData
 
     if (subjectSearch) {
-      filtered = filtered.filter(item =>
-        item.subject.toLowerCase().includes(subjectSearch.toLowerCase())
-      )
+      filtered = filtered.filter((item) => item.subject.toLowerCase().includes(subjectSearch.toLowerCase()))
     }
 
     if (topicSearch) {
-      filtered = filtered.filter(item =>
-        item.topic?.toLowerCase().includes(topicSearch.toLowerCase())
-      )
+      filtered = filtered.filter((item) => item.topic?.toLowerCase().includes(topicSearch.toLowerCase()))
     }
 
     if (targetAudienceSearch) {
-      filtered = filtered.filter(item =>
-        item.targetAudience.toLowerCase().includes(targetAudienceSearch.toLowerCase())
+      filtered = filtered.filter((item) =>
+        item.targetAudience.toLowerCase().includes(targetAudienceSearch.toLowerCase()),
       )
     }
 
     if (sortFilter === "latest") {
-      filtered = [...filtered].sort((a, b) =>
-        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      filtered = [...filtered].sort(
+        (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime(),
       )
     } else if (sortFilter === "older") {
-      filtered = [...filtered].sort((a, b) =>
-        new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime()
+      filtered = [...filtered].sort(
+        (a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime(),
       )
     }
 
@@ -106,8 +110,7 @@ export function Syllabus() {
 
   // Helper to render arrow direction (↑↓)
   const renderSortIcon = (key: string) => {
-    if (sortConfig?.key !== key)
-      return <ArrowUpDown className="w-4 h-4 ml-2 opacity-50" />
+    if (sortConfig?.key !== key) return <ArrowUpDown className="w-4 h-4 ml-2 opacity-50" />
     return (
       <ArrowUpDown
         className={`w-4 h-4 ml-2 transition-transform ${
@@ -126,12 +129,14 @@ export function Syllabus() {
             Subject and Syllabus
           </Text>
           <Link href="/syllabus/add">
-            <Button
-              className={`${gradientButtonStyle} text-white px-4 py-2 flex items-center gap-2 w-full sm:w-auto justify-center rounded-md shadow-md`}
-            >
-              <span className="text-lg">+</span>
-              Add Syllabus
-            </Button>
+           <GradientButton
+  size="md"
+  className="w-full sm:w-auto flex items-center justify-center gap-2"
+>
+  <span className="text-lg">+</span>
+  <span>Add Syllabus</span>
+</GradientButton>
+
           </Link>
         </div>
 
@@ -177,7 +182,7 @@ export function Syllabus() {
                 <Button
                   variant="outline"
                   onClick={resetFilters}
-                  className="text-gray-300 border-gray-600 hover:bg-gray-700"
+                  className="text-gray-300 border-gray-600 hover:bg-gray-700 bg-transparent"
                 >
                   Clear Filters
                 </Button>
@@ -196,7 +201,7 @@ export function Syllabus() {
             <Button
               variant="outline"
               onClick={resetFilters}
-              className="mt-4 text-gray-300 border-gray-600 hover:bg-gray-700"
+              className="mt-4 text-gray-300 border-gray-600 hover:bg-gray-700 bg-transparent"
             >
               Clear all filters
             </Button>
@@ -208,16 +213,10 @@ export function Syllabus() {
           <div className="hidden md:block overflow-x-auto">
             {/* Header with sorting */}
             <div className="grid grid-cols-[2fr_1fr_2fr_1fr] gap-x-32 px-6 py-2 bg-black text-white font-medium rounded-t-lg">
-              <div
-                className="flex items-center cursor-pointer select-none"
-                onClick={() => handleSort("subject")}
-              >
+              <div className="flex items-center cursor-pointer select-none" onClick={() => handleSort("subject")}>
                 Subject {renderSortIcon("subject")}
               </div>
-              <div
-                className="flex items-center cursor-pointer select-none"
-                onClick={() => handleSort("category")}
-              >
+              <div className="flex items-center cursor-pointer select-none" onClick={() => handleSort("category")}>
                 Category {renderSortIcon("category")}
               </div>
               <div
@@ -242,20 +241,18 @@ export function Syllabus() {
         {/* Mobile view */}
         {filteredData.length > 0 && (
           <div className="block md:hidden space-y-4">
-            {filteredData
-              .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-              .map((item) => (
-                <MobileCard
-                  key={item.id}
-                  id={item.id}
-                  title={item.subject}
-                  category={item.category}
-                  description={item.targetAudience}
-                  onView={handleViewSyllabus}
-                  onEdit={handleEditSyllabus}
-                  onDelete={handleDeleteSyllabus}
-                />
-              ))}
+            {filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item) => (
+              <MobileCard
+                key={item.id}
+                id={item.id}
+                title={item.subject}
+                category={item.category}
+                description={item.targetAudience}
+                onView={handleViewSyllabus}
+                onEdit={handleEditSyllabus}
+                onDelete={handleDeleteSyllabus}
+              />
+            ))}
           </div>
         )}
 
@@ -267,7 +264,25 @@ export function Syllabus() {
               onPageChange={setCurrentPage}
               itemsPerPage={itemsPerPage}
               totalItems={filteredData.length}
-            />
+            >
+              <PaginationContent>
+                <PaginationPrevious />
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <PaginationItem key={i + 1}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setCurrentPage(i + 1)
+                      }}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationNext />
+              </PaginationContent>
+            </Pagination>
           </div>
         )}
 
