@@ -5,7 +5,7 @@ interface ExamCardProps extends Exam {}
 
 const ExamCard = React.memo<React.FC<ExamCardProps>>(({ id, title, date, time, status, badgeClass, info }) => {
   return (
-    <div className="bg-card relative rounded-lg p-3 sm:p-4 lg:p-6 border border-border flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 flex-1">
+    <div className="bg-card relative rounded-lg p-3 sm:p-4 lg:p-6 border border-border flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 flex-1 cursor-pointer hover:bg-muted hover:shadow-[0_0_12px_rgba(255,255,255,0.08)] hover:border-border/80 hover:scale-[1.01]">
       {/* Vertical Line - Hidden on mobile, visible on larger screens */}
       <div className="hidden sm:block absolute right-[120px] md:right-[140px] lg:right-[155px] top-1/2 transform -translate-y-1/2 h-[60px] w-px bg-border" />
 

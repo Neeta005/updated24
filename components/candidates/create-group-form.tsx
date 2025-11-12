@@ -8,6 +8,8 @@ import { Edit3, Trash2 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import ImportCsvCandidatesBulkModal from "@/components/modals/import-csv-candidates-bulk-modal"
 import Image from "next/image"
+import { ChevronDown } from "lucide-react"
+
 
 export function CreateGroupForm() {
   const router = useRouter()
@@ -76,7 +78,7 @@ export function CreateGroupForm() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-white">Create New Group</h1>
-        <GradientButton size="md" disabled>
+        <GradientButton size="md">
           Create New Group
         </GradientButton>
       </div>
@@ -141,14 +143,15 @@ export function CreateGroupForm() {
               <div>
                 <label className="block text-slate-300 text-sm mb-2">Target Audience</label>
                 <select
-                  value={audience}
-                  onChange={(e) => setAudience(e.target.value)}
-                  className="w-full px-3 py-2 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none"
-                >
-                  <option>Students & Fresher</option>
-                  <option>Experienced</option>
-                  <option>Mixed</option>
-                </select>
+    value={audience}
+    onChange={(e) => setAudience(e.target.value)}
+    className="w-full px-3 py-3 pr-12 rounded-md border border-slate-600 bg-slate-800 text-white focus:outline-none appearance-none"
+  >
+    <option>Students & Fresher</option>
+    <option>Experienced</option>
+    <option>Mixed</option>
+  </select>
+
               </div>
             </div>
 
