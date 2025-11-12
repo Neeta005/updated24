@@ -58,20 +58,39 @@ export function ExamCalendar() {
   return (
     <div className="bg-card rounded-xl p-4 border border-border w-full h-[342px] flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-white text-lg font-semibold">Exam Calendar</h2>
-        <div className="flex items-center gap-2">
-          <ChevronLeft
-            className="text-gray-400 cursor-pointer hover:text-white"
-            onClick={handlePrevMonth}
-          />
-          <span className="text-gray-400 text-sm font-medium">
-            {monthName} {year}
-          </span>
-          <ChevronRight
-            className="text-gray-400 cursor-pointer hover:text-white"
-            onClick={handleNextMonth}
-          />
+  {/* Header */}
+   {/* Header */}
+      <div className="flex items-center justify-between mb-3 gap-2">
+        <h2 className="text-white text-sm md:text-lg font-semibold whitespace-nowrap">Exam Calendar</h2>
+        <div className="flex items-center ">
+          {/* Month Navigation */}
+          <div className="flex items-center gap-0.5 md:gap-1">
+            <ChevronLeft
+              className="text-gray-400 cursor-pointer hover:text-white w-3.5 h-3.5 md:w-4 md:h-4"
+              onClick={handlePrevMonth}
+            />
+            <span className="text-gray-400 text-xs md:text-sm font-medium min-w-[60px] md:min-w-[80px] text-center">
+              {monthName}
+            </span>
+            <ChevronRight
+              className="text-gray-400 cursor-pointer hover:text-white w-3.5 h-3.5 md:w-4 md:h-4"
+              onClick={handleNextMonth}
+            />
+          </div>
+          {/* Year Navigation */}
+          <div className="flex items-center gap-0.5 md:gap-1">
+            <ChevronLeft
+              className="text-gray-400 cursor-pointer hover:text-white w-3.5 h-3.5 md:w-4 md:h-4"
+              onClick={() => setCurrentDate(new Date(year - 1, month))}
+            />
+            <span className="text-gray-400 text-xs md:text-sm font-medium min-w-[40px] md:min-w-[45px] text-center">
+              {year}
+            </span>
+            <ChevronRight
+              className="text-gray-400 cursor-pointer hover:text-white w-3.5 h-3.5 md:w-4 md:h-4"
+              onClick={() => setCurrentDate(new Date(year + 1, month))}
+            />
+          </div>
         </div>
       </div>
 

@@ -9,7 +9,8 @@ interface ViolationBarProps {
 }
 
 export function ViolationBar({ label, value, maxValue }: ViolationBarProps) {
-  const percentage = (value / maxValue) * 100
+  // Round to 2 decimal places to ensure consistency between server and client
+  const percentage = maxValue > 0 ? Math.round((value / maxValue) * 100 * 100) / 100 : 0
   const [exam, time = ""] = label.split(":")
 
   return (
