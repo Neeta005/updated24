@@ -9,6 +9,8 @@ import { QuestionSection } from "@/components/question-section/question-section"
 import { EditTopicModal } from "@/components/modals/edit-topic-modal"
 import { Pagination } from "@/components/ui/pagination"
 import { GradientButton } from "@/components/ui/gradient-button"
+import { SearchInput } from "@/components/ui/search-input"
+
 
 // ---------------------- UnifiedBadge Component ----------------------
 interface UnifiedBadgeProps {
@@ -171,6 +173,10 @@ export default function QuestionBank() {
       selectedTopicForEdit: { subject: "Design", name: topicName, description: "" },
       isEditTopicModalOpen: true,
     }))
+// Add these (TypeScript) states for the three search inputs
+const [searchMain, setSearchMain] = useState<string>("")
+const [searchTopic, setSearchTopic] = useState<string>("")
+const [searchAudience, setSearchAudience] = useState<string>("")
 
   const handleCloseEditTopicModal = () =>
     setState((prev) => ({ ...prev, isEditTopicModalOpen: false, selectedTopicForEdit: null }))
@@ -193,27 +199,63 @@ export default function QuestionBank() {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold text-foreground">Question Bank</h1>
-          <div className="flex items-center gap-3">
-            <GradientButton
-              onClick={handleImportCSV}
-              size="sm"
-              className="flex items-center justify-center gap-2 font-semibold text-sm shadow-md"
-            >
-              <Plus className="size-4 text-white" />
-              <span>Import CSV</span>
-            </GradientButton>
-          </div>
+        <div className="flex items-center justify-end">
+  <GradientButton
+    onClick={handleImportCSV}
+    size="sm"
+    className="flex items-center justify-center gap-2 font-semibold text-sm shadow-md px-4 py-2"
+  >
+    <Plus className="size-4 text-white" />
+    <span>Import CSV</span>
+  </GradientButton>
+</div>
+
         </div>
 
         {/* Search & Stats */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
-          <div className="flex flex-col sm:flex-row gap-4 w-full">
-            {/* Search Input examples omitted for brevity, keep your original */}
-          </div>
-          <div className="text-gray-300 text-sm font-medium whitespace-nowrap">
-            Total subjects: <span>12</span> | Total topics: <span>32</span> | Total questions: <span>128</span>
-          </div>
-        </div>
+     {/* Search & Stats Row */}
+<div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+  {/* Left side — Search Inputs */}
+  <div className="flex flex-wrap sm:flex-row gap-4 w-full sm:w-auto">
+    <SearchInput
+      placeholder="Search"
+      value={searchMain}
+      onChange={setSearchMain}
+      className="w-full sm:w-56"
+      icon="custom"
+      customIcon="/icons/subject.png"
+      iconAlt="Search icon"
+    />
+
+    <SearchInput
+      placeholder="Search Topic"
+      value={searchTopic}
+      onChange={setSearchTopic}
+      className="w-full sm:w-56"
+      icon="custom"
+      customIcon="/icons/noun-topic-6799098 1.png"
+      iconAlt="Topic icon"
+    />
+
+    <SearchInput
+      placeholder="Search Target Audience"
+      value={searchAudience}
+      onChange={setSearchAudience}
+      className="w-full sm:w-56"
+      icon="custom"
+      customIcon="/icons/audience tarr 1 (1).png"
+      iconAlt="Users icon"
+    />
+  </div>
+
+  {/* Right side — Totals */}
+  <div className="text-gray-300 text-sm font-medium whitespace-nowrap text-right">
+    Total subjects: <span className="text-white font-semibold">12</span> |{" "}
+    Total topics: <span className="text-white font-semibold">32</span> |{" "}
+    Total questions: <span className="text-white font-semibold">128</span>
+  </div>
+</div>
+
 
         {/* Table */}
         <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700">

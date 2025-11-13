@@ -177,14 +177,13 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 mt-8">
-          {onBack && (
-            <button
-              onClick={onBack}
-              className="px-6 py-3 border border-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-            >
-              Back
-            </button>
-          )}
+          <button
+  onClick={onBack ?? (() => window.history.back())}
+  className="px-6 py-3 border border-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+>
+  Back
+</button>
+
           <button className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-lg hover:from-red-700 hover:to-orange-600 transition-all">
             Publish
           </button>

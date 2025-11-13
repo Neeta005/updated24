@@ -3,8 +3,7 @@
 import React from "react"
 import type { Column } from "@/components/tables/data-table"
 import { DifficultyBadge } from "@/components/ui/difficulty-badge"
-
-// Import the Question type that matches mockQuestions shape (includes sr)
+import Image from "next/image"
 import type { Question as QuestionsDataQuestion } from "@/data/questions"
 
 const StatusBadge = React.memo(({ status }: { status: "Draft" | "Published" }) => {
@@ -59,41 +58,38 @@ export function createQuestionColumns({
       header: "Actions",
       render: (_value, question) => (
         <div className="flex items-center gap-2">
+          {/* Delete Button */}
           <button
             onClick={(e) => {
               e.stopPropagation()
               onDelete(question.id)
             }}
-            className="flex items-center justify-center p-2 size-8 bg-pink-500/10 rounded transition-colors hover:bg-pink-500/20"
+            className="flex items-center justify-center transition-transform duration-200 hover:scale-110 hover:brightness-110"
           >
-            {/* trash icon handled at callsite or rely on existing styles */}
-            <svg className="h-3 w-3 text-pink-500" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M3 6h18M8 6v12m8-12v12M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Image
+              src="/icons/newdeletequestionbank.png"
+              alt="Delete"
+              width={28}
+              height={28}
+              className="object-contain"
+            />
           </button>
+
+          {/* Edit Button */}
           <button
             onClick={(e) => {
               e.stopPropagation()
               onEdit(question.id)
             }}
-            className="flex items-center justify-center size-8 p-2 rounded bg-gradient-to-r from-orange-200/10 to-pink-600/10 hover:from-orange-200/20 hover:to-pink-600/20 transition-colors"
+            className="flex items-center justify-center transition-transform duration-200 hover:scale-110 hover:brightness-110"
           >
-            <svg className="h-3 w-3 text-orange-500" viewBox="0 0 24 24" fill="none">
-              <path d="M12 20h9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path
-                d="M16.5 3.5a2.121 2.121 0 1 1 3 3L8 18l-4 1 1-4 11.5-11.5Z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Image
+              src="/icons/neweditquestionbank.png"
+              alt="Edit"
+              width={28}
+              height={28}
+              className="object-contain"
+            />
           </button>
         </div>
       ),

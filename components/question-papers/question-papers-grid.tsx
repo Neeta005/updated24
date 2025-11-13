@@ -86,24 +86,25 @@ export function QuestionPapersGrid() {
         </div>
 
         {/* Sort Dropdown */}
-        <div className="flex items-center gap-2 mt-2 sm:mt-0">
-          <span className="text-slate-400 text-sm">Sort by</span>
-          <div className="relative">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-secondary border border-white rounded-lg px-4 py-2 pr-10 text-white focus:outline-none focus:border-white"
-            >
-              <option value="Latest">Latest</option>
-              <option value="Oldest">Oldest</option>
-              <option value="Name">High Degree</option>
-            </select>
-            <ChevronDown
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
-              size={16}
-            />
-          </div>
-        </div>
+    <div className="flex items-center gap-2 mt-2 sm:mt-0">
+  <span className="text-slate-400 text-sm whitespace-nowrap">Sort by</span>
+  <div className="relative">
+    <select
+      value={sortBy}
+      onChange={(e) => setSortBy(e.target.value)}
+      className="appearance-none bg-secondary border border-white rounded-lg px-4 py-2 pr-10 text-white focus:outline-none focus:border-white"
+    >
+      <option value="Latest">Latest</option>
+      <option value="Oldest">Oldest</option>
+      <option value="Name">High Degree</option>
+    </select>
+    <ChevronDown
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+      size={16}
+    />
+  </div>
+</div>
+
       </div>
 
       {/* Question Paper Cards */}
