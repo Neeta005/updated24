@@ -39,53 +39,78 @@ export function Sidebar({ activeIndex, isOpen, setIsOpen }: SidebarProps) {
 
   const computedActiveIndex = useMemo(() => {
     const currentSeg = getFirstSegment(pathname)
-    // 1) segment equality
     let idx = menuItems.findIndex((item) => getFirstSegment(item.href) === currentSeg)
     if (idx !== -1) return idx
-    // 2) href prefix match
     idx = menuItems.findIndex((item) => startsWithPath(pathname ?? "", item.href))
     if (idx !== -1) return idx
-    // 3) activeMatch patterns
     idx = menuItems.findIndex((item) =>
       (item.activeMatch ?? []).some((pattern) => startsWithPath(pathname ?? "", pattern)),
     )
-    return idx // can be -1, we won't force Dashboard
+    return idx
   }, [pathname])
 
   const indexToUse = activeIndex ?? computedActiveIndex
 
-
   return (
     <>
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
       <aside
-        className={`fixed left-0 top-0 h-full w-20 bg-sidebar border-r border-sidebar-border flex flex-col items-center z-40 
-          transform transition-transform duration-300 
-          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-          lg:translate-x-0 lg:flex`}
+        className={`fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border 
+        z-40 md:z-0 md:relative flex flex-col
+        transform transition-all duration-300
+        ${isOpen ? "translate-x-0 w-52" : "-translate-x-full md:translate-x-0 md:w-20"}
+        `}
       >
-        <div className="mt-18 flex flex-col items-center">
+        <div className="mt-17 flex flex-col flex-1 overflow-hidden">
           {menuItems.map((item, index) => {
             const isActive = indexToUse === index
-            return (
-            <Link
-  key={item.id}
-  href={item.href}
-  className={`w-12 h-11 flex items-center justify-center transition-all duration-200
-    ${isActive ? "bg-gradient-to-r from-orange-500 to-red-500 shadow-lg rounded-lg" : "hover:bg-sidebar-accent rounded-lg"}`}
-  title={item.name}
-  onClick={() => setIsOpen(false)}
->
-  <Image
-    src={item.icon || "/placeholder.svg?height=40&width=40&query=sidebar%20icon"}
-    alt={item.name}
-    width={40}
-    height={40}
-    className={`size-10 transition-all duration-200 
-      ${isActive ? "brightness-0 invert" : "opacity-80 hover:opacity-100"}`}
-  />
-</Link>
 
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                title={item.name}
+                onClick={() => setIsOpen(false)}
+                className="w-full"
+              >
+                <div
+                  className={`
+                    flex items-center gap-3 px-3 py-2 w-full 
+                    transition-all duration-200 rounded-xl
+                    ${isActive
+                      ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent"
+                    }
+                  `}
+                >
+                  <Image
+                    src={item.icon}
+                    alt={item.name}
+                    width={isOpen ? 38 : 36}
+                    height={isOpen ? 38 : 36}
+                    className={`
+                      transition-all duration-200
+                      ${isActive ? "brightness-0 invert" : "opacity-80"}
+                    `}
+                  />
+
+                  <span
+                    className={`
+                      text-sm font-medium whitespace-nowrap transition-all
+                      ${isOpen ? "opacity-100 w-auto" : "opacity-0 w-0"}
+                      hidden md:inline
+                    `}
+                  >
+                    {item.name}
+                  </span>
+                </div>
+              </Link>
             )
           })}
         </div>

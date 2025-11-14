@@ -1,6 +1,6 @@
 "use client"
 
-import { Bell, Menu } from "lucide-react"
+import { Bell, Menu } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Image from "next/image"
 
@@ -15,8 +15,9 @@ export function Header({ onMenuClick }: HeaderProps) {
         {/* Left Side Logo */}
         <div className="flex items-center space-x-4">
           <button
-            className="lg:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors"
             onClick={onMenuClick}
+            title="Toggle sidebar"
           >
             <Menu className="size-5" />
           </button>

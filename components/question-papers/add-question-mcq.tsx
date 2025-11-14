@@ -1,20 +1,7 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import {
-  ChevronRight,
-  Trash2,
-  Bold,
-  Italic,
-  Underline,
-  List,
-  ListOrdered,
-  Quote,
-  Code,
-  Link,
-  Smile,
-  ChevronDown,
-} from "lucide-react"
+import { useRouter } from 'next/navigation'
+import { ChevronRight, Trash2, Bold, Italic, Underline, List, ListOrdered, Quote, Code, Link, Smile, ChevronDown } from 'lucide-react'
 import { useState } from "react"
 import { defaultAddMcq } from "@/data/question-papers/add-mcq"
 import { GradientButton } from "@/components/ui/gradient-button"
@@ -32,6 +19,10 @@ export function AddQuestionMcq() {
   const [marks, setMarks] = useState(defaultAddMcq.marks)
   const [coding, setCoding] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
+  const [trueFalseAnswer, setTrueFalseAnswer] = useState<"True" | "False">("True")
+  const [shortAnswer, setShortAnswer] = useState("")
+  const [codeContent, setCodeContent] = useState("Python")
+  const [optionCoding, setOptionCoding] = useState<Record<number, boolean>>({})
 
   const addOption = () => setOptions((prev) => [...prev, ""])
   const updateOption = (i: number, val: string) => setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)))
@@ -64,11 +55,7 @@ export function AddQuestionMcq() {
             >
               {/* Icon inside white-bordered box */}
               <div className="w-10 h-10 flex items-center justify-center rounded-lg border border-white bg-gray-800 group-hover:bg-gray-700 transition-colors">
-                <img
-                  src="\icons\edit-2 (1).png" // 👉 place pencil.png inside /public
-                  alt="Add details"
-                  className="w-5 h-5"
-                />
+                <img src="\icons\edit-2 (1).png" alt="Add details" className="w-5 h-5" />
               </div>
 
               {/* Label below box */}
@@ -77,25 +64,34 @@ export function AddQuestionMcq() {
           )}
 
           {/* Left: Question editor */}
-          <section className={`${collapsed ? "lg:col-span-11 pr-12" : "lg:col-span-8"} relative`}>
+          <section className={`${collapsed ? "lg:col-span-11 pr-12" : "lg:col-span-9"} relative`}>
             {!collapsed && <div className="hidden lg:block absolute -right-3 top-0 bottom-0 w-px bg-gray-700"></div>}
 
             <div className="rounded-lg bg-card">
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
-                <h2 className="font-semibold text-lg">Multiple Choice Question (MCQ)</h2>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" checked={coding} onChange={() => setCoding(!coding)} className="sr-only" />
-                  <div
-                    className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-blue-500" : "bg-gray-600"}`}
-                  ></div>
-                  <span
-                    className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                      coding ? "translate-x-6" : "translate-x-0"
-                    } flex items-center justify-center text-gray-800`}
-                  >
-                    <Code size={16} />
-                  </span>
-                </label>
+                <h2 className="font-semibold text-lg">
+                  {type === "MCQS"
+                    ? "Multiple Choice Question (MCQ)"
+                    : type === "True/False"
+                      ? "True / False"
+                      : "Short Answer"}
+                </h2>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-gray-300">Coding</span>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked={coding} onChange={() => setCoding(!coding)} className="sr-only" />
+                    <div
+                      className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-green-500" : "bg-gray-600"}`}
+                    ></div>
+                    <span
+                      className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                        coding ? "translate-x-6" : "translate-x-0"
+                      } flex items-center justify-center text-gray-800`}
+                    >
+                      {coding && <Code size={12} />}
+                    </span>
+                  </label>
+                </div>
               </div>
 
               <div className="p-6 space-y-6">
@@ -137,52 +133,167 @@ export function AddQuestionMcq() {
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                     className="w-full min-h-28 bg-transparent px-4 py-3 text-white resize-none outline-none"
-                    placeholder="Type your question..."
+                    placeholder={
+                      type === "True/False"
+                        ? "Write a Statement..."
+                        : type === "Short Answer"
+                          ? "Write your question..."
+                          : "Type your question..."
+                    }
                   />
                 </div>
 
-                {/* Options */}
-                <div className="space-y-3">
-                  {options.map((opt, i) => (
-                    <div
-                      key={i}
-                      className={`flex items-center gap-3 rounded-lg border px-4 py-3 max-w-3xl mx-auto transition-colors ${
-                        i === selectedIndex ? "border-blue-500 bg-blue-500/10" : "border-gray-600 bg-gray-700/50"
-                      }`}
-                    >
-                      <button
-                        onClick={() => setSelectedIndex(i)}
-                        className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
-                          i === selectedIndex ? "border-red-500" : "border-gray-400"
-                        }`}
-                      >
-                        {i === selectedIndex && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
-                      </button>
-
-                      <input
-                        value={opt}
-                        onChange={(e) => updateOption(i, e.target.value)}
-                        className="flex-1 bg-transparent outline-none text-white placeholder-gray-400"
-                        placeholder={`Option ${i + 1}`}
-                      />
-
-                      <button
-                        onClick={() => removeOption(i)}
-                        className="text-gray-400 hover:text-red-400 transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
+                {coding && (
+                  <div className="border border-gray-600 rounded-lg overflow-hidden">
+                    <div className="flex items-center justify-between bg-gray-700 px-4 py-2 border-b border-gray-600">
+                      <span className="text-sm font-medium text-gray-300">Python</span>
+                      <button className="p-1 text-gray-400 hover:text-green-400 transition-colors">
+                        <Code size={16} className="text-green-500" />
                       </button>
                     </div>
-                  ))}
+                    <div className="bg-gray-900 p-4 min-h-56 font-mono text-sm text-green-400 overflow-auto">
+                      <pre>{`def calculate(val):
+    if val % 2 == 0:
+        return "Even"
+    elif val % 3 == 0:
+        return "Divisible by 3"
+    else:
+        return "Odd"
 
-                  <button
-                    onClick={addOption}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors max-w-2xl justify-start"
-                  >
-                    <span className="text-lg leading-none">+</span>
-                    <span>Add Option</span>
-                  </button>
-                </div>
+print(calculate(9))`}</pre>
+                    </div>
+                  </div>
+                )}
+
+                {type === "MCQS" && (
+                  <>
+                    {/* MCQ Options */}
+                    <div className="space-y-3">
+                      {options.map((opt, i) => (
+                        <div key={i} className="space-y-2">
+                          <div
+                            className={`flex items-center gap-3 rounded-lg border px-4 py-3 transition-colors ${
+                              i === selectedIndex ? "border-blue-500 bg-blue-500/10" : "border-gray-600 bg-gray-700/50"
+                            }`}
+                          >
+                            <button
+                              onClick={() => setSelectedIndex(i)}
+                              className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                i === selectedIndex ? "border-red-500" : "border-gray-400"
+                              }`}
+                            >
+                              {i === selectedIndex && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
+                            </button>
+
+                            <input
+                              value={opt}
+                              onChange={(e) => updateOption(i, e.target.value)}
+                              className="flex-1 bg-transparent outline-none text-white placeholder-gray-400"
+                              placeholder={`Option ${i + 1}`}
+                            />
+
+                            {coding && (
+                              <>
+                                <span className="text-xs font-medium text-gray-400">Coding</span>
+                                <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
+                                  <input
+                                    type="checkbox"
+                                    checked={optionCoding[i] || false}
+                                    onChange={() => setOptionCoding((prev) => ({ ...prev, [i]: !prev[i] }))}
+                                    className="sr-only"
+                                  />
+                                  <div
+                                    className={`w-8 h-5 rounded-full transition-colors ${
+                                      optionCoding[i] ? "bg-green-500" : "bg-gray-600"
+                                    }`}
+                                  ></div>
+                                  <span
+                                    className={`absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                                      optionCoding[i] ? "translate-x-3.5" : "translate-x-0"
+                                    }`}
+                                  ></span>
+                                </label>
+                              </>
+                            )}
+
+                            <button
+                              onClick={() => removeOption(i)}
+                              className="text-gray-400 hover:text-red-400 transition-colors flex-shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {coding && optionCoding[i] && (
+                            <div className="border border-gray-600 rounded-lg overflow-hidden ml-8">
+                              <div className="flex items-center justify-between bg-gray-700 px-4 py-2 border-b border-gray-600">
+                                <span className="text-sm font-medium text-gray-300">Python</span>
+                                <button className="p-1 text-green-500 hover:text-green-400 transition-colors">
+                                  <Code size={16} />
+                                </button>
+                              </div>
+                              <div className="bg-gray-900 p-4 min-h-40 font-mono text-sm text-green-400 overflow-auto">
+                                <pre>{`def solution():
+    # Write solution here
+    pass`}</pre>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+
+                      <button
+                        onClick={addOption}
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-600 rounded-lg text-gray-300 hover:bg-gray-700 transition-colors max-w-2xl justify-start"
+                      >
+                        <span className="text-lg leading-none">+</span>
+                        <span>Add Option</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {type === "True/False" && (
+                  <>
+                    {/* True/False Options */}
+                    <div className="space-y-3">
+                      {["True", "False"].map((option) => (
+                        <button
+                          key={option}
+                          onClick={() => setTrueFalseAnswer(option as "True" | "False")}
+                          className={`w-full flex items-center gap-3 rounded-lg border px-4 py-3 transition-colors ${
+                            trueFalseAnswer === option
+                              ? "border-blue-500 bg-blue-500/10"
+                              : "border-gray-600 bg-gray-700/50 hover:border-gray-500"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
+                              trueFalseAnswer === option ? "border-red-500" : "border-gray-400"
+                            }`}
+                          >
+                            {trueFalseAnswer === option && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
+                          </div>
+                          <span className="text-white font-medium">{option}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {type === "Short Answer" && (
+                  <>
+                    {/* Short Answer Input */}
+                    <div className="border border-gray-600 rounded-lg">
+                      <textarea
+                        value={shortAnswer}
+                        onChange={(e) => setShortAnswer(e.target.value)}
+                        className="w-full min-h-24 bg-transparent px-4 py-3 text-white resize-none outline-none"
+                        placeholder="Enter the expected answer..."
+                      />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -199,7 +310,7 @@ export function AddQuestionMcq() {
 
           {/* Right: Meta panel */}
           {!collapsed ? (
-            <aside className="lg:col-span-4">
+            <aside className="lg:col-span-3">
               <div className="rounded-lg bg-gray-900">
                 {/* Sidebar header with collapse button */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
@@ -263,7 +374,7 @@ export function AddQuestionMcq() {
                         <select
                           value={type}
                           onChange={(e) => setType(e.target.value)}
-                          className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white pr=10 focus:border-blue-500 focus:outline-none"
+                          className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white pr-10 focus:border-blue-500 focus:outline-none"
                         >
                           {defaultAddMcq.typeOptions.map((t) => (
                             <option key={t} value={t} className="bg-gray-700">

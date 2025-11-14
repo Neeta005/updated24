@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useState } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname } from 'next/navigation'
 import { CandidateHeader } from "@/components/layout/candidate-header"
 import { CandidateSidebar } from "@/components/layout/candidate-sidebar"
 import { candidateMenuItems } from "@/data/candidate-navigation"
@@ -46,8 +46,10 @@ export default function CandidateLayout({ children }: CandidateLayoutProps) {
   const showSidebarPaths = ["/candidate/dashboard", "/candidate/exam-logs", "/candidate/assessment"]
   const shouldShowSidebar = showSidebarPaths.includes(normalizePath(pathname))
 
+  const toggleSidebar = (): void => setSidebarOpen((prev) => !prev)
+
   return (
-    <div className="min-h-screen bg-slate-900 flex">
+    <div className="min-h-screen bg-slate-900 flex flex-col md:flex-row">
       {shouldShowSidebar && (
         <CandidateSidebar
           isOpen={sidebarOpen}
@@ -57,8 +59,9 @@ export default function CandidateLayout({ children }: CandidateLayoutProps) {
       )}
 
       <div className="flex-1 flex flex-col">
-        <CandidateHeader />
-        <main className={`flex-1 pt-20 ${shouldShowSidebar ? "pl-0 lg:pl-20" : "pl-0"} bg-slate-900 overflow-x-hidden`}>
+        <CandidateHeader onMenuClick={toggleSidebar} />
+        <main className={`flex-1 pt-20 bg-slate-900 overflow-x-hidden transition-all duration-300 
+          ${shouldShowSidebar ? "md:pl-2" : ""}`}>
           {children}
         </main>
       </div>

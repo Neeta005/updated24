@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react"
 import { useState } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname } from 'next/navigation'
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { menuItems } from "@/data/navigation"
@@ -70,11 +70,11 @@ export default function ClientLayout({ children }: Readonly<ClientLayoutProps>) 
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg flex">
+    <div className="min-h-screen bg-dark-bg flex flex-col md:flex-row">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} activeIndex={activeIdx >= 0 ? activeIdx : undefined} />
       <div className="flex-1 flex flex-col">
         <Header onMenuClick={toggleSidebar} />
-        <main className="flex-1 pt-16 pl-0 lg:pl-20 bg-dark-bg overflow-x-hidden">{children}</main>
+        <main className={`flex-1 pt-16 bg-dark-bg overflow-x-hidden transition-all duration-300`}>{children}</main>
       </div>
     </div>
   )

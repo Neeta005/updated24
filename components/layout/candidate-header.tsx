@@ -1,17 +1,32 @@
 "use client"
 
-import { Bell, Search } from "lucide-react"
+import { Bell, Menu, Search } from 'lucide-react'
 import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-export function CandidateHeader() {
+interface CandidateHeaderProps {
+  onMenuClick?: () => void
+}
+
+export function CandidateHeader({ onMenuClick }: CandidateHeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-slate-800 border-b border-slate-700">
       <div className="flex items-center justify-between px-6 py-3">
         {/* Left side - Logo and Navigation */}
         <div className="flex items-center space-x-8">
+          {/* Show menu button on all screen sizes */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onMenuClick}
+            className="text-gray-400 hover:text-white"
+            title="Toggle sidebar"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <Image
