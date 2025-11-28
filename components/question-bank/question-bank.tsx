@@ -186,9 +186,7 @@ const [searchAudience, setSearchAudience] = useState<string>("")
 
   const handlePageChange = (page: number) => setState((prev) => ({ ...prev, currentPage: page }))
 
-  const handleAddQuestion = () => {
-    router.push("/question-bank/add-question")
-  }
+    const handleAddQuestion = () => router.push("/question-papers/add")
 
   if (state.showQuestionSection)
     return <QuestionSection topicName={state.selectedTopic} onBack={handleBackFromQuestionSection} />

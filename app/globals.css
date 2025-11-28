@@ -130,3 +130,16 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 }
+/* Add this to your global CSS file (e.g., globals.css or app.css) */
+
+/* Prevent Radix UI from hiding scrollbar */
+body[data-scroll-locked] {
+  overflow: auto !important;
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Or use scrollbar-gutter for a cleaner approach */
+html {
+  scrollbar-gutter: stable;
+}

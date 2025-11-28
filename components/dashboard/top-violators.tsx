@@ -1,6 +1,9 @@
+"use client"
+
 import { SectionHeader } from "@/components/ui/section-header"
 import { ViolatorCard } from "@/components/ui/violator-card"
 import { topViolators } from "@/data/performers"
+import Link from "next/link"
 
 export function TopViolators() {
   return (
@@ -9,7 +12,13 @@ export function TopViolators() {
 
       <div className="space-y-3 md:space-y-4 flex-1">
         {topViolators?.map((violator) => (
-          <ViolatorCard key={violator.id} {...violator} />
+          <Link
+            key={violator.id}
+            href={`/exam-logs/view?id=${violator.id}`}
+            className="block"
+          >
+            <ViolatorCard {...violator} />
+          </Link>
         ))}
       </div>
     </div>

@@ -41,8 +41,10 @@ export function Sidebar({ activeIndex, isOpen, setIsOpen }: SidebarProps) {
     const currentSeg = getFirstSegment(pathname)
     let idx = menuItems.findIndex((item) => getFirstSegment(item.href) === currentSeg)
     if (idx !== -1) return idx
+
     idx = menuItems.findIndex((item) => startsWithPath(pathname ?? "", item.href))
     if (idx !== -1) return idx
+
     idx = menuItems.findIndex((item) =>
       (item.activeMatch ?? []).some((pattern) => startsWithPath(pathname ?? "", pattern)),
     )
@@ -60,32 +62,34 @@ export function Sidebar({ activeIndex, isOpen, setIsOpen }: SidebarProps) {
         />
       )}
 
+      {/* FIXED SIDEBAR */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border 
-        z-40 md:z-0 md:relative flex flex-col
-        transform transition-all duration-300
-        ${isOpen ? "translate-x-0 w-52" : "-translate-x-full md:translate-x-0 md:w-20"}
+        className={`
+          fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border 
+          z-40 flex flex-col
+          transform transition-all duration-300
+          ${isOpen ? "translate-x-0 w-52" : "-translate-x-full md:translate-x-0 md:w-20"}
         `}
       >
-        <div className="mt-17 flex flex-col flex-1 overflow-hidden">
+        {/* Scroll inside only if long menu */}
+        <div className="mt-17 flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           {menuItems.map((item, index) => {
             const isActive = indexToUse === index
-
             return (
               <Link
                 key={item.id}
                 href={item.href}
-                title={item.name}
                 onClick={() => setIsOpen(false)}
                 className="w-full"
               >
                 <div
                   className={`
-                    flex items-center gap-3 px-3 py-2 w-full 
-                    transition-all duration-200 rounded-xl
-                    ${isActive
-                      ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent"
+                    flex items-center gap-3 px-3 py-2 
+                    transition-all duration-200 rounded-xl w-full
+                    ${
+                      isActive
+                        ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-md"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent"
                     }
                   `}
                 >
@@ -103,8 +107,8 @@ export function Sidebar({ activeIndex, isOpen, setIsOpen }: SidebarProps) {
                   <span
                     className={`
                       text-sm font-medium whitespace-nowrap transition-all
-                      ${isOpen ? "opacity-100 w-auto" : "opacity-0 w-0"}
                       hidden md:inline
+                      ${isOpen ? "opacity-100 w-auto" : "opacity-0 w-0"}
                     `}
                   >
                     {item.name}

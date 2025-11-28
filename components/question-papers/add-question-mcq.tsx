@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { ChevronRight, Trash2, Bold, Italic, Underline, List, ListOrdered, Quote, Code, Link, Smile, ChevronDown } from 'lucide-react'
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { defaultAddMcq } from "@/data/question-papers/add-mcq"
 import { GradientButton } from "@/components/ui/gradient-button"
 
@@ -21,24 +21,132 @@ export function AddQuestionMcq() {
   const [collapsed, setCollapsed] = useState(false)
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<"True" | "False">("True")
   const [shortAnswer, setShortAnswer] = useState("")
-  const [codeContent, setCodeContent] = useState("Python")
+  const [codeContent, setCodeContent] = useState(`def calculate(val):
+    if val % 2 == 0:
+        return "Even"
+    elif val % 3 == 0:
+        return "Divisible by 3"
+    else:
+        return "Odd"
+
+print(calculate(9))`)
   const [optionCoding, setOptionCoding] = useState<Record<number, boolean>>({})
+  const [optionCodeContent, setOptionCodeContent] = useState<Record<number, string>>({})
+  
+  // Custom dropdown state
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const codeRef = useRef<HTMLElement>(null)
+  const optionCodeRefs = useRef<Record<number, HTMLElement | null>>({})
+
+  // Load highlight.js
+  useEffect(() => {
+    const loadHighlightJS = async () => {
+      // Load CSS
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+      document.head.appendChild(link)
+
+      // Load JS
+      const script = document.createElement('script')
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'
+      script.onload = () => {
+        const pythonScript = document.createElement('script')
+        pythonScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'
+        pythonScript.onload = () => {
+          // Highlight all code blocks
+          if ((window as any).hljs) {
+            (window as any).hljs.highlightAll()
+          }
+        }
+        document.body.appendChild(pythonScript)
+      }
+      document.body.appendChild(script)
+    }
+
+    loadHighlightJS()
+  }, [])
+
+  // Highlight code when it changes
+  useEffect(() => {
+    if ((window as any).hljs && codeRef.current) {
+      (window as any).hljs.highlightElement(codeRef.current)
+    }
+  }, [codeContent, coding, type])
+
+  // Highlight option code when it changes
+  useEffect(() => {
+    if ((window as any).hljs) {
+      Object.keys(optionCodeRefs.current).forEach(key => {
+        const ref = optionCodeRefs.current[parseInt(key)]
+        if (ref) {
+          (window as any).hljs.highlightElement(ref)
+        }
+      })
+    }
+  }, [optionCodeContent, optionCoding])
 
   const addOption = () => setOptions((prev) => [...prev, ""])
   const updateOption = (i: number, val: string) => setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)))
-  const removeOption = (i: number) => setOptions((prev) => prev.filter((_, idx) => idx !== i))
+  const removeOption = (i: number) => {
+    setOptions((prev) => prev.filter((_, idx) => idx !== i))
+    // Clean up coding state for removed option
+    const newOptionCoding = { ...optionCoding }
+    const newOptionCodeContent = { ...optionCodeContent }
+    delete newOptionCoding[i]
+    delete newOptionCodeContent[i]
+    setOptionCoding(newOptionCoding)
+    setOptionCodeContent(newOptionCodeContent)
+  }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsTypeDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handlePublish = () => {
+    setStatus("Published")
+    // Add your publish logic here
+    console.log("Question published!")
+    // You might want to add API call or other logic here
+  }
+
+  const typeOptions = [
+    { value: "MCQS", label: "MCQ", icon: "/icons/icon.png" },
+    { value: "True/False", label: "True / False", icon: "/icons/tick-circle.png" },
+    { value: "Short Answer", label: "Descriptive", icon: "/icons/Menu.png" },
+    { value: "Coding", label: "Coding", icon: "/icons/code.png" },
+  ]
+
+  const selectedType = typeOptions.find(option => option.value === type) || typeOptions[0]
 
   return (
     <div className="min-h-screen text-white bg-gray-900 p-6 relative">
       {/* Header */}
       <div className="flex items-center justify-between p-6 bg-card rounded-t-lg">
         <h1 className="text-2xl font-semibold">Add Question</h1>
-        <button
-          onClick={() => router.back()}
-          className="px-6 py-2 rounded-lg border border-gray-600 text-white hover:bg-gray-700 transition-colors"
-        >
-          Back
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handlePublish}
+            className="px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
+          >
+            Publish
+          </button>
+          <button
+            onClick={() => router.back()}
+            className="px-6 py-2 rounded-lg border border-gray-600 text-white hover:bg-gray-700 transition-colors"
+          >
+            Back
+          </button>
+        </div>
       </div>
 
       {/* Main content container */}
@@ -55,7 +163,7 @@ export function AddQuestionMcq() {
             >
               {/* Icon inside white-bordered box */}
               <div className="w-10 h-10 flex items-center justify-center rounded-lg border border-white bg-gray-800 group-hover:bg-gray-700 transition-colors">
-                <img src="\icons\edit-2 (1).png" alt="Add details" className="w-5 h-5" />
+                <img src="/icons/edit-2 (1).png" alt="Add details" className="w-5 h-5" />
               </div>
 
               {/* Label below box */}
@@ -74,28 +182,32 @@ export function AddQuestionMcq() {
                     ? "Multiple Choice Question (MCQ)"
                     : type === "True/False"
                       ? "True / False"
-                      : "Short Answer"}
+                      : type === "Coding"
+                        ? "Coding Question"
+                        : "Short Answer"}
                 </h2>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-gray-300">Coding</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" checked={coding} onChange={() => setCoding(!coding)} className="sr-only" />
-                    <div
-                      className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-green-500" : "bg-gray-600"}`}
-                    ></div>
-                    <span
-                      className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
-                        coding ? "translate-x-6" : "translate-x-0"
-                      } flex items-center justify-center text-gray-800`}
-                    >
-                      {coding && <Code size={12} />}
-                    </span>
-                  </label>
-                </div>
+                {type !== "Coding" && (
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-gray-300">Coding</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked={coding} onChange={() => setCoding(!coding)} className="sr-only" />
+                      <div
+                        className={`w-10 h-6 rounded-full transition-colors ${coding ? "bg-green-500" : "bg-gray-600"}`}
+                      ></div>
+                      <span
+                        className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                          coding ? "translate-x-6" : "translate-x-0"
+                        } flex items-center justify-center text-gray-800`}
+                      >
+                        {coding && <Code size={12} />}
+                      </span>
+                    </label>
+                  </div>
+                )}
               </div>
 
               <div className="p-6 space-y-6">
-                {/* Toolbar + Question Input */}
+                {/* Toolbar - Always show */}
                 <div className="border border-gray-600 rounded-lg">
                   <div className="flex items-center gap-1 bg-gray-700 px-3 py-2 border-b border-gray-600">
                     <button className="p-2 rounded hover:bg-gray-600 transition-colors">
@@ -129,21 +241,25 @@ export function AddQuestionMcq() {
                     </button>
                   </div>
 
-                  <textarea
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    className="w-full min-h-28 bg-transparent px-4 py-3 text-white resize-none outline-none"
-                    placeholder={
-                      type === "True/False"
-                        ? "Write a Statement..."
-                        : type === "Short Answer"
-                          ? "Write your question..."
-                          : "Type your question..."
-                    }
-                  />
+                  {/* Question textarea - Only show for non-Coding types */}
+                  {type !== "Coding" && (
+                    <textarea
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                      className="w-full min-h-28 bg-transparent px-4 py-3 text-white resize-none outline-none"
+                      placeholder={
+                        type === "True/False"
+                          ? "Write a Statement..."
+                          : type === "Short Answer"
+                            ? "Write your question..."
+                            : "Type your question..."
+                      }
+                    />
+                  )}
                 </div>
 
-                {coding && (
+                {/* Code Editor - Show when Coding type is selected OR coding toggle is on */}
+                {(coding || type === "Coding") && (
                   <div className="border border-gray-600 rounded-lg overflow-hidden">
                     <div className="flex items-center justify-between bg-gray-700 px-4 py-2 border-b border-gray-600">
                       <span className="text-sm font-medium text-gray-300">Python</span>
@@ -151,16 +267,14 @@ export function AddQuestionMcq() {
                         <Code size={16} className="text-green-500" />
                       </button>
                     </div>
-                    <div className="bg-gray-900 p-4 min-h-56 font-mono text-sm text-green-400 overflow-auto">
-                      <pre>{`def calculate(val):
-    if val % 2 == 0:
-        return "Even"
-    elif val % 3 == 0:
-        return "Divisible by 3"
-    else:
-        return "Odd"
-
-print(calculate(9))`}</pre>
+                    <div className="bg-gray-900 p-4 min-h-56">
+                      <pre className="!bg-transparent !p-0 !m-0"><code 
+                        ref={codeRef}
+                        className="language-python !bg-transparent text-sm"
+                        contentEditable
+                        suppressContentEditableWarning
+                        onInput={(e) => setCodeContent(e.currentTarget.textContent || "")}
+                      >{codeContent}</code></pre>
                     </div>
                   </div>
                 )}
@@ -199,7 +313,18 @@ print(calculate(9))`}</pre>
                                   <input
                                     type="checkbox"
                                     checked={optionCoding[i] || false}
-                                    onChange={() => setOptionCoding((prev) => ({ ...prev, [i]: !prev[i] }))}
+                                    onChange={() => {
+                                      const newState = !optionCoding[i]
+                                      setOptionCoding((prev) => ({ ...prev, [i]: newState }))
+                                      if (newState && !optionCodeContent[i]) {
+                                        setOptionCodeContent((prev) => ({
+                                          ...prev,
+                                          [i]: `def solution():
+    # Write solution here
+    pass`
+                                        }))
+                                      }
+                                    }}
                                     className="sr-only"
                                   />
                                   <div
@@ -232,10 +357,21 @@ print(calculate(9))`}</pre>
                                   <Code size={16} />
                                 </button>
                               </div>
-                              <div className="bg-gray-900 p-4 min-h-40 font-mono text-sm text-green-400 overflow-auto">
-                                <pre>{`def solution():
+                              <div className="bg-gray-900 p-4 min-h-40">
+                                <pre className="!bg-transparent !p-0 !m-0"><code
+                                  ref={(el) => { optionCodeRefs.current[i] = el }}
+                                  className="language-python !bg-transparent text-sm"
+                                  contentEditable
+                                  suppressContentEditableWarning
+                                  onInput={(e) => {
+                                    setOptionCodeContent((prev) => ({
+                                      ...prev,
+                                      [i]: e.currentTarget.textContent || ""
+                                    }))
+                                  }}
+                                >{optionCodeContent[i] || `def solution():
     # Write solution here
-    pass`}</pre>
+    pass`}</code></pre>
                               </div>
                             </div>
                           )}
@@ -367,22 +503,44 @@ print(calculate(9))`}</pre>
 
                   {/* Type, Difficulty, Status, Marks */}
                   <div className="bg-card rounded-lg p-6 border border-gray-600 space-y-6">
-                    {/* Type */}
+                    {/* Type - Custom Dropdown */}
                     <div className="space-y-2">
                       <label className="text-md font-medium text-gray-300 block">Type</label>
-                      <div className="relative">
-                        <select
-                          value={type}
-                          onChange={(e) => setType(e.target.value)}
-                          className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white pr-10 focus:border-blue-500 focus:outline-none"
+                      <div className="relative" ref={dropdownRef}>
+                        <button
+                          type="button"
+                          onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+                          className="w-full flex items-center justify-between rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white pr-10 focus:border-blue-500 focus:outline-none"
                         >
-                          {defaultAddMcq.typeOptions.map((t) => (
-                            <option key={t} value={t} className="bg-gray-700">
-                              {t}
-                            </option>
-                          ))}
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                          <div className="flex items-center gap-2">
+                            <img src={selectedType.icon} alt={selectedType.label} className="w-4 h-4" />
+                            <span>{selectedType.label}</span>
+                          </div>
+                          <ChevronDown 
+                            className={`w-4 h-4 text-gray-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`} 
+                          />
+                        </button>
+
+                        {isTypeDropdownOpen && (
+                          <div className="absolute z-50 w-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg">
+                            {typeOptions.map((option) => (
+                              <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => {
+                                  setType(option.value)
+                                  setIsTypeDropdownOpen(false)
+                                }}
+                                className={`w-full flex items-center gap-2 px-4 py-2.5 text-left hover:bg-gray-700 transition-colors ${
+                                  type === option.value ? 'bg-blue-500/20 text-blue-400' : 'text-white'
+                                } first:rounded-t-lg last:rounded-b-lg`}
+                              >
+                                <img src={option.icon} alt={option.label} className="w-4 h-4" />
+                                <span>{option.label}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
 

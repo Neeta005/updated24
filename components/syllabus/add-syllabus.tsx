@@ -116,24 +116,26 @@ export function AddSyllabus() {
           </FormField>
 
           <div className="flex justify-end">
-            <FormField label="Target Audience" className="w-full md:w-auto">
-              <Select value={targetAudience} onValueChange={setTargetAudience}>
-                <SelectTrigger className="">
-                  <SelectValue placeholder="Select Audience" />
-                </SelectTrigger>
-                <SelectContent className="bg-card border border-border">
-                  {targetAudienceOptions.map(option => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value}
-                      className="text-card-foreground hover:bg-accent"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormField>
+           <FormField label="Target Audience" className="w-full md:w-auto">
+  <Select value={targetAudience} onValueChange={setTargetAudience}>
+    <SelectTrigger className="w-full md:w-[260px]">
+      <SelectValue placeholder="Select Audience" />
+    </SelectTrigger>
+
+    <SelectContent className="bg-card border border-border">
+      {targetAudienceOptions.map(option => (
+        <SelectItem
+          key={option.value}
+          value={option.value}
+          className="text-card-foreground hover:bg-accent"
+        >
+          {option.label}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</FormField>
+
           </div>
         </div>
 

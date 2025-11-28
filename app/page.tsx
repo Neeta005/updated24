@@ -11,7 +11,6 @@ import Image from "next/image"
 export default function SignInPage() {
   const [activeTab, setActiveTab] = useState<"candidate" | "recruiter">("recruiter")
   const [email, setEmail] = useState("")
-  const [linkedin, setLinkedin] = useState("")
   const [mobileNumber, setMobileNumber] = useState("")
   const [otp, setOtp] = useState("")
   const [remember, setRemember] = useState(false)
@@ -34,7 +33,6 @@ export default function SignInPage() {
     setIsLoading(true)
 
     try {
-      // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
       if (activeTab === "candidate") {
@@ -90,6 +88,7 @@ export default function SignInPage() {
               >
                 Candidate
               </GradientButton>
+
               <GradientButton
                 onClick={() => setActiveTab("recruiter")}
                 className={activeTab === "recruiter" ? "" : "opacity-50"}
@@ -100,32 +99,33 @@ export default function SignInPage() {
 
             {activeTab === "recruiter" ? (
               <>
-                {/* Recruiter Form including LinkedIn Input */}
+                {/* 🔵 LinkedIn Sign-In Button */}
+           {/* LinkedIn Border Button */}
+<button
+  type="button"
+  onClick={() => console.log("LinkedIn login clicked")}
+  className="w-full flex items-center justify-center gap-3 border border-white text-white font-semibold py-3 rounded-lg hover:bg-[#0A66C210] transition-all"
+  disabled={isLoading}
+>
+  <Image
+    src="/icons/linkedin.png"
+    alt="LinkedIn"
+    width={22}
+    height={22}
+  />
+  Continue with LinkedIn
+</button>
+
+<div className="flex items-center my-6">
+  <div className="flex-1 h-px bg-slate-600"></div>
+  <span className="px-4 text-slate-400 text-sm">or with email</span>
+  <div className="flex-1 h-px bg-slate-600"></div>
+</div>
+
+             
+
+                {/* Recruiter Email Form */}
                 <form onSubmit={handleSignIn} className="space-y-6">
-                  <div className="relative w-full mb-6">
-                    <Image
-                      src="\icons\linkedin.png"
-                      alt="LinkedIn"
-                      width={32}
-                      height={32}
-                      className="absolute left-3 top-1/2 -translate-y-1/2"
-                    />
-                    <input
-                      type="text"
-                      placeholder="With LinkedIn"
-                      value={linkedin}
-                      onChange={(e) => setLinkedin(e.target.value)}
-                      className="w-full pl-15 pr-4 py-3 text-white border border-white rounded-lg bg-transparent placeholder-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                      disabled={isLoading}
-                    />
-                  </div>
-
-                  <div className="flex items-center mb-6">
-                    <div className="flex-1 h-px bg-slate-600"></div>
-                    <span className="px-4 text-slate-400 text-sm">or with email</span>
-                    <div className="flex-1 h-px bg-slate-600"></div>
-                  </div>
-
                   <Input
                     type="email"
                     placeholder="Email"

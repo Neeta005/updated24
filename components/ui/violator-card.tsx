@@ -12,7 +12,8 @@ const ViolatorCard = React.memo<Violator>(
       <BaseCard
         className="
           p-3 md:p-4 flex items-center justify-between 
-          cursor-pointer hover:bg-muted hover:shadow-[0_0_12px_rgba(255,255,255,0.08)] hover:border-border/80 hover:scale-[1.01]
+          cursor-pointer hover:bg-muted hover:shadow-[0_0_12px_rgba(255,255,255,0.08)] 
+          hover:border-border/80 hover:scale-[1.01]
         "
       >
         <UserInfoSection name={name} subtitle={subject} avatar={avatar} />

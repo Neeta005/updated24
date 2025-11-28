@@ -178,118 +178,119 @@ export default function EditQuestionForm({ questionId }: EditQuestionFormProps) 
           </section>
 
           {/* Right column */}
-          {!collapsed && (
-            <aside className="lg:col-span-4">
-              <div className="rounded-lg bg-gray-900">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
-                  <h3 className="font-semibold text-lg">Details</h3>
-                  <button
-                    onClick={() => setCollapsed(true)}
-                    className="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors z-50"
-                  >
-                    <ChevronRight size={20} className="text-gray-300" />
-                  </button>
-                </div>
+      {/* Right column */}
+{!collapsed && (
+  <aside className="lg:col-span-4">
+    <div className="rounded-lg bg-gray-900">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
+        <h3 className="font-semibold text-lg">Details</h3>
+        <button
+          onClick={() => setCollapsed(true)}
+          className="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors z-50"
+        >
+          <ChevronRight size={20} className="text-gray-300" />
+        </button>
+      </div>
 
-                <div className="px-6 pb-6 space-y-6">
-                  {/* Topic */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Topic:</label>
-                    <div className="relative">
-                      <select
-                        value={topic}
-                        onChange={(e) => setTopic(e.target.value as typeof sampleQuestion.topic)}
-                        className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white pr-10 focus:border-orange-primary focus:outline-none"
-                      >
-                        {questionTopics.map((t) => (
-                          <option key={t} value={t} className="bg-gray-800">
-                            {t}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    </div>
-                  </div>
+      <div className="px-6 pb-6 space-y-6">
+        
+        {/* Topic */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-300">Topic:</label>
+          <div className="relative">
+            <select
+              value={topic}
+              onChange={(e) => setTopic(e.target.value as typeof sampleQuestion.topic)}
+              className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white pr-10 focus:border-orange-primary focus:outline-none"
+            >
+              {questionTopics.map((t) => (
+                <option key={t} value={t} className="bg-gray-800">
+                  {t}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
 
-                  {/* Type */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Type:</label>
-                    <div className="relative">
-                      <select
-                        value={type}
-                        onChange={(e) => setType(e.target.value as typeof sampleQuestion.type)}
-                        className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white pr-10 focus:border-orange-primary focus:outline-none"
-                      >
-                        {questionTypes.map((qt) => (
-                          <option key={qt} value={qt} className="bg-gray-800">
-                            {qt}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                    </div>
-                  </div>
+        {/* Type */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-300">Type:</label>
+          <div className="relative">
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value as typeof sampleQuestion.type)}
+              className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white pr-10 focus:border-orange-primary focus:outline-none"
+            >
+              {questionTypes.map((qt) => (
+                <option key={qt} value={qt} className="bg-gray-800">
+                  {qt}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
 
-                  {/* Difficulty */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Difficulty:</label>
-                    <div className="flex gap-2">
-                      {questionDifficulties.map((level) => (
-                        <button
-                          key={level}
-                          onClick={() => setDifficulty(level)}
-                          className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
-                            difficulty === level
-                              ? level === "Easy"
-                                ? "bg-green-primary text-white"
-                                : level === "Medium"
-                                  ? "bg-yellow-primary text-white"
-                                  : "bg-red-primary text-white"
-                              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                          }`}
-                        >
-                          {level}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+        {/* Difficulty */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-300">Difficulty:</label>
+          <div className="flex gap-2">
+            {questionDifficulties.map((level) => (
+              <button
+                key={level}
+                onClick={() => setDifficulty(level)}
+                className={`flex-1 py-2 rounded-md text-sm font-medium transition-colors ${
+                  difficulty === level
+                    ? level === "Easy"
+                      ? "bg-green-primary text-white"
+                      : level === "Medium"
+                        ? "bg-yellow-primary text-white"
+                        : "bg-red-primary text-white"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+              >
+                {level}
+              </button>
+            ))}
+          </div>
+        </div>
 
-                  {/* Status */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Status:</label>
-                    <div className="flex gap-2">
-                      {questionStatus.map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => setStatus(s)}
-                          className={`flex-1 py-2 rounded-full text-sm font-medium transition-colors ${
-                            status === s
-                              ? s === "Draft"
-                                ? "bg-purple-primary text-white"
-                                : "bg-green-primary text-white"
-                              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                          }`}
-                        >
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Marks */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Marks:</label>
-                    <input
-                      value={marks}
-                      onChange={(e) => setMarks(e.target.value)}
-                      className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white focus:border-orange-primary focus:outline-none text-center"
-                      placeholder="Enter marks"
-                    />
-                  </div>
-                </div>
+        {/* STATUS — now READONLY TAGS */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-300">Status:</label>
+          <div className="flex gap-2">
+            {questionStatus.map((s) => (
+              <div
+                key={s}
+                className={`flex-1 py-2 rounded-md text-sm text-center font-medium border ${
+                  status === s
+                    ? "border-green-primary text-green-primary bg-green-primary/10"
+                    : "border-gray-700 text-gray-400 bg-gray-800"
+                }`}
+              >
+                {s}
               </div>
-            </aside>
-          )}
+            ))}
+          </div>
+        </div>
+
+        {/* MARKS — now proper text input */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-300">Marks:</label>
+          <input
+            value={marks}
+            onChange={(e) => setMarks(e.target.value)}
+            className="w-full rounded-lg border border-gray-600 bg-gray-800 px-4 py-2.5 text-white focus:border-orange-primary focus:outline-none"
+            placeholder="Enter marks"
+          />
+        </div>
+
+      </div>
+    </div>
+  </aside>
+)}
+
         </div>
       </div>
     </div>

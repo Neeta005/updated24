@@ -2,24 +2,20 @@
 
 import type { ReactNode } from "react"
 import { useState } from "react"
-import { usePathname } from 'next/navigation'
+import { usePathname } from "next/navigation"
 import { Header } from "@/components/layout/header"
 import { Sidebar } from "@/components/layout/sidebar"
 import { menuItems } from "@/data/navigation"
 
-// ✅ Explicit props type
 interface ClientLayoutProps {
   children: ReactNode
 }
 
 export default function ClientLayout({ children }: Readonly<ClientLayoutProps>) {
-  // ✅ Explicit state type
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
   const pathname = usePathname()
 
   const isAuthPage = pathname === "/" || pathname === "/sign-up"
-  // ✅ Fixed: Changed from "/candidate" to "/candidate/" to only match individual candidate pages
-  // This way "/candidates" (plural) will still show header and sidebar
   const isCandidatePage = pathname?.startsWith("/candidate/")
 
   const toggleSidebar = (): void => setSidebarOpen((prev) => !prev)
@@ -50,17 +46,16 @@ export default function ClientLayout({ children }: Readonly<ClientLayoutProps>) 
     if (!pathname) return -1
     const currentSeg = getFirstSegment(pathname)
 
-    // 1) try top-level segment equality
     let idx = menuItems.findIndex((item) => getFirstSegment(item.href) === currentSeg)
     if (idx !== -1) return idx
 
-    // 2) try href prefix match
     idx = menuItems.findIndex((item) => startsWithPath(pathname, item.href))
     if (idx !== -1) return idx
 
-    // 3) try activeMatch patterns
-    idx = menuItems.findIndex((item) => (item.activeMatch ?? []).some((pattern) => startsWithPath(pathname, pattern)))
-    return idx // might be -1; we won't force Dashboard
+    idx = menuItems.findIndex((item) =>
+      (item.activeMatch ?? []).some((pattern) => startsWithPath(pathname, pattern)),
+    )
+    return idx
   }
 
   const activeIdx = getActiveIndex()
@@ -71,10 +66,25 @@ export default function ClientLayout({ children }: Readonly<ClientLayoutProps>) 
 
   return (
     <div className="min-h-screen bg-dark-bg flex flex-col md:flex-row">
-      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} activeIndex={activeIdx >= 0 ? activeIdx : undefined} />
-      <div className="flex-1 flex flex-col">
+      <Sidebar
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+        activeIndex={activeIdx >= 0 ? activeIdx : undefined}
+      />
+
+      {/* FIX: PAGE SHOULD NOT GO BEHIND SIDEBAR */}
+      <div
+        className={`
+          flex-1 flex flex-col
+          transition-all duration-300
+          ${sidebarOpen ? "md:ml-52" : "md:ml-20"}
+        `}
+      >
         <Header onMenuClick={toggleSidebar} />
-        <main className={`flex-1 pt-16 bg-dark-bg overflow-x-hidden transition-all duration-300`}>{children}</main>
+
+        <main className="flex-1 pt-16 bg-dark-bg overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
   )
