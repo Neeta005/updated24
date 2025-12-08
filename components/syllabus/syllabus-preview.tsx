@@ -88,7 +88,8 @@ export function SyllabusPreview({
       {/* Sections Preview (Manual Mode) */}
       {activeTab === "manual" && sections.length > 0 && (
         <div className="space-y-3">
-          {sections.map((section, idx) => {
+          {sections.map((section, sectionIdx) => {
+            const sectionNumber = sectionIdx + 1
             const isExpanded = expandedSections.has(section.id)
             const hasLessonsWithContent = section.lessons.some(lesson => lesson.value.trim())
             
@@ -112,7 +113,7 @@ export function SyllabusPreview({
                     <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
                   )}
                   <span className="text-lg font-bold text-foreground">
-                    {section.title || `Section ${idx + 1}`}
+                    {section.title || `Section ${sectionNumber}`}
                   </span>
                 </button>
 
@@ -123,12 +124,15 @@ export function SyllabusPreview({
                       {section.lessons.filter(lesson => lesson.value.trim()).length > 0 ? (
                         section.lessons
                           .filter(lesson => lesson.value.trim())
-                          .map((lesson) => (
+                          .map((lesson, lessonIdx) => (
                             <div
                               key={lesson.id}
-                              className="text-md py-1 whitespace-pre-line"
+                              className="flex items-start gap-2 text-md py-1 whitespace-pre-line"
                             >
-                              {lesson.value}
+                              <span className="text-muted-foreground font-medium flex-shrink-0">
+                                {sectionNumber}.{lessonIdx + 1}
+                              </span>
+                              <span className="text-foreground">{lesson.value}</span>
                             </div>
                           ))
                       ) : (
@@ -148,7 +152,7 @@ export function SyllabusPreview({
       {/* File Upload Preview */}
       {activeTab === "upload" && uploadedFiles.length > 0 && (
         <div className="space-y-3">
-          {uploadedFiles.map((file) => (
+          {uploadedFiles.map((file, fileIdx) => (
             <div key={file.id}>
               {/* File Info Header */}
               <div className="mb-3 p-3 bg-card border border-border rounded-lg">
@@ -192,7 +196,8 @@ export function SyllabusPreview({
               {/* Extracted Sections */}
               {file.sections && file.sections.length > 0 && (
                 <div className="space-y-3 mb-6">
-                  {file.sections.map((section) => {
+                  {file.sections.map((section, sectionIdx) => {
+                    const sectionNumber = sectionIdx + 1
                     const sectionKey = `${file.id}-${section.id}`
                     const isExpanded = expandedSections.has(sectionKey)
                     
@@ -212,7 +217,7 @@ export function SyllabusPreview({
                             <ChevronRight className="size-6 text-muted-foreground flex-shrink-0" />
                           )}
                           <span className="text-lg font-bold text-foreground">
-                            {section.title}
+                            {section.title || `Section ${sectionNumber}`}
                           </span>
                         </button>
 
@@ -223,10 +228,13 @@ export function SyllabusPreview({
                               {section.lessons && section.lessons.length > 0 ? (
                                 section.lessons.map((lesson, lessonIdx) => (
                                   <div
-                                    key={lessonIdx}
-                                    className="text-md py-1 whitespace-pre-line"
+                                    key={`${sectionKey}-${lessonIdx}`}
+                                    className="flex items-start gap-2 text-md py-1 whitespace-pre-line"
                                   >
-                                    {lesson}
+                                    <span className="text-muted-foreground font-medium flex-shrink-0">
+                                      {sectionNumber}.{lessonIdx + 1}
+                                    </span>
+                                    <span className="text-foreground">{lesson}</span>
                                   </div>
                                 ))
                               ) : (

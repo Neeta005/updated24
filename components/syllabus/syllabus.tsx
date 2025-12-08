@@ -31,6 +31,9 @@ export function Syllabus() {
   const [targetAudienceSearch, setTargetAudienceSearch] = useState("")
   const [sortFilter, setSortFilter] = useState("")
 
+  // Toast state
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+
   // Sorting state
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null)
 
@@ -41,7 +44,6 @@ export function Syllabus() {
   const handleSort = (key: string) => {
     setSortConfig((prev) => {
       if (prev?.key === key) {
-        // toggle direction
         return { key, direction: prev.direction === "asc" ? "desc" : "asc" }
       }
       return { key, direction: "asc" }
@@ -75,7 +77,6 @@ export function Syllabus() {
       )
     }
 
-    // Apply column sorting
     if (sortConfig) {
       filtered = [...filtered].sort((a, b) => {
         const aVal = (a[sortConfig.key] || "").toString().toLowerCase()
@@ -97,7 +98,15 @@ export function Syllabus() {
   }
 
   const handleEditSyllabus = (id: string) => router.push(`/syllabus/edit/${id}`)
-  const handleDeleteSyllabus = (id: string) => {}
+
+  const handleDeleteSyllabus = (id: string, subject: string) => {
+    // Show toast
+    setToastMessage(`Deleted "${subject}" successfully!`)
+    setTimeout(() => setToastMessage(null), 3000)
+
+    // Here you can also remove the item from data if needed
+    // e.g., setSyllabusData(prev => prev.filter(item => item.id !== id))
+  }
 
   const resetFilters = () => {
     setSubjectSearch("")
@@ -108,7 +117,6 @@ export function Syllabus() {
     setCurrentPage(1)
   }
 
-  // Helper to render arrow direction (↑↓)
   const renderSortIcon = (key: string) => {
     if (sortConfig?.key !== key) return <ArrowUpDown className="w-4 h-4 ml-2 opacity-50" />
     return (
@@ -122,6 +130,13 @@ export function Syllabus() {
 
   return (
     <div className="min-h-screen p-4">
+      {/* Toast notification */}
+      {toastMessage && (
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-5 py-3 rounded shadow-lg z-50">
+          {toastMessage}
+        </div>
+      )}
+
       <div className="bg-card rounded-lg sm:p-6 md:p-8 2xl:p-10">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -129,14 +144,10 @@ export function Syllabus() {
             Subject and Syllabus
           </Text>
           <Link href="/syllabus/add">
-           <GradientButton
-  size="md"
-  className="w-full sm:w-auto flex items-center justify-center gap-2"
->
-  <span className="text-lg">+</span>
-  <span>Add Syllabus</span>
-</GradientButton>
-
+            <GradientButton size="md" className="w-full sm:w-auto flex items-center justify-center gap-2">
+              <span className="text-lg">+</span>
+              <span>Add Syllabus</span>
+            </GradientButton>
           </Link>
         </div>
 
@@ -233,7 +244,10 @@ export function Syllabus() {
               data={filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)}
               onViewSyllabus={handleViewSyllabus}
               onEditSyllabus={handleEditSyllabus}
-              onDisableSyllabus={handleDeleteSyllabus}
+              onDisableSyllabus={(id) => {
+                const item = filteredData.find((s) => s.id === id)
+                if (item) handleDeleteSyllabus(id, item.subject)
+              }}
             />
           </div>
         )}
@@ -250,7 +264,7 @@ export function Syllabus() {
                 description={item.targetAudience}
                 onView={handleViewSyllabus}
                 onEdit={handleEditSyllabus}
-                onDelete={handleDeleteSyllabus}
+                onDelete={() => handleDeleteSyllabus(item.id, item.subject)}
               />
             ))}
           </div>

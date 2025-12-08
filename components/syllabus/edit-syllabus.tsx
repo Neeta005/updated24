@@ -240,39 +240,43 @@ export function EditSyllabus({ syllabusId = "1" }: EditSyllabusProps) {
             <h3 className="text-lg font-semibold mb-6">Preview</h3>
 
             <div className="space-y-3">
-              {sections.map((section) => {
-                if (!section.title) return null
-                const isPreviewExpanded = previewSections[section.id] !== false
-                return (
-                  <div key={section.id} className="rounded-lg overflow-hidden border border-slate-600">
-                    <button
-                      onClick={() => togglePreviewSection(section.id)}
-                      className="flex items-center justify-between w-full px-4 py-3 text-left text-white font-medium bg-slate-700 hover:bg-slate-600"
-                    >
-                      <div className="flex items-center gap-2">
-                        {isPreviewExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                        {section.title}
-                      </div>
-                    </button>
+          {sections.map((section, sectionIndex) => {
+  if (!section.title) return null
+  const isPreviewExpanded = previewSections[section.id] !== false
+  return (
+    <div key={section.id} className="rounded-lg overflow-hidden border border-slate-600">
+      <button
+        onClick={() => togglePreviewSection(section.id)}
+        className="flex items-center justify-between w-full px-4 py-3 text-left text-white font-medium bg-slate-700 hover:bg-slate-600"
+      >
+        <div className="flex items-center gap-2">
+          {isPreviewExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          {section.title}
+        </div>
+      </button>
 
-                    {isPreviewExpanded && (
-                      <div className="px-4 pt-2 pb-3 space-y-2 bg-slate-800">
-                        {section.lessons.map(
-                          (lesson) =>
-                            lesson.title && (
-                              <div
-                                key={lesson.id}
-                                className="text-gray-300 text-sm hover:text-white cursor-pointer transition"
-                              >
-                                {lesson.title}
-                              </div>
-                            ),
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
+      {isPreviewExpanded && (
+        <div className="px-4 pt-2 pb-3 space-y-2 bg-slate-800">
+          {section.lessons.map((lesson, lessonIndex) =>
+            lesson.title && (
+              <div
+                key={lesson.id}
+                className="text-gray-300 text-sm hover:text-white cursor-pointer transition flex items-start gap-2"
+              >
+                {/* Numbering: sectionIndex+1 . lessonIndex+1 */}
+                <span className="font-semibold text-white">
+                  {sectionIndex + 1}.{lessonIndex + 1}
+                </span>
+                <span>{lesson.title}</span>
+              </div>
+            ),
+          )}
+        </div>
+      )}
+    </div>
+  )
+})}
+
             </div>
           </div>
         </div>
