@@ -19,7 +19,7 @@ interface ImportCSVModalProps {
     headers: string[]
     sampleRows?: string[][]
   }
-  variant?: "full" | "simple" // new
+  variant?: "full" | "simple"
   onComplete?: () => void
   showMappedOnComplete?: boolean
 }
@@ -32,37 +32,13 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
   templateData = {
     headers: ["Name", "Email", "Phone", "Company", "Position", "Department", "Location"],
     sampleRows: [
-      [
-        "John Smith",
-        "john.smith@company.com",
-        "+1-555-0123",
-        "Tech Corp",
-        "Software Engineer",
-        "Engineering",
-        "New York",
-      ],
-      [
-        "Sarah Johnson",
-        "sarah.j@business.com",
-        "+1-555-0124",
-        "Business Inc",
-        "Marketing Manager",
-        "Marketing",
-        "California",
-      ],
+      ["John Smith", "john.smith@company.com", "+1-555-0123", "Tech Corp", "Software Engineer", "Engineering", "New York"],
+      ["Sarah Johnson", "sarah.j@business.com", "+1-555-0124", "Business Inc", "Marketing Manager", "Marketing", "California"],
       ["Michael Brown", "mbrown@startup.io", "+1-555-0125", "StartupXYZ", "Product Manager", "Product", "Texas"],
-      [
-        "Emily Davis",
-        "emily.davis@enterprise.org",
-        "+1-555-0126",
-        "Enterprise Ltd",
-        "HR Specialist",
-        "Human Resources",
-        "Florida",
-      ],
+      ["Emily Davis", "emily.davis@enterprise.org", "+1-555-0126", "Enterprise Ltd", "HR Specialist", "Human Resources", "Florida"],
     ],
   },
-  variant = "full", // default to full to avoid breaking existing usage
+  variant = "full",
   onComplete,
   showMappedOnComplete = true,
 }) => {
@@ -86,16 +62,12 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
     e.stopPropagation()
     setDragActive(false)
     const file = e.dataTransfer?.files?.[0]
-    if (file) {
-      handleFileAfterPick(file)
-    }
+    if (file) handleFileAfterPick(file)
   }
 
   const handleChoose = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      handleFileAfterPick(file)
-    }
+    if (file) handleFileAfterPick(file)
   }
 
   const handleImport = () => {
@@ -132,7 +104,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
     return `${mb.toFixed(1)} MB`
   }
 
-  // Function to download the selected file as CSV
+  // CSV download
   const downloadCSVTemplate = () => {
     if (!selectedFile) {
       alert("Please select a file first")
@@ -150,7 +122,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
     URL.revokeObjectURL(url)
   }
 
-  // Function to download the selected file as XLS
+  // XLS download
   const downloadXLSTemplate = () => {
     if (!selectedFile) {
       alert("Please select a file first")
@@ -168,21 +140,14 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
     URL.revokeObjectURL(url)
   }
 
-  // Function to show Google Sheets popup
+  // Google Sheets → Show popup here
   const downloadGoogleSheetTemplate = () => {
-    if (!selectedFile) {
-      alert("Please select a file first")
-      return
-    }
-
     setShowGoogleSheetsPopup(true)
   }
 
-  // Function to copy Google Sheets link
   const copyGoogleSheetsLink = () => {
     const googleSheetsUrl = "https://docs.google.com/spreadsheets/create"
-    navigator.clipboard
-      .writeText(googleSheetsUrl)
+    navigator.clipboard.writeText(googleSheetsUrl)
       .then(() => {
         alert("Google Sheets link copied to clipboard!")
         setShowGoogleSheetsPopup(false)
@@ -199,6 +164,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
       })
   }
 
+  // Updated: Google Sheets shows popup instead of opening new tab
   const handleTemplateDownload = (type: TemplateType) => {
     switch (type) {
       case "csv":
@@ -208,7 +174,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
         downloadXLSTemplate()
         break
       case "google-sheet":
-        downloadGoogleSheetTemplate()
+        setShowGoogleSheetsPopup(true)
         break
       default:
         break
@@ -241,15 +207,12 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
 
   return (
     <>
-      {/* Upload Modal */}
       {!showProgressModal && !showMappedModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[1px]">
-          <div
-            className={`relative ${variant === "simple" ? "w-[680px]" : "w-[560px]"} rounded-2xl bg-gray-800 p-6 shadow-2xl`}
-          >
+          <div className={`relative ${variant === "simple" ? "w-[680px]" : "w-[560px]"} rounded-2xl bg-gray-800 p-6 shadow-2xl`}>
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-white/5 hover:text-white"
+              className="absolute right-4 top-4 rounded-full p-1 text-gray-400 hover:bg-white/5 hover:text-white"
             >
               <X size={24} />
             </button>
@@ -263,13 +226,15 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
                 <Text variant="heading" size="lg" weight="semibold" color="primary" as="h3" className="mb-4">
                   Download Templates
                 </Text>
+
                 <Text variant="body" size="sm" color="muted" className="mb-3">
                   {selectedFile
                     ? `Download "${selectedFile.name}" as CSV/Excel or open in Google Sheets`
                     : "Select a file first to download it in different formats or open in Google Sheets"}
                 </Text>
+
                 <div className="flex gap-3">
-                  {[
+                  {[ 
                     { type: "csv" as const, label: "CSV File" },
                     { type: "xls" as const, label: "Excel File" },
                     { type: "google-sheet" as const, label: "Google Sheets" },
@@ -277,10 +242,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
                     <button
                       key={type}
                       onClick={() => handleTemplateDownload(type)}
-                      disabled={!selectedFile}
-                      className={`flex-1 rounded-lg py-3 font-semibold text-white transition-colors ${
-                        selectedFile ? "bg-green-600 hover:bg-green-700" : "bg-gray-500 cursor-not-allowed opacity-50"
-                      }`}
+                      className="flex-1 rounded-lg py-3 font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors"
                     >
                       {label}
                     </button>
@@ -289,7 +251,6 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
               </div>
             )}
 
-            {/* Compact Google Sheets Popup remains unchanged */}
             {showGoogleSheetsPopup && (
               <div className="absolute left-4 right-4 top-32 z-[60] rounded-lg bg-gray-900 border border-gray-600 p-3 shadow-xl">
                 <div className="flex items-center justify-between mb-2">
@@ -311,7 +272,6 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
                   <button
                     onClick={copyGoogleSheetsLink}
                     className="rounded bg-blue-600 p-1.5 text-white hover:bg-blue-700 transition-colors"
-                    title="Copy link"
                   >
                     <Copy size={12} />
                   </button>
@@ -324,7 +284,9 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`relative block cursor-pointer overflow-hidden rounded-xl p-8 text-center transition-colors border-2 border-dashed ${dragActive ? "border-rose-500 bg-rose-500/10" : "border-rose-500/70"} ${variant === "simple" ? "mt-2" : ""}`}
+              className={`relative block cursor-pointer overflow-hidden rounded-xl p-8 text-center transition-colors border-2 border-dashed ${
+                dragActive ? "border-rose-500 bg-rose-500/10" : "border-rose-500/70"
+              } ${variant === "simple" ? "mt-2" : ""}`}
             >
               <input type="file" accept=".csv,.xls,.xlsx" className="hidden" onChange={handleChoose} />
 
@@ -348,14 +310,12 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
                   </div>
                 ) : (
                   <Text variant="body" size="sm" color="muted">
-                    Drag your file or <span className="font-semibold text-orange-500 underline">click here</span> to
-                    upload the file
+                    Drag your file or <span className="font-semibold text-orange-500 underline">click here</span> to upload the file
                   </Text>
                 )}
               </div>
             </label>
 
-            {/* Footer */}
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={onClose}
@@ -363,6 +323,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleImport}
                 className={`rounded-lg px-6 py-2 font-semibold text-white transition-opacity ${
@@ -379,7 +340,6 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
         </div>
       )}
 
-      {/* Progress Modal */}
       <ImportProgressModal
         isOpen={showProgressModal}
         onClose={() => setShowProgressModal(false)}
@@ -388,8 +348,11 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
         fileSize={selectedFile ? formatFileSize(selectedFile.size) : undefined}
       />
 
-      {/* Mapped Modal */}
-      <MappedImportModal isOpen={showMappedModal} onClose={handleMappedModalClose} templateData={templateData} />
+      <MappedImportModal
+        isOpen={showMappedModal}
+        onClose={handleMappedModalClose}
+        templateData={templateData}
+      />
 
       <ImportErrorModal
         isOpen={showErrorModal}

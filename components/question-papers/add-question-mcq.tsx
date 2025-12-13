@@ -21,6 +21,9 @@ export function AddQuestionMcq() {
   const [collapsed, setCollapsed] = useState(false)
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<"True" | "False">("True")
   const [shortAnswer, setShortAnswer] = useState("")
+  const [showSubjectList, setShowSubjectList] = useState(false)
+const subjects = ["Math", "Physics", "Biology", "Chemistry", "English"]  // example list
+
   const [codeContent, setCodeContent] = useState(`def calculate(val):
     if val % 2 == 0:
         return "Even"
@@ -67,6 +70,15 @@ print(calculate(9))`)
 
     loadHighlightJS()
   }, [])
+useEffect(() => {
+  const handleClick = (e: any) => {
+    if (!e.target.closest(".subject-box")) {
+      setShowSubjectList(false)
+    }
+  }
+  document.addEventListener("mousedown", handleClick)
+  return () => document.removeEventListener("mousedown", handleClick)
+}, [])
 
   // Highlight code when it changes
   useEffect(() => {
@@ -464,18 +476,48 @@ print(calculate(9))`)
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-300 mt-2">Subject:</label>
                     <div className="relative">
-                      <select
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        className="w-full appearance-none rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white pr-10 focus:border-blue-500 focus:outline-none"
-                      >
-                        {defaultAddMcq.subjectOptions.map((s) => (
-                          <option key={s} value={s} className="bg-gray-700">
-                            {s}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <div className="relative">
+  <input
+    type="text"
+    value={subject}
+    onChange={(e) => {
+      setSubject(e.target.value)
+      setShowSubjectList(true)
+    }}
+    onFocus={() => setShowSubjectList(true)}
+    placeholder="Search subject..."
+    className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 outline-none"
+  />
+
+  {showSubjectList && (
+    <div className="absolute z-50 mt-1 w-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+
+      {subjects
+        .filter((s) =>
+          s.toLowerCase().includes(subject.toLowerCase())
+        )
+        .map((s) => (
+          <div
+            key={s}
+            onClick={() => {
+              setSubject(s)
+              setShowSubjectList(false)
+            }}
+            className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer"
+          >
+            {s}
+          </div>
+        ))}
+
+      {subjects.filter((s) =>
+        s.toLowerCase().includes(subject.toLowerCase())
+      ).length === 0 && (
+        <div className="px-4 py-2 text-gray-400">No results found</div>
+      )}
+    </div>
+  )}
+</div>
+
                     </div>
                   </div>
 
