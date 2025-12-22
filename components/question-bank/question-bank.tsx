@@ -94,12 +94,12 @@ const SubtopicRow = React.memo(
         >
           <Eye className="size-3 text-white" />
         </button>
-        <button
+        {/* <button
           onClick={() => onEditClick(subtopic.name)}
           className="p-1.5 border border-red-500 hover:bg-gray-600 rounded-lg transition-colors"
         >
           <Edit3 className="size-3 text-red-500" />
-        </button>
+        </button> */}
       </div>
     </div>
   ),

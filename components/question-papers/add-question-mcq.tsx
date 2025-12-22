@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from 'next/navigation'
-import { ChevronRight, Trash2, Bold, Italic, Underline, List, ListOrdered, Quote, Code, Link, Smile, ChevronDown } from 'lucide-react'
+import { ChevronRight, Trash2, Bold, Italic, Underline, List, ListOrdered, Quote, Code, Link, Smile, ChevronDown, Check, Square } from 'lucide-react'
 import { useState, useRef, useEffect } from "react"
 import { defaultAddMcq } from "@/data/question-papers/add-mcq"
 import { GradientButton } from "@/components/ui/gradient-button"
@@ -11,6 +11,7 @@ export function AddQuestionMcq() {
   const [question, setQuestion] = useState(defaultAddMcq.question)
   const [options, setOptions] = useState<string[]>([...defaultAddMcq.options])
   const [selectedIndex, setSelectedIndex] = useState<number>(defaultAddMcq.selectedIndex)
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]) // For multi-select
   const [subject, setSubject] = useState(defaultAddMcq.subject)
   const [topic, setTopic] = useState(defaultAddMcq.topic)
   const [type, setType] = useState(defaultAddMcq.type)
@@ -22,7 +23,7 @@ export function AddQuestionMcq() {
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<"True" | "False">("True")
   const [shortAnswer, setShortAnswer] = useState("")
   const [showSubjectList, setShowSubjectList] = useState(false)
-const subjects = ["Math", "Physics", "Biology", "Chemistry", "English"]  // example list
+  const subjects = ["Math", "Physics", "Biology", "Chemistry", "English"]
 
   const [codeContent, setCodeContent] = useState(`def calculate(val):
     if val % 2 == 0:
@@ -45,20 +46,17 @@ print(calculate(9))`)
   // Load highlight.js
   useEffect(() => {
     const loadHighlightJS = async () => {
-      // Load CSS
       const link = document.createElement('link')
       link.rel = 'stylesheet'
       link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
       document.head.appendChild(link)
 
-      // Load JS
       const script = document.createElement('script')
       script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'
       script.onload = () => {
         const pythonScript = document.createElement('script')
         pythonScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'
         pythonScript.onload = () => {
-          // Highlight all code blocks
           if ((window as any).hljs) {
             (window as any).hljs.highlightAll()
           }
@@ -70,15 +68,16 @@ print(calculate(9))`)
 
     loadHighlightJS()
   }, [])
-useEffect(() => {
-  const handleClick = (e: any) => {
-    if (!e.target.closest(".subject-box")) {
-      setShowSubjectList(false)
+
+  useEffect(() => {
+    const handleClick = (e: any) => {
+      if (!e.target.closest(".subject-box")) {
+        setShowSubjectList(false)
+      }
     }
-  }
-  document.addEventListener("mousedown", handleClick)
-  return () => document.removeEventListener("mousedown", handleClick)
-}, [])
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [])
 
   // Highlight code when it changes
   useEffect(() => {
@@ -110,6 +109,11 @@ useEffect(() => {
     delete newOptionCodeContent[i]
     setOptionCoding(newOptionCoding)
     setOptionCodeContent(newOptionCodeContent)
+    
+    // Remove from selected indices if multi-select
+    if (type === "MCQ (Multi Answers)") {
+      setSelectedIndices(prev => prev.filter(idx => idx !== i))
+    }
   }
 
   // Close dropdown when clicking outside
@@ -126,13 +130,28 @@ useEffect(() => {
 
   const handlePublish = () => {
     setStatus("Published")
-    // Add your publish logic here
     console.log("Question published!")
-    // You might want to add API call or other logic here
+  }
+
+  // Handle single answer selection
+  const handleSingleSelect = (i: number) => {
+    setSelectedIndex(i)
+  }
+
+  // Handle multi-answer selection
+  const handleMultiSelect = (i: number) => {
+    setSelectedIndices(prev => {
+      if (prev.includes(i)) {
+        return prev.filter(idx => idx !== i)
+      } else {
+        return [...prev, i]
+      }
+    })
   }
 
   const typeOptions = [
-    { value: "MCQS", label: "MCQ", icon: "/icons/icon.png" },
+    { value: "MCQ (Single Answer)", label: "MCQ (Single Answer)", icon: "/icons/icon.png" },
+    { value: "MCQ (Multi Answers)", label: "MCQ (Multi Answers)", icon: "/icons/check-square.png" },
     { value: "True/False", label: "True / False", icon: "/icons/tick-circle.png" },
     { value: "Short Answer", label: "Descriptive", icon: "/icons/Menu.png" },
     { value: "Coding", label: "Coding", icon: "/icons/code.png" },
@@ -163,22 +182,18 @@ useEffect(() => {
 
       {/* Main content container */}
       <div className="bg-card rounded-b-lg relative">
-        {/* Horizontal divider */}
         <div className="h-px bg-gray-700 mx-6"></div>
 
         <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
-          {/* Expand button when collapsed - on top-right */}
+          {/* Expand button when collapsed */}
           {collapsed && (
             <button
               onClick={() => setCollapsed(false)}
               className="absolute right-6 top-6 flex flex-col items-center gap-2 z-50 group"
             >
-              {/* Icon inside white-bordered box */}
               <div className="w-10 h-10 flex items-center justify-center rounded-lg border border-white bg-gray-800 group-hover:bg-gray-700 transition-colors">
                 <img src="/icons/edit-2 (1).png" alt="Add details" className="w-5 h-5" />
               </div>
-
-              {/* Label below box */}
               <span className="text-white text-sm font-medium">Add Details</span>
             </button>
           )}
@@ -190,13 +205,15 @@ useEffect(() => {
             <div className="rounded-lg bg-card">
               <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
                 <h2 className="font-semibold text-lg">
-                  {type === "MCQS"
-                    ? "Multiple Choice Question (MCQ)"
-                    : type === "True/False"
-                      ? "True / False"
-                      : type === "Coding"
-                        ? "Coding Question"
-                        : "Short Answer"}
+                  {type === "MCQ (Single Answer)"
+                    ? "Multiple Choice Question (Single Answer)"
+                    : type === "MCQ (Multi Answers)"
+                      ? "Multiple Choice Question (Multi Answers)"
+                      : type === "True/False"
+                        ? "True / False"
+                        : type === "Coding"
+                          ? "Coding Question"
+                          : "Short Answer"}
                 </h2>
                 {type !== "Coding" && (
                   <div className="flex items-center gap-3">
@@ -219,7 +236,7 @@ useEffect(() => {
               </div>
 
               <div className="p-6 space-y-6">
-                {/* Toolbar - Always show */}
+                {/* Toolbar */}
                 <div className="border border-gray-600 rounded-lg">
                   <div className="flex items-center gap-1 bg-gray-700 px-3 py-2 border-b border-gray-600">
                     <button className="p-2 rounded hover:bg-gray-600 transition-colors">
@@ -253,7 +270,7 @@ useEffect(() => {
                     </button>
                   </div>
 
-                  {/* Question textarea - Only show for non-Coding types */}
+                  {/* Question textarea */}
                   {type !== "Coding" && (
                     <textarea
                       value={question}
@@ -270,7 +287,7 @@ useEffect(() => {
                   )}
                 </div>
 
-                {/* Code Editor - Show when Coding type is selected OR coding toggle is on */}
+                {/* Code Editor */}
                 {(coding || type === "Coding") && (
                   <div className="border border-gray-600 rounded-lg overflow-hidden">
                     <div className="flex items-center justify-between bg-gray-700 px-4 py-2 border-b border-gray-600">
@@ -291,25 +308,44 @@ useEffect(() => {
                   </div>
                 )}
 
-                {type === "MCQS" && (
+                {/* MCQ Options for Single and Multi Answer */}
+                {(type === "MCQ (Single Answer)" || type === "MCQ (Multi Answers)") && (
                   <>
-                    {/* MCQ Options */}
                     <div className="space-y-3">
                       {options.map((opt, i) => (
                         <div key={i} className="space-y-2">
                           <div
                             className={`flex items-center gap-3 rounded-lg border px-4 py-3 transition-colors ${
-                              i === selectedIndex ? "border-blue-500 bg-blue-500/10" : "border-gray-600 bg-gray-700/50"
+                              (type === "MCQ (Single Answer)" && i === selectedIndex) ||
+                              (type === "MCQ (Multi Answers)" && selectedIndices.includes(i))
+                                ? "border-blue-500 bg-blue-500/10"
+                                : "border-gray-600 bg-gray-700/50"
                             }`}
                           >
-                            <button
-                              onClick={() => setSelectedIndex(i)}
-                              className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                                i === selectedIndex ? "border-red-500" : "border-gray-400"
-                              }`}
-                            >
-                              {i === selectedIndex && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
-                            </button>
+                            {/* Selection indicator */}
+                            {type === "MCQ (Single Answer)" ? (
+                              // Radio button for single select
+                              <button
+                                onClick={() => handleSingleSelect(i)}
+                                className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                  i === selectedIndex ? "border-red-500" : "border-gray-400"
+                                }`}
+                              >
+                                {i === selectedIndex && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
+                              </button>
+                            ) : (
+                              // Checkbox for multi select
+                              <button
+                                onClick={() => handleMultiSelect(i)}
+                                className={`h-4 w-4 rounded border flex items-center justify-center flex-shrink-0 ${
+                                  selectedIndices.includes(i) ? "border-blue-500 bg-blue-500" : "border-gray-400"
+                                }`}
+                              >
+                                {selectedIndices.includes(i) && (
+                                  <Check size={12} className="text-white" />
+                                )}
+                              </button>
+                            )}
 
                             <input
                               value={opt}
@@ -398,12 +434,26 @@ useEffect(() => {
                         <span>Add Option</span>
                       </button>
                     </div>
+                    
+                    {/* Selected answers info for multi-select */}
+                    {type === "MCQ (Multi Answers)" && selectedIndices.length > 0 && (
+                      <div className="mt-4 p-3 bg-gray-800/50 border border-gray-700 rounded-lg">
+                        <p className="text-sm text-gray-300">
+                          <span className="font-medium text-green-400">{selectedIndices.length}</span> 
+                          {selectedIndices.length === 1 ? " option selected" : " options selected"}
+                          {selectedIndices.length > 0 && (
+                            <span className="text-gray-400 ml-2">
+                              (Option{selectedIndices.length > 1 ? 's' : ''}: {selectedIndices.map(i => i + 1).join(', ')})
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
                   </>
                 )}
 
                 {type === "True/False" && (
                   <>
-                    {/* True/False Options */}
                     <div className="space-y-3">
                       {["True", "False"].map((option) => (
                         <button
@@ -431,7 +481,6 @@ useEffect(() => {
 
                 {type === "Short Answer" && (
                   <>
-                    {/* Short Answer Input */}
                     <div className="border border-gray-600 rounded-lg">
                       <textarea
                         value={shortAnswer}
@@ -460,7 +509,6 @@ useEffect(() => {
           {!collapsed ? (
             <aside className="lg:col-span-3">
               <div className="rounded-lg bg-gray-900">
-                {/* Sidebar header with collapse button */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
                   <h3 className="font-semibold text-lg">Details</h3>
                   <button
@@ -477,47 +525,39 @@ useEffect(() => {
                     <label className="text-sm font-medium text-gray-300 mt-2">Subject:</label>
                     <div className="relative">
                       <div className="relative">
-  <input
-    type="text"
-    value={subject}
-    onChange={(e) => {
-      setSubject(e.target.value)
-      setShowSubjectList(true)
-    }}
-    onFocus={() => setShowSubjectList(true)}
-    placeholder="Search subject..."
-    className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 outline-none"
-  />
-
-  {showSubjectList && (
-    <div className="absolute z-50 mt-1 w-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-
-      {subjects
-        .filter((s) =>
-          s.toLowerCase().includes(subject.toLowerCase())
-        )
-        .map((s) => (
-          <div
-            key={s}
-            onClick={() => {
-              setSubject(s)
-              setShowSubjectList(false)
-            }}
-            className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer"
-          >
-            {s}
-          </div>
-        ))}
-
-      {subjects.filter((s) =>
-        s.toLowerCase().includes(subject.toLowerCase())
-      ).length === 0 && (
-        <div className="px-4 py-2 text-gray-400">No results found</div>
-      )}
-    </div>
-  )}
-</div>
-
+                        <input
+                          type="text"
+                          value={subject}
+                          onChange={(e) => {
+                            setSubject(e.target.value)
+                            setShowSubjectList(true)
+                          }}
+                          onFocus={() => setShowSubjectList(true)}
+                          placeholder="Search subject..."
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-blue-500 outline-none"
+                        />
+                        {showSubjectList && (
+                          <div className="absolute z-50 mt-1 w-full bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                            {subjects
+                              .filter((s) => s.toLowerCase().includes(subject.toLowerCase()))
+                              .map((s) => (
+                                <div
+                                  key={s}
+                                  onClick={() => {
+                                    setSubject(s)
+                                    setShowSubjectList(false)
+                                  }}
+                                  className="px-4 py-2 text-white hover:bg-gray-700 cursor-pointer"
+                                >
+                                  {s}
+                                </div>
+                              ))}
+                            {subjects.filter((s) => s.toLowerCase().includes(subject.toLowerCase())).length === 0 && (
+                              <div className="px-4 py-2 text-gray-400">No results found</div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -540,10 +580,8 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  {/* Divider */}
                   <div className="h-px bg-gray-700"></div>
 
-                  {/* Type, Difficulty, Status, Marks */}
                   <div className="bg-card rounded-lg p-6 border border-gray-600 space-y-6">
                     {/* Type - Custom Dropdown */}
                     <div className="space-y-2">
@@ -555,7 +593,19 @@ useEffect(() => {
                           className="w-full flex items-center justify-between rounded-lg border border-gray-600 bg-gray-900 px-4 py-2.5 text-white pr-10 focus:border-blue-500 focus:outline-none"
                         >
                           <div className="flex items-center gap-2">
-                            <img src={selectedType.icon} alt={selectedType.label} className="w-4 h-4" />
+                            {type === "MCQ (Single Answer)" && (
+                              <div className="w-4 h-4 rounded-full border border-blue-400 flex items-center justify-center">
+                                <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                              </div>
+                            )}
+                            {type === "MCQ (Multi Answers)" && (
+                              <div className="w-4 h-4 rounded border border-blue-400 flex items-center justify-center">
+                                <Check size={12} className="text-blue-400" />
+                              </div>
+                            )}
+                            {type === "True/False" && <img src="/icons/tick-circle.png" alt="True/False" className="w-4 h-4" />}
+                            {type === "Short Answer" && <img src="/icons/Menu.png" alt="Descriptive" className="w-4 h-4" />}
+                            {type === "Coding" && <img src="/icons/code.png" alt="Coding" className="w-4 h-4" />}
                             <span>{selectedType.label}</span>
                           </div>
                           <ChevronDown 
@@ -572,12 +622,31 @@ useEffect(() => {
                                 onClick={() => {
                                   setType(option.value)
                                   setIsTypeDropdownOpen(false)
+                                  // Reset selection states when changing type
+                                  if (option.value !== "MCQ (Single Answer)") {
+                                    setSelectedIndex(-1)
+                                  }
+                                  if (option.value !== "MCQ (Multi Answers)") {
+                                    setSelectedIndices([])
+                                  }
                                 }}
                                 className={`w-full flex items-center gap-2 px-4 py-2.5 text-left hover:bg-gray-700 transition-colors ${
                                   type === option.value ? 'bg-blue-500/20 text-blue-400' : 'text-white'
                                 } first:rounded-t-lg last:rounded-b-lg`}
                               >
-                                <img src={option.icon} alt={option.label} className="w-4 h-4" />
+                                {option.value === "MCQ (Single Answer)" && (
+                                  <div className="w-4 h-4 rounded-full border border-blue-400 flex items-center justify-center">
+                                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                                  </div>
+                                )}
+                                {option.value === "MCQ (Multi Answers)" && (
+                                  <div className="w-4 h-4 rounded border border-blue-400 flex items-center justify-center">
+                                    <Check size={12} className="text-blue-400" />
+                                  </div>
+                                )}
+                                {option.value === "True/False" && <img src="/icons/tick-circle.png" alt="True/False" className="w-4 h-4" />}
+                                {option.value === "Short Answer" && <img src="/icons/Menu.png" alt="Descriptive" className="w-4 h-4" />}
+                                {option.value === "Coding" && <img src="/icons/code.png" alt="Coding" className="w-4 h-4" />}
                                 <span>{option.label}</span>
                               </button>
                             ))}
