@@ -1,7 +1,21 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
-import { ChevronRight, Trash2, Bold, Italic, Underline, List, ListOrdered, Quote, Code, Link, Smile, ChevronDown, Check, Square } from 'lucide-react'
+import { useRouter } from "next/navigation"
+import {
+  ChevronRight,
+  Trash2,
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
+  Quote,
+  Code,
+  Link,
+  Smile,
+  ChevronDown,
+  Check,
+} from "lucide-react"
 import { useState, useRef, useEffect } from "react"
 import { defaultAddMcq } from "@/data/question-papers/add-mcq"
 import { GradientButton } from "@/components/ui/gradient-button"
@@ -36,7 +50,7 @@ export function AddQuestionMcq() {
 print(calculate(9))`)
   const [optionCoding, setOptionCoding] = useState<Record<number, boolean>>({})
   const [optionCodeContent, setOptionCodeContent] = useState<Record<number, string>>({})
-  
+
   // Custom dropdown state
   const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -46,19 +60,19 @@ print(calculate(9))`)
   // Load highlight.js
   useEffect(() => {
     const loadHighlightJS = async () => {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css'
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
       document.head.appendChild(link)
 
-      const script = document.createElement('script')
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'
+      const script = document.createElement("script")
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
       script.onload = () => {
-        const pythonScript = document.createElement('script')
-        pythonScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js'
+        const pythonScript = document.createElement("script")
+        pythonScript.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"
         pythonScript.onload = () => {
           if ((window as any).hljs) {
-            (window as any).hljs.highlightAll()
+            ;(window as any).hljs.highlightAll()
           }
         }
         document.body.appendChild(pythonScript)
@@ -82,17 +96,17 @@ print(calculate(9))`)
   // Highlight code when it changes
   useEffect(() => {
     if ((window as any).hljs && codeRef.current) {
-      (window as any).hljs.highlightElement(codeRef.current)
+      ;(window as any).hljs.highlightElement(codeRef.current)
     }
   }, [codeContent, coding, type])
 
   // Highlight option code when it changes
   useEffect(() => {
     if ((window as any).hljs) {
-      Object.keys(optionCodeRefs.current).forEach(key => {
-        const ref = optionCodeRefs.current[parseInt(key)]
+      Object.keys(optionCodeRefs.current).forEach((key) => {
+        const ref = optionCodeRefs.current[Number.parseInt(key)]
         if (ref) {
-          (window as any).hljs.highlightElement(ref)
+          ;(window as any).hljs.highlightElement(ref)
         }
       })
     }
@@ -109,10 +123,10 @@ print(calculate(9))`)
     delete newOptionCodeContent[i]
     setOptionCoding(newOptionCoding)
     setOptionCodeContent(newOptionCodeContent)
-    
+
     // Remove from selected indices if multi-select
     if (type === "MCQ (Multi Answers)") {
-      setSelectedIndices(prev => prev.filter(idx => idx !== i))
+      setSelectedIndices((prev) => prev.filter((idx) => idx !== i))
     }
   }
 
@@ -124,8 +138,8 @@ print(calculate(9))`)
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
   const handlePublish = () => {
@@ -140,9 +154,9 @@ print(calculate(9))`)
 
   // Handle multi-answer selection
   const handleMultiSelect = (i: number) => {
-    setSelectedIndices(prev => {
+    setSelectedIndices((prev) => {
       if (prev.includes(i)) {
-        return prev.filter(idx => idx !== i)
+        return prev.filter((idx) => idx !== i)
       } else {
         return [...prev, i]
       }
@@ -157,7 +171,7 @@ print(calculate(9))`)
     { value: "Coding", label: "Coding", icon: "/icons/code.png" },
   ]
 
-  const selectedType = typeOptions.find(option => option.value === type) || typeOptions[0]
+  const selectedType = typeOptions.find((option) => option.value === type) || typeOptions[0]
 
   return (
     <div className="min-h-screen text-white bg-gray-900 p-6 relative">
@@ -165,12 +179,6 @@ print(calculate(9))`)
       <div className="flex items-center justify-between p-6 bg-card rounded-t-lg">
         <h1 className="text-2xl font-semibold">Add Question</h1>
         <div className="flex items-center gap-3">
-          <button
-            onClick={handlePublish}
-            className="px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
-          >
-            Publish
-          </button>
           <button
             onClick={() => router.back()}
             className="px-6 py-2 rounded-lg border border-gray-600 text-white hover:bg-gray-700 transition-colors"
@@ -297,13 +305,17 @@ print(calculate(9))`)
                       </button>
                     </div>
                     <div className="bg-gray-900 p-4 min-h-56">
-                      <pre className="!bg-transparent !p-0 !m-0"><code 
-                        ref={codeRef}
-                        className="language-python !bg-transparent text-sm"
-                        contentEditable
-                        suppressContentEditableWarning
-                        onInput={(e) => setCodeContent(e.currentTarget.textContent || "")}
-                      >{codeContent}</code></pre>
+                      <pre className="!bg-transparent !p-0 !m-0">
+                        <code
+                          ref={codeRef}
+                          className="language-python !bg-transparent text-sm"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onInput={(e) => setCodeContent(e.currentTarget.textContent || "")}
+                        >
+                          {codeContent}
+                        </code>
+                      </pre>
                     </div>
                   </div>
                 )}
@@ -341,9 +353,7 @@ print(calculate(9))`)
                                   selectedIndices.includes(i) ? "border-blue-500 bg-blue-500" : "border-gray-400"
                                 }`}
                               >
-                                {selectedIndices.includes(i) && (
-                                  <Check size={12} className="text-white" />
-                                )}
+                                {selectedIndices.includes(i) && <Check size={12} className="text-white" />}
                               </button>
                             )}
 
@@ -369,7 +379,7 @@ print(calculate(9))`)
                                           ...prev,
                                           [i]: `def solution():
     # Write solution here
-    pass`
+    pass`,
                                         }))
                                       }
                                     }}
@@ -406,20 +416,27 @@ print(calculate(9))`)
                                 </button>
                               </div>
                               <div className="bg-gray-900 p-4 min-h-40">
-                                <pre className="!bg-transparent !p-0 !m-0"><code
-                                  ref={(el) => { optionCodeRefs.current[i] = el }}
-                                  className="language-python !bg-transparent text-sm"
-                                  contentEditable
-                                  suppressContentEditableWarning
-                                  onInput={(e) => {
-                                    setOptionCodeContent((prev) => ({
-                                      ...prev,
-                                      [i]: e.currentTarget.textContent || ""
-                                    }))
-                                  }}
-                                >{optionCodeContent[i] || `def solution():
+                                <pre className="!bg-transparent !p-0 !m-0">
+                                  <code
+                                    ref={(el) => {
+                                      optionCodeRefs.current[i] = el
+                                    }}
+                                    className="language-python !bg-transparent text-sm"
+                                    contentEditable
+                                    suppressContentEditableWarning
+                                    onInput={(e) => {
+                                      setOptionCodeContent((prev) => ({
+                                        ...prev,
+                                        [i]: e.currentTarget.textContent || "",
+                                      }))
+                                    }}
+                                  >
+                                    {optionCodeContent[i] ||
+                                      `def solution():
     # Write solution here
-    pass`}</code></pre>
+    pass`}
+                                  </code>
+                                </pre>
                               </div>
                             </div>
                           )}
@@ -434,16 +451,17 @@ print(calculate(9))`)
                         <span>Add Option</span>
                       </button>
                     </div>
-                    
+
                     {/* Selected answers info for multi-select */}
                     {type === "MCQ (Multi Answers)" && selectedIndices.length > 0 && (
                       <div className="mt-4 p-3 bg-gray-800/50 border border-gray-700 rounded-lg">
                         <p className="text-sm text-gray-300">
-                          <span className="font-medium text-green-400">{selectedIndices.length}</span> 
+                          <span className="font-medium text-green-400">{selectedIndices.length}</span>
                           {selectedIndices.length === 1 ? " option selected" : " options selected"}
                           {selectedIndices.length > 0 && (
                             <span className="text-gray-400 ml-2">
-                              (Option{selectedIndices.length > 1 ? 's' : ''}: {selectedIndices.map(i => i + 1).join(', ')})
+                              (Option{selectedIndices.length > 1 ? "s" : ""}:{" "}
+                              {selectedIndices.map((i) => i + 1).join(", ")})
                             </span>
                           )}
                         </p>
@@ -485,23 +503,31 @@ print(calculate(9))`)
                       <textarea
                         value={shortAnswer}
                         onChange={(e) => setShortAnswer(e.target.value)}
-                        className="w-full min-h-24 bg-transparent px-4 py-3 text-white resize-none outline-none"
-                        placeholder="Enter the expected answer..."
+                        className="w-full min-h-40 bg-transparent px-4 py-3 text-white resize-none outline-none rounded-lg"
+                        placeholder="Type the expected answer here..."
                       />
                     </div>
                   </>
                 )}
               </div>
-            </div>
 
-            <div className="flex items-center justify-end gap-3 mt-6">
-              <button
-                onClick={() => router.back()}
-                className="px-6 py-2 rounded-lg border border-gray-600 text-white hover:bg-gray-700 transition-colors"
-              >
-                Cancel
-              </button>
-              <GradientButton size="md">Save</GradientButton>
+              <div className="px-6 pb-6">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-700">
+                  <button
+                    onClick={() => router.back()}
+                    className="px-6 py-2 rounded-lg border border-gray-600 text-white hover:bg-gray-700 transition-colors font-medium"
+                  >
+                    Cancel
+                  </button>
+                  <GradientButton size="md">Save</GradientButton>
+                  <button
+                    onClick={handlePublish}
+                    className="px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
+                  >
+                    Publish
+                  </button>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -603,13 +629,17 @@ print(calculate(9))`)
                                 <Check size={12} className="text-blue-400" />
                               </div>
                             )}
-                            {type === "True/False" && <img src="/icons/tick-circle.png" alt="True/False" className="w-4 h-4" />}
-                            {type === "Short Answer" && <img src="/icons/Menu.png" alt="Descriptive" className="w-4 h-4" />}
+                            {type === "True/False" && (
+                              <img src="/icons/tick-circle.png" alt="True/False" className="w-4 h-4" />
+                            )}
+                            {type === "Short Answer" && (
+                              <img src="/icons/Menu.png" alt="Descriptive" className="w-4 h-4" />
+                            )}
                             {type === "Coding" && <img src="/icons/code.png" alt="Coding" className="w-4 h-4" />}
                             <span>{selectedType.label}</span>
                           </div>
-                          <ChevronDown 
-                            className={`w-4 h-4 text-gray-400 transition-transform ${isTypeDropdownOpen ? 'rotate-180' : ''}`} 
+                          <ChevronDown
+                            className={`w-4 h-4 text-gray-400 transition-transform ${isTypeDropdownOpen ? "rotate-180" : ""}`}
                           />
                         </button>
 
@@ -631,7 +661,7 @@ print(calculate(9))`)
                                   }
                                 }}
                                 className={`w-full flex items-center gap-2 px-4 py-2.5 text-left hover:bg-gray-700 transition-colors ${
-                                  type === option.value ? 'bg-blue-500/20 text-blue-400' : 'text-white'
+                                  type === option.value ? "bg-blue-500/20 text-blue-400" : "text-white"
                                 } first:rounded-t-lg last:rounded-b-lg`}
                               >
                                 {option.value === "MCQ (Single Answer)" && (
@@ -644,9 +674,15 @@ print(calculate(9))`)
                                     <Check size={12} className="text-blue-400" />
                                   </div>
                                 )}
-                                {option.value === "True/False" && <img src="/icons/tick-circle.png" alt="True/False" className="w-4 h-4" />}
-                                {option.value === "Short Answer" && <img src="/icons/Menu.png" alt="Descriptive" className="w-4 h-4" />}
-                                {option.value === "Coding" && <img src="/icons/code.png" alt="Coding" className="w-4 h-4" />}
+                                {option.value === "True/False" && (
+                                  <img src="/icons/tick-circle.png" alt="True/False" className="w-4 h-4" />
+                                )}
+                                {option.value === "Short Answer" && (
+                                  <img src="/icons/Menu.png" alt="Descriptive" className="w-4 h-4" />
+                                )}
+                                {option.value === "Coding" && (
+                                  <img src="/icons/code.png" alt="Coding" className="w-4 h-4" />
+                                )}
                                 <span>{option.label}</span>
                               </button>
                             ))}

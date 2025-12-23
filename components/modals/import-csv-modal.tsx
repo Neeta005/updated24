@@ -7,8 +7,15 @@ import { Text } from "@/components/atoms/text"
 import { ImportProgressModal } from "./ImportProgressModal"
 import { MappedImportModal } from "./mapped-import-modal"
 import { ImportErrorModal } from "./import-error-modal"
+import Papa from "papaparse"
+import * as XLSX from "xlsx"
 
 type TemplateType = "xls" | "csv" | "google-sheet"
+
+interface ParsedCSVData {
+  headers: string[]
+  rows: any[]
+}
 
 interface ImportCSVModalProps {
   isOpen: boolean
@@ -49,6 +56,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
   const [showGoogleSheetsPopup, setShowGoogleSheetsPopup] = useState<boolean>(false)
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>("Invalid File Type!")
+  const [parsedData, setParsedData] = useState<ParsedCSVData | null>(null)
 
   const handleDrag = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault()
@@ -89,6 +97,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
       setShowMappedModal(true)
     } else {
       setSelectedFile(null)
+      setParsedData(null)
       onClose()
     }
   }
@@ -96,6 +105,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
   const handleMappedModalClose = () => {
     setShowMappedModal(false)
     setSelectedFile(null)
+    setParsedData(null)
     onClose()
   }
 
@@ -164,7 +174,6 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
       })
   }
 
-  // Updated: Google Sheets shows popup instead of opening new tab
   const handleTemplateDownload = (type: TemplateType) => {
     switch (type) {
       case "csv":
@@ -192,15 +201,175 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
     return (ext && allowedExt.includes(ext)) || allowedMimes.includes(file.type)
   }
 
-  const handleFileAfterPick = (file: File) => {
+  const isExcelFile = (file: File) => {
+    const ext = file.name.split(".").pop()?.toLowerCase()
+    return ext === "xls" || ext === "xlsx"
+  }
+
+  const parseExcelFile = (file: File): Promise<ParsedCSVData> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      
+      reader.onload = (e) => {
+        try {
+          const data = e.target?.result
+          const workbook = XLSX.read(data, { type: "binary" })
+          
+          // Get first sheet
+          const sheetName = workbook.SheetNames[0]
+          const worksheet = workbook.Sheets[sheetName]
+          
+          // Convert to JSON
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
+          
+          if (!jsonData || jsonData.length === 0) {
+            reject(new Error("Excel file is empty"))
+            return
+          }
+          
+          // First row is headers
+          const headers = (jsonData[0] as any[]).map(h => String(h || "").trim())
+          
+          // Rest are data rows
+          const dataRows = jsonData.slice(1) as any[][]
+          
+          // Convert rows to objects
+          const rows = dataRows
+            .filter(row => row.some(cell => cell != null && cell !== ""))
+            .map(row => {
+              const rowObj: any = {}
+              headers.forEach((header, index) => {
+                rowObj[header] = row[index] != null ? row[index] : ""
+              })
+              return rowObj
+            })
+          
+          if (headers.length === 0) {
+            reject(new Error("No headers found in Excel file"))
+            return
+          }
+
+          if (rows.length === 0) {
+            reject(new Error("No data rows found in Excel file"))
+            return
+          }
+          
+          resolve({ headers, rows })
+        } catch (error) {
+          reject(error)
+        }
+      }
+      
+      reader.onerror = () => {
+        reject(new Error("Failed to read Excel file"))
+      }
+      
+      reader.readAsBinaryString(file)
+    })
+  }
+
+  const parseCSVFile = (file: File): Promise<ParsedCSVData> => {
+    return new Promise((resolve, reject) => {
+      Papa.parse(file, {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          try {
+            // Get headers and trim whitespace
+            const headers = results.meta.fields?.map(h => h.trim()) || []
+            
+            // Get rows data
+            const rows = results.data || []
+            
+            if (headers.length === 0) {
+              reject(new Error("No headers found in CSV file"))
+              return
+            }
+
+            if (rows.length === 0) {
+              reject(new Error("No data rows found in CSV file"))
+              return
+            }
+
+            resolve({ headers, rows })
+          } catch (error) {
+            reject(error)
+          }
+        },
+        error: (error) => {
+          reject(error)
+        }
+      })
+    })
+  }
+
+  const validateCSVTemplate = (data: ParsedCSVData): boolean => {
+    // Basic validation - check if we have headers and rows
+    if (!data.headers || data.headers.length === 0) {
+      setErrorMessage("File has no headers!")
+      return false
+    }
+
+    if (!data.rows || data.rows.length === 0) {
+      setErrorMessage("File has no data rows!")
+      return false
+    }
+
+    // Optional: Add specific template validation here
+    // For example, check if required columns exist
+    // const requiredColumns = ["Name", "Email"]
+    // const hasRequiredColumns = requiredColumns.every(col => 
+    //   data.headers.some(h => h.toLowerCase() === col.toLowerCase())
+    // )
+    // if (!hasRequiredColumns) {
+    //   setErrorMessage("File missing required columns!")
+    //   return false
+    // }
+
+    return true
+  }
+
+  const handleFileAfterPick = async (file: File) => {
     if (!isAllowedFile(file)) {
-      setErrorMessage("Invalid File Type!")
+      setErrorMessage("Invalid File Type! Please upload a CSV, XLS, or XLSX file.")
       setShowErrorModal(true)
       return
     }
+
     setSelectedFile(file)
     onFileSelect?.(file)
-    setShowProgressModal(true)
+
+    // Parse file based on type
+    try {
+      setShowProgressModal(true)
+      
+      let parsed: ParsedCSVData
+      
+      if (isExcelFile(file)) {
+        parsed = await parseExcelFile(file)
+      } else {
+        parsed = await parseCSVFile(file)
+      }
+      
+      // Validate the parsed data
+      if (!validateCSVTemplate(parsed)) {
+        setShowProgressModal(false)
+        setShowErrorModal(true)
+        setSelectedFile(null)
+        return
+      }
+
+      // Store parsed data
+      setParsedData(parsed)
+      
+    } catch (error) {
+      setShowProgressModal(false)
+      setErrorMessage(error instanceof Error ? error.message : "Failed to parse file!")
+      setShowErrorModal(true)
+      setSelectedFile(null)
+      setParsedData(null)
+    }
   }
 
   if (!isOpen) return null
@@ -292,7 +461,7 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
 
               <div className="relative z-10 flex flex-col items-center">
                 <Text variant="body" size="lg" weight="semibold" color="primary" className="mb-4">
-                  Pick the CSV file you want to add
+                  Pick the CSV/Excel file you want to add
                 </Text>
 
                 <div className="mb-4 flex size-20 items-center justify-center rounded-full bg-green-600/10">
@@ -307,6 +476,11 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
                     <Text variant="body" size="sm" color="muted">
                       {formatFileSize(selectedFile.size)}
                     </Text>
+                    {parsedData && (
+                      <Text variant="body" size="sm" color="muted" className="mt-1">
+                        {parsedData.rows.length} rows • {parsedData.headers.length} columns
+                      </Text>
+                    )}
                   </div>
                 ) : (
                   <Text variant="body" size="sm" color="muted">
@@ -327,11 +501,11 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
               <button
                 onClick={handleImport}
                 className={`rounded-lg px-6 py-2 font-semibold text-white transition-opacity ${
-                  selectedFile
+                  selectedFile && parsedData
                     ? "bg-gradient-to-r from-rose-600 to-orange-500 hover:opacity-90"
                     : "bg-gradient-to-r from-rose-600 to-orange-500 opacity-50 cursor-not-allowed"
                 }`}
-                disabled={!selectedFile}
+                disabled={!selectedFile || !parsedData}
               >
                 Import
               </button>
@@ -351,7 +525,8 @@ export const ImportCSVModal: React.FC<ImportCSVModalProps> = ({
       <MappedImportModal
         isOpen={showMappedModal}
         onClose={handleMappedModalClose}
-        templateData={templateData}
+        parsedData={parsedData}
+        fileName={selectedFile?.name || "Unknown"}
       />
 
       <ImportErrorModal

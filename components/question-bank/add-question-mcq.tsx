@@ -20,17 +20,24 @@ export function AddQuestionMCQ() {
   const updateOption = (i: number, val: string) => setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)))
   const removeOption = (i: number) => setOptions((prev) => prev.filter((_, idx) => idx !== i))
 
+  const handlePublish = () => {
+    setStatus("Published")
+    console.log("[v0] Question published!")
+  }
+
   return (
     <div className="min-h-screen text-white bg-gray-900 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-white">Add Question</h1>
-        <button
-          onClick={() => router.back()}
-          className="px-6 py-2 rounded-lg border border-gray-400 text-white hover:bg-gray-700 transition-colors font-medium"
-        >
-          Back
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.back()}
+            className="px-6 py-2 rounded-lg border border-gray-400 text-white hover:bg-gray-700 transition-colors font-medium"
+          >
+            Back
+          </button>
+        </div>
       </div>
 
       {/* Main Container */}
@@ -104,6 +111,12 @@ export function AddQuestionMCQ() {
               Cancel
             </button>
             <GradientButton size="md">Save</GradientButton>
+            <button
+              onClick={handlePublish}
+              className="px-6 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors font-medium"
+            >
+              Publish
+            </button>
           </div>
         </div>
 
