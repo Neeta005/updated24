@@ -21,7 +21,6 @@ export function LessonRow({
   canRemove = true,
   level = 1,
 }: LessonRowProps) {
-  // Map levels to Tailwind spacing classes
   const marginRightClass = {
     1: "mr-13",
     2: "mr-8",
@@ -29,8 +28,8 @@ export function LessonRow({
   }[level]
 
   return (
-    <div className={`flex items-center gap-3 justify-end ${marginRightClass}`}>
-      {/* Input field */}
+    <div className={`flex items-end gap-3 ${marginRightClass}`}>
+      {/* Lesson Input */}
       <div className="flex-1">
         <FormField label="Lesson / Unit">
           <Input
@@ -42,8 +41,8 @@ export function LessonRow({
         </FormField>
       </div>
 
-      {/* Action buttons */}
-      <div className="flex items-center gap-2 h-10">
+      {/* Plus / Minus Buttons */}
+      <div className="flex items-center gap-2 pb-[2px]">
         <IconButton
           onClick={onAddLesson}
           size="icon"
@@ -57,7 +56,7 @@ export function LessonRow({
             onClick={onRemoveLesson}
             variant="secondary"
             size="icon"
-            className="size-10 bg-white flex items-center justify-center"
+            className="h-10 w-10 bg-white flex items-center justify-center"
           >
             <Minus className="size-4 text-black" />
           </IconButton>

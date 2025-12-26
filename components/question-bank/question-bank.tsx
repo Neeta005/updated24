@@ -100,6 +100,12 @@ const SubtopicRow = React.memo(
         >
           <Edit3 className="size-3 text-red-500" />
         </button> */}
+         <button
+    className="p-1.5 border border-green-500 hover:bg-green-500/10 rounded-lg transition-colors"
+    title="Add Question"
+  >
+    <Plus className="size-3 text-green-500" />
+  </button>
       </div>
     </div>
   ),
