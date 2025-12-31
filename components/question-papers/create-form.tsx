@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { ChevronDown, Plus } from "lucide-react"
+import { ChevronDown, Plus, Search } from "lucide-react"
 import { QUESTION_PAPER_ROUTES } from "@/data/question-papers-pages"
 
 export default function CreateForm() {
@@ -156,18 +156,21 @@ export default function CreateForm() {
               key={row.id}
               className="px-4 py-4 grid grid-cols-12 gap-2 items-center border-t border-slate-700 bg-slate-800/90"
             >
-              {/* Search */}
+              {/* Search - FIXED: Rectangle with search icon, same height */}
               <div className="col-span-3">
-                <input
-                  placeholder="Search Subject"
-                  className="w-full px-3 py-2 bg-transparent border border-slate-500 rounded-3xl text-white placeholder-slate-400 focus:outline-none focus:border-white text-sm"
-                />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <input
+                    placeholder="Search Subject"
+                    className="w-full pl-10 pr-3 py-2.5 bg-transparent border border-slate-500 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-white text-sm"
+                  />
+                </div>
               </div>
 
               {/* Select Topic */}
               <div className="col-span-3">
                 <div className="relative">
-                  <select className="appearance-none w-full px-3 py-2 pr-8 bg-transparent border border-slate-500 rounded-lg text-white focus:outline-none focus:border-white text-sm">
+                  <select className="appearance-none w-full px-3 py-2.5 pr-8 bg-transparent border border-slate-500 rounded-lg text-white focus:outline-none focus:border-white text-sm">
                     <option className="bg-slate-900 text-white">Select Topic(s)</option>
                     <option className="bg-slate-900 text-white">Basic Syntax</option>
                     <option className="bg-slate-900 text-white">Loops & Control</option>
@@ -179,7 +182,7 @@ export default function CreateForm() {
               {/* Level */}
               <div className="col-span-2">
                 <div className="relative">
-                  <select className="appearance-none w-full px-3 py-2 pr-8 bg-transparent border border-slate-500 rounded-lg text-white focus:outline-none focus:border-white text-sm">
+                  <select className="appearance-none w-full px-3 py-2.5 pr-8 bg-transparent border border-slate-500 rounded-lg text-white focus:outline-none focus:border-white text-sm">
                     <option className="bg-slate-900 text-white">Level</option>
                     <option className="bg-slate-900 text-white">Easy</option>
                     <option className="bg-slate-900 text-white">Medium</option>
@@ -189,19 +192,19 @@ export default function CreateForm() {
                 </div>
               </div>
 
-              {/* % */}
+              {/* % - FIXED: Same height as other inputs */}
               <div className="col-span-1">
                 <input
                   placeholder="%"
-                  className="w-full px-2 py-2 bg-transparent border border-slate-500 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-white text-center text-sm"
+                  className="w-full px-2 py-2.5 bg-transparent border border-slate-500 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-white text-center text-sm"
                 />
               </div>
 
-              {/* Marks % */}
+              {/* Marks % - FIXED: Same height as other inputs */}
               <div className="col-span-1">
                 <input
                   placeholder="Marks %"
-                  className="w-full px-1 py-2 bg-transparent border border-slate-500 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-white text-center text-xs"
+                  className="w-full px-1 py-2.5 bg-transparent border border-slate-500 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-white text-center text-xs"
                 />
               </div>
 
@@ -231,7 +234,10 @@ export default function CreateForm() {
                     </>
                   )}
                 </button>
-                <button className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-pink-500">
+                {/* FIXED: Save button now has hover effect */}
+                <button 
+                  className="flex items-center justify-center w-[34px] h-[34px] rounded-md border border-pink-500 hover:bg-pink-500/10 transition-colors"
+                >
                   <div className="flex items-center justify-center w-full h-full rounded-md bg-black">
                     <img src="/icons/Save.png" alt="Save" className="w-4 h-4 object-contain" />
                   </div>

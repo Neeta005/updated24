@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp} from "lucide-react"
 import { QUESTION_PAPER_ROUTES } from "@/data/question-papers-pages"
@@ -133,7 +133,7 @@ function SectionRow({
   )
 }
 
-function QuestionsHeader() {
+function QuestionsHeader({ onAddQuestion }: { onAddQuestion: () => void }) {
   return (
     <div className="px-4 py-3 bg-slate-800/20 grid grid-cols-10 gap-4 items-center border-t border-slate-700">
       <div className="col-span-6 flex items-center gap-4">
@@ -146,7 +146,8 @@ function QuestionsHeader() {
           </select>
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-gradient-to-r from-orange-primary to-red-primary text-white text-sm font-medium"
+            onClick={onAddQuestion}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-gradient-to-r from-orange-primary to-red-primary text-white text-sm font-medium hover:opacity-90 transition-opacity"
           >
             + Add Question
           </button>
@@ -187,10 +188,36 @@ function QuestionRow({
 export default function DetailsManualSelection() {
   const router = useRouter()
   const [sections, setSections] = useState<SubjectSection[]>(questionPaperDetails)
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set([sections[0]?.id]))
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [sectionPages, setSectionPages] = useState<Record<string, number>>({})
 
   const questionsPerPage = 5 // Reduced to 5 to make pagination more visible
+
+  // Initialize expanded sections on client side only to avoid hydration mismatch
+  useEffect(() => {
+    if (sections[0]?.id) {
+      setExpandedSections(new Set([sections[0].id]))
+    }
+  }, [])
+
+  const handleAddQuestion = (sectionId: string) => {
+    // For now, this adds a sample question - you can replace this with a modal or form
+    const newQuestion: QuestionItem = {
+      id: `q-${Date.now()}`,
+      text: "New question - click edit to modify",
+      type: "MCQ",
+      marks: 1,
+      checked: false,
+    }
+
+    setSections((prev) =>
+      prev.map((s) =>
+        s.id === sectionId
+          ? { ...s, questions: [...s.questions, newQuestion] }
+          : s
+      )
+    )
+  }
 
   const totalQuestions = useMemo(
     () => sections.reduce((acc, s) => acc + s.questions.filter((q) => q.checked).length, 0),
@@ -260,6 +287,13 @@ export default function DetailsManualSelection() {
             {/* Add Question button */}
             <button
               type="button"
+              onClick={() => {
+                // Add question to the first expanded section or first section if none expanded
+                const targetSection = Array.from(expandedSections)[0] || sections[0]?.id
+                if (targetSection) {
+                  handleAddQuestion(targetSection)
+                }
+              }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 transition-colors"
             >
               <span>Add Question</span>
@@ -299,7 +333,7 @@ export default function DetailsManualSelection() {
                 {/* Expanded Questions Section */}
                 {expandedSections.has(section.id) && (
                   <>
-                    <QuestionsHeader />
+                    <QuestionsHeader onAddQuestion={() => handleAddQuestion(section.id)} />
 
                     {/* Questions for this section (paginated) */}
                     {paginatedQuestions.map((q) => (

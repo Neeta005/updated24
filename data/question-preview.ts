@@ -1,8 +1,9 @@
-// data.ts
+// data/question-preview.ts
+
 export interface Question {
   id: string;
   text: string;
-  type: 'multiple-choice' | 'text' | 'code' | 'true-false';
+  type: 'multiple-choice' | 'text' | 'code' | 'true-false' | 'code-write';
   options?: string[];
   codeSnippet?: string;
   language?: string;
@@ -24,7 +25,7 @@ export interface ExamInfo {
 export const examInfo: ExamInfo = {
   title: "Final Exam: Programming & Networking",
   targetAudience: "Students & Fresher",
-  totalQuestions: 50
+  totalQuestions: 51
 };
 
 export const sections: Section[] = [
@@ -68,6 +69,12 @@ export const sections: Section[] = [
         id: "q5",
         text: "Name Three Data Types Commonly Used In Programming.",
         type: "text"
+      },
+      {
+        id: "q6",
+        text: "Write a Python function that takes a list of numbers and returns the sum of all even numbers in the list.",
+        type: "code-write",
+        language: "python"
       }
     ]
   },

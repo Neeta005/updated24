@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeft, Plus, Search, Edit3, Trash2 } from "lucide-react"
+import { ArrowLeft, Plus, Search, Edit3, Trash2, X, Check } from "lucide-react"
 import { Pagination } from "@/components/ui/pagination"
 import { GradientButton } from "@/components/ui/gradient-button"
 import Image from "next/image"
@@ -112,6 +112,11 @@ const allCandidates: Candidate[] = [
 
 export function GroupView() {
   const [currentPage, setCurrentPage] = useState(1)
+  const [isEditing, setIsEditing] = useState(false)
+  const [examsTaken, setExamsTaken] = useState("02")
+  const [avgScore, setAvgScore] = useState("78.3")
+  const [passRate, setPassRate] = useState("100")
+  
   const itemsPerPage = 10
   const totalPages = Math.ceil(allCandidates.length / itemsPerPage)
   const router = useRouter()
@@ -119,6 +124,16 @@ export function GroupView() {
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const currentCandidates = allCandidates.slice(startIndex, endIndex)
+
+  const handleSave = () => {
+    setIsEditing(false)
+    // Save to backend
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+    // Reset values if needed
+  }
 
   return (
     <main className="flex-1 p-8 bg-gray-900 min-h-screen">
@@ -132,7 +147,7 @@ export function GroupView() {
           </button>
           <label className="px-5 py-2.5 bg-white text-gray-900 rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm cursor-pointer border border-slate-300">
             <Image
-              src="/icons/import.png" // replace with your public folder image
+              src="/icons/import.png"
               alt="Upload Icon"
               width={16}
               height={16}
@@ -141,7 +156,7 @@ export function GroupView() {
           </label>
           <GradientButton className="flex items-center gap-2 text-sm">
             <Image
-              src="/icons/export (1).png" // put your icon in public/icons/
+              src="/icons/export (1).png"
               alt="Download"
               width={16}
               height={16}
@@ -153,14 +168,34 @@ export function GroupView() {
 
       {/* Group Info Card */}
       <div className="bg-card rounded-lg p-6 mb-8 relative border border-slate-800">
-        <button className="absolute top-4 right-4 p-2 hover:bg-slate-800 rounded-md transition-colors">
-          <Image
-            src="/icons/edit-2.png" // put your icon in public/icons/
-            alt="Edit"
-            width={30} // adjust size as needed
-            height={30}
-          />
-        </button>
+        {!isEditing ? (
+          <button 
+            className="absolute top-4 right-4 p-2 hover:bg-slate-800 rounded-md transition-colors"
+            onClick={() => setIsEditing(true)}
+          >
+            <Image
+              src="/icons/edit-2.png"
+              alt="Edit"
+              width={30}
+              height={30}
+            />
+          </button>
+        ) : (
+          <div className="absolute top-4 right-4 flex gap-2">
+            <button
+              className="p-2 bg-green-500/20 hover:bg-green-500/30 text-green-500 rounded-md transition-colors"
+              onClick={handleSave}
+            >
+              <Check className="w-5 h-5" />
+            </button>
+            <button
+              className="p-2 bg-red-500/20 hover:bg-red-500/30 text-red-500 rounded-md transition-colors"
+              onClick={handleCancel}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
 
         <div>
           <h2 className="text-xl font-medium text-white mb-2">Python Developers</h2>
@@ -176,15 +211,42 @@ export function GroupView() {
           <div className="flex gap-3">
             <div className="flex-1 border border-white/30 rounded-md p-3 text-center">
               <div className="text-xs text-slate-500 mb-1">Exams Taken</div>
-              <div className="text-xl font-semibold text-white">02</div>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={examsTaken}
+                  onChange={(e) => setExamsTaken(e.target.value)}
+                  className="text-xl font-semibold text-white bg-slate-800 border border-slate-600 rounded px-2 py-1 w-full text-center focus:outline-none focus:border-orange-500"
+                />
+              ) : (
+                <div className="text-xl font-semibold text-white">{examsTaken}</div>
+              )}
             </div>
             <div className="flex-1 border border-white/30 rounded-md p-3 text-center">
               <div className="text-xs text-slate-500 mb-1">Avg Score (Last Exam)</div>
-              <div className="text-xl font-semibold text-white">78.3</div>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={avgScore}
+                  onChange={(e) => setAvgScore(e.target.value)}
+                  className="text-xl font-semibold text-white bg-slate-800 border border-slate-600 rounded px-2 py-1 w-full text-center focus:outline-none focus:border-orange-500"
+                />
+              ) : (
+                <div className="text-xl font-semibold text-white">{avgScore}</div>
+              )}
             </div>
             <div className="flex-1 border border-white/30 rounded-md p-3 text-center">
               <div className="text-xs text-slate-500 mb-1">Pass Rate (Last Exam)</div>
-              <div className="text-xl font-semibold text-white">100</div>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={passRate}
+                  onChange={(e) => setPassRate(e.target.value)}
+                  className="text-xl font-semibold text-white bg-slate-800 border border-slate-600 rounded px-2 py-1 w-full text-center focus:outline-none focus:border-orange-500"
+                />
+              ) : (
+                <div className="text-xl font-semibold text-white">{passRate}</div>
+              )}
             </div>
           </div>
 

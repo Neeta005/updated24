@@ -1,3 +1,5 @@
+// components/question-preview.tsx
+
 "use client"
 
 import { useState } from "react"
@@ -7,7 +9,7 @@ import { SectionAccordion } from "./section-accordion"
 
 interface QuestionPreviewProps {
   onBack?: () => void
-  showShell?: boolean // when false, do not render the internal sidebar/header
+  showShell?: boolean
 }
 
 export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewProps) {
@@ -58,6 +60,28 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
           </div>
         )
 
+      case "code-write":
+        return (
+          <div key={question.id} className="border border-gray-600 rounded-lg p-4 bg-card">
+            <div className={`border-l-4 border-${sectionColor}-400 pl-4`}>
+              <h3 className="text-white font-medium mb-3">
+                Q{questionNumber}) {question.text}
+              </h3>
+              <div className="bg-gray-900 border border-green-500 rounded-lg overflow-hidden">
+                <div className="bg-gray-800 px-4 py-2 border-b border-green-500 flex items-center justify-between">
+                  <span className="text-green-400 text-sm font-mono">{question.language}</span>
+                  <span className="text-gray-400 text-xs">Write your code below</span>
+                </div>
+                <textarea
+                  className="w-full h-48 bg-gray-900 px-4 py-3 text-green-300 font-mono text-sm resize-none focus:outline-none"
+                  placeholder={`# Write your ${question.language} code here...\n\ndef function_name():\n    pass`}
+                  spellCheck={false}
+                />
+              </div>
+            </div>
+          </div>
+        )
+
       case "code":
         if (question.codeSnippet) {
           // Code output question
@@ -69,7 +93,7 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
                 </h3>
                 <div className="bg-gray-700 p-4 rounded-lg border border-green-500 mb-4">
                   <div className="text-green-400 text-xs mb-2">{question.language}</div>
-                  <code className="text-green-300">{question.codeSnippet}</code>
+                  <pre className="text-green-300 whitespace-pre-wrap">{question.codeSnippet}</pre>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {question.options?.map((option: string, i: number) => (
@@ -97,7 +121,7 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
                         <input type="radio" name={question.id} className={`text-${sectionColor}-500 mt-1`} />
                         <div className="bg-gray-700 p-3 rounded-lg border border-green-500">
                           <div className="text-green-400 text-xs mb-1">{question.language}</div>
-                          <code className="text-green-300 text-sm">{option}</code>
+                          <pre className="text-green-300 text-sm whitespace-pre-wrap">{option}</pre>
                         </div>
                       </label>
                     ))}
@@ -108,7 +132,7 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
                         <input type="radio" name={question.id} className={`text-${sectionColor}-500 mt-1`} />
                         <div className="bg-gray-700 p-3 rounded-lg border border-green-500">
                           <div className="text-green-400 text-xs mb-1">{question.language}</div>
-                          <code className="text-green-300 text-sm">{option}</code>
+                          <pre className="text-green-300 text-sm whitespace-pre-wrap">{option}</pre>
                         </div>
                       </label>
                     ))}
@@ -128,7 +152,7 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
     <div className={showShell ? "min-h-screen bg-card" : ""}>
       {/* Main Content */}
       <div className={showShell ? "ml-64 p-6" : "p-6"}>
-        {/* Header - Always visible */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <h1 className="text-white text-2xl font-bold">Question Paper Preview</h1>
@@ -178,11 +202,11 @@ export function QuestionPreview({ onBack, showShell = true }: QuestionPreviewPro
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
-  onClick={onBack ?? (() => window.history.back())}
-  className="px-6 py-3 border border-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
->
-  Back
-</button>
+            onClick={onBack ?? (() => window.history.back())}
+            className="px-6 py-3 border border-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Back
+          </button>
 
           <button className="px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-lg hover:from-red-700 hover:to-orange-600 transition-all">
             Publish
